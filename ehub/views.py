@@ -11,3 +11,11 @@ class Home(View):
 
         }
         return HttpResponse(render(request, template, context))
+
+class SignUp(View):
+    def get(self, request):
+        template = 'main/signup.html'
+        context = {
+
+        }
+        return HttpResponse(render(request, template, context))

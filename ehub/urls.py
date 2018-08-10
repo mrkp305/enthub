@@ -16,8 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from .views import *
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', Home.as_view() , name='site-home'),
+    path('register/', SignUp.as_view(), name='register'),
 ]
+
+urlpatterns += staticfiles_urlpatterns()
