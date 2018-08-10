@@ -3,6 +3,7 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.defaults import *
 import re
+from .forms import *
 
 class Home(View):
     def get(self, request):
@@ -12,10 +13,11 @@ class Home(View):
         }
         return HttpResponse(render(request, template, context))
 
-class SignUp(View):
+class Auth(View):
     def get(self, request):
-        template = 'main/signup.html'
+        template = 'main/auth.html'
         context = {
-
+            'LoginForm': SignIn(),
+            'RegisterForm': SignUp(),
         }
         return HttpResponse(render(request, template, context))

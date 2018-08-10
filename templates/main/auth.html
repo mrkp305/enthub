@@ -52,18 +52,18 @@
 			<!-- Login -->
 			<div class="tab-content" id="tab1" style="display: none;">
 				<form method="post" class="login">
-
+					{% csrf_token %}
 					<p class="form-row form-row-wide">
 						<label for="username">Username:
-							<i class="im im-icon-Male"></i>
-							<input type="text" class="input-text" name="username" id="username" value="" />
+							<i class="im im-icon-At-Sign"></i>
+							{{ LoginForm.email_address }}
 						</label>
 					</p>
-
+					
 					<p class="form-row form-row-wide">
 						<label for="password">Password:
 							<i class="im im-icon-Lock-2"></i>
-							<input class="input-text" type="password" name="password" id="password"/>
+							{{ LoginForm.password }}
 						</label>
 					</p>
 
@@ -85,32 +85,32 @@
 			<div class="tab-content" id="tab2" style="display: none;">
 
 				<form method="post" class="register">
-					
+				{% csrf_token %}
 				<p class="form-row form-row-wide">
-					<label for="username2">Username:
+					<label for="username2">Name:
 						<i class="im im-icon-Male"></i>
-						<input type="text" class="input-text" name="username" id="username2" value="" />
+						{{ RegisterForm.name }}
 					</label>
 				</p>
 					
 				<p class="form-row form-row-wide">
 					<label for="email2">Email Address:
 						<i class="im im-icon-Mail"></i>
-						<input type="text" class="input-text" name="email" id="email2" value="" />
+						{{ RegisterForm.email_address }}
 					</label>
 				</p>
 
 				<p class="form-row form-row-wide">
 					<label for="password1">Password:
 						<i class="im im-icon-Lock-2"></i>
-						<input class="input-text" type="password" name="password1" id="password1"/>
+						{{ RegisterForm.password }}
 					</label>
 				</p>
 
 				<p class="form-row form-row-wide">
 					<label for="password2">Repeat Password:
 						<i class="im im-icon-Lock-2"></i>
-						<input class="input-text" type="password" name="password2" id="password2"/>
+						{{ RegisterForm.confirm_password }}
 					</label>
 				</p>
 
