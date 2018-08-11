@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'authentication.apps.AuthenticationConfig',
 ]
 
 MIDDLEWARE = [
@@ -117,6 +118,7 @@ USE_TZ = True
 
 #custom Auth settings
 LOGIN_REDIRECT_URL = '/'
+AUTH_USER_MODEL = 'authentication.User'
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
