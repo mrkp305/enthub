@@ -3,10 +3,12 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 import re
 from .forms import *
+from .models import *
+from account.models import *
 
 # Create your views here.
 class Auth(View):
@@ -34,6 +36,8 @@ class Auth(View):
                 account.first_name = firstname
                 account.last_name = lastname
                 account.save()
+
+                # profile = account.
                 user = authenticate(email=form.cleaned_data['email_address'], password=form.cleaned_data['password'])
                 login(request, user)
 
