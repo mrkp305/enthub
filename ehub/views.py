@@ -14,10 +14,37 @@ class Home(View):
         return HttpResponse(render(request, template, context))
 
 class Auth(View):
+    template = 'main/auth.html'
     def get(self, request):
-        template = 'main/auth.html'
         context = {
             'LoginForm': SignIn(),
             'RegisterForm': SignUp(),
+            'InActiveTab': 'tabRegister',
+            'ActiveTab': 'tabLogin',
+            'ActiveLink': 'loginToggle',
+            'InActiveLink': 'registerToggle',
+            'ShiftFocus': 0,
         }
-        return HttpResponse(render(request, template, context))
+        return HttpResponse(render(request, self.template, context))
+
+    def post(self, request):
+        if 'login' in request.POST:
+            form = SignIn(request.POST)
+        else:
+            form = SignUp(request.POST)
+            if form.is_valid():
+                return HttpResponse("Yaaay")
+            else:
+                context = {
+                    'LoginForm': SignIn(),
+                    'RegisterForm': form,
+                    'ActiveTab': 'tabRegister',
+                    'InActiveTab': 'tabLogin',
+                    'ActiveLink': 'registerToggle',
+                    'InActiveLink': 'loginToggle',
+                    'ShiftFocus': 1,
+                }
+                return HttpResponse(render(request, self.template, context))
+
+
+

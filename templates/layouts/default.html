@@ -352,7 +352,7 @@
 
 <!-- Scripts
 ================================================== -->
-<script data-cfasync="false" src="../../cdn-cgi/scripts/f2bf09f8/cloudflare-static/email-decode.min.js"></script>
+
 <script type="text/javascript" src="{% static 'scripts/jquery-2.2.0.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'scripts/chosen.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'scripts/magnific-popup.min.js' %}"></script>
@@ -364,6 +364,8 @@
 <script type="text/javascript" src="{% static 'scripts/mmenu.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'scripts/tooltips.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'scripts/custom.js' %}"></script>
+
+{% block PAGE_JS %} {% endblock %}
 
 <!-- Maps -->
 <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false&amp;language=en"></script>

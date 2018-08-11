@@ -1,6 +1,6 @@
 {% extends 'layouts/default.html' %}
 {% load static %}
-{% block PAGE_TITLE %} Ehub &mdash; Register {% endblock %}
+{% block PAGE_TITLE %} Ehub &mdash; Login | Register {% endblock %}
 {% block PAGE_CONTENT %}
 
 <!-- Titlebar
@@ -38,19 +38,19 @@
 	<button class="button social-login via-twitter"><i class="fa fa-twitter"></i> Log In With Twitter</button>
 	<button class="button social-login via-gplus"><i class="fa fa-google-plus"></i> Log In With Google Plus</button>
 	<button class="button social-login via-facebook"><i class="fa fa-facebook"></i> Log In With Facebook</button>
-
+	<div id="forms-area"></div>
 	<!--Tab -->
 	<div class="my-account style-1 margin-top-5 margin-bottom-40">
 
 		<ul class="tabs-nav">
-			<li class=""><a href="#tab1">Log In</a></li>
-			<li><a href="#tab2">Register</a></li>
+			<li id="loginToggle" class=""><a href="#tabLogin" >Log In</a></li>
+			<li id="registerToggle"><a href="#tabRegister">Register</a></li>
 		</ul>
 
 		<div class="tabs-container alt">
 
 			<!-- Login -->
-			<div class="tab-content" id="tab1" style="display: none;">
+			<div class="tab-content" id="tabLogin" style="display: none;">
 				<form method="post" class="login">
 					{% csrf_token %}
 					<p class="form-row form-row-wide">
@@ -82,7 +82,7 @@
 			</div>
 
 			<!-- Register -->
-			<div class="tab-content" id="tab2" style="display: none;">
+			<div class="tab-content" id="tabRegister" style="display: none;">
 
 				<form method="post" class="register">
 				{% csrf_token %}
@@ -131,5 +131,36 @@
 
 </div>
 <!-- Container / End -->
+{% endblock %}
 
+
+
+{% block PAGE_JS %} 
+	<script type="text/javascript">
+		$(document).ready(function(){
+			var focus = {{ ShiftFocus }};
+			switch(focus){
+				case 1:{
+					$("html, body").animate({
+						scrollTop: $("#forms-area").offset().top
+					}, 1000);
+					break;
+				}
+
+				default:{
+					$("html, body").scrollTop = 0;
+				}
+			}
+			var $activate = $("#{{ ActiveTab }}");
+			var $deactivate = $("#{{ InActiveTab }}");
+			var $activateLi = $("#{{ ActiveLink }}");
+			var $deactivateLi = $("#{{ InActiveLink }}");
+
+			$deactivateLi.removeClass('active');
+			$activateLi.addClass('active');
+			$activate.css("display", "");
+			$deactivate.css("display", "none");
+			
+		});
+	</script>
 {% endblock %}
