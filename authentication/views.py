@@ -3,6 +3,8 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login
 import re
 from .forms import *
 
@@ -27,7 +29,14 @@ class Auth(View):
         else:
             form = SignUp(request.POST)
             if form.is_valid():
-                return HttpResponse("Yaaay")
+                account = User.objects.create_user(form.cleaned_data['email_address'], form.cleaned_data['password']);
+                firstname, lastname = form.cleaned_data['name'].split()
+                account.first_name = firstname
+                account.last_name = lastname
+                account.save()
+                user = authenticate(email=form.cleaned_data['email_address'], password=form.cleaned_data['password'])
+                login(request, user)
+
             else:
                 context = {
                     'LoginForm': SignIn(),

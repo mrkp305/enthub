@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'authentication.apps.AuthenticationConfig',
+    'account.apps.AccountConfig',
 ]
 
 MIDDLEWARE = [
@@ -128,3 +129,12 @@ STATIC_URL = '/ehub-static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
+
+#E-mail Setup
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'percivalkayem1@gmail.com'
+EMAIL_HOST_PASSWORD = '0774181292'
+EMAIL_PORT = 587

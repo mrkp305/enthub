@@ -18,10 +18,10 @@ from django.urls import path, include
 from .views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+app_name='authentication'
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', Home.as_view() , name='site-home'),
-    path('auth/', include('authentication.urls')),
+   
+    path('', Auth.as_view(), name='auth'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -13,3 +13,12 @@ class User(AbstractUser):
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = []
     objects = UserManager()
+
+    def __str__(self):
+        return "{} {}".format(self.first_name, self.last_name)
+    
+    def get_short_name(self):
+        '''
+        Returns the short name for the user.
+        '''
+        return self.first_name

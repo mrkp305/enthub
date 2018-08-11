@@ -1,5 +1,6 @@
 from django import forms
 import re
+from .models import *
 
 class SignIn(forms.Form):
     email_address = forms.EmailField(widget=forms.TextInput(attrs={'class':'input-text', 'id':'email'}), required=True)
@@ -15,8 +16,13 @@ class SignUp(forms.Form):
     def clean(self):
         cleaned_data = super(SignUp, self).clean()
         name = cleaned_data.get('name')
+        email_address = cleaned_data.get('email_address')
         password = cleaned_data.get('password')
         confirm_password = cleaned_data.get('confirm_password')
+
+        #email validation
+        if User.objects.filter(email=email_address).count() > 0:
+              self.add_error('email_address', 'Email already in use.')
 
         #Name validation
         if not len(name.split()) > 1:
