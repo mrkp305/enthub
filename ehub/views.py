@@ -13,4 +13,3 @@ class Home(View):
 
         }
         return HttpResponse(render(request, template, context))
-

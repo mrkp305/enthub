@@ -1,6 +1,10 @@
 {% extends "layouts/default.html" %}
 {% load static %}
 {% block PAGE_TITLE %} My Profile &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_CSS %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
+  <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
+{% endblock PAGE_CSS %}
 {% block PAGE_CONTENT %}
     <!-- Titlebar
 ================================================== -->
@@ -111,15 +115,35 @@
 				<div class="col-md-4">
 					<!-- Avatar -->
 					<div class="edit-profile-photo">
-						<img src="images/agent-02.jpg" alt="">
+						<img src="{% static 'images/agent-02.jpg' %}" alt="">
 						<div class="change-photo-btn">
 							<div class="photoUpload">
 							    <span><i class="fa fa-upload"></i> Upload Photo</span>
-							    <input type="file" class="upload" />
+							    <input id='image-file-ctrl' type="file" class="upload" />
 							</div>
 						</div>
 					</div>
-
+				
+					<!-- Picture Modal -->
+					<div class="modal fade" id="profilePictureModal" tabindex="-1" role="dialog" aria-labelledby="profilePictureModalTitle" aria-hidden="true">
+						<div class="modal-dialog " role="document">
+						<div class="modal-content">
+							<div class="modal-header">
+							<h5 class="modal-title" id="profilePictureModalTitle">Edit Profile Picture</h5>
+							<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+								<span aria-hidden="true">&times;</span>
+							</button> -->
+							</div>
+							<div class="modal-body">
+								<div id="upload-picture-area"></div>
+							</div>
+							<div class="modal-footer">
+							<a class="button medium border" data-dismiss="modal">Close</a>
+							<a class="button medium"><i class="fa fa-save"></i> Save Changes</a>
+							</div>
+						</div>
+						</div>
+					</div>
 				</div>
 
 
@@ -129,3 +153,45 @@
 	</div>
 </div>
 {% endblock PAGE_CONTENT %}
+
+{% block PAGE_JS %}
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.js"></script>
+  <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
+  <script>
+		var $uploadCrop;
+		function readFile(input) {
+			if (input.files && input.files[0]) {
+			  var reader = new FileReader();
+		  
+			  reader.onload = function (event) {
+				$uploadCrop.croppie('bind', {
+				  url: event.target.result
+				});
+			  };
+		  
+			  reader.readAsDataURL(input.files[0]);
+			} else {
+			  alert('Sorry - you\'re browser doesn\'t support the FileReader API');
+			}
+		}
+		  
+		$uploadCrop = $('#upload-picture-area').croppie({
+			viewport: {
+				width: 490,
+				height: 490,
+				type: 'circle'
+			  },
+			  boundary: {
+				width: 550,
+				height: 500
+			  },
+			enableExif: true
+		});
+		$('#image-file-ctrl').on('change', function() {
+			
+			$("#profilePictureModal").modal('show'); 
+			readFile(this);
+			
+		});
+  </script>
+{% endblock PAGE_JS %}

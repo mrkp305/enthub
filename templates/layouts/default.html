@@ -7,12 +7,13 @@
 <title>{% block PAGE_TITLE %}{% endblock %}</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
 <!-- CSS
 ================================================== -->
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
 <link rel="stylesheet" href="{% static 'css/colors/main.css' %}" id="colors">
-
+{% block PAGE_CSS %}
+  
+{% endblock PAGE_CSS %}
 </head>
 
 <body>
