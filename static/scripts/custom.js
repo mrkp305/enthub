@@ -293,7 +293,6 @@
                 width: "100%"
             },
             '.chosen-select-no-single': {
-                disable_search_threshold: 100,
                 width: "100%"
             },
             '.chosen-select-no-single.no-search': {
