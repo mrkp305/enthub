@@ -28,6 +28,24 @@ class Auth(View):
     def post(self, request):
         if 'login' in request.POST:
             form = SignIn(request.POST)
+            if form.is_valid():
+                user = authenticate(email=form.cleaned_data['email_address'], password=form.cleaned_data['password'])
+                if user is not None:
+                    login(request, user)
+                    return redirect('/account/profile')
+                else:
+                    context = {
+                        'LoginForm': form,
+                        'RegisterForm': SignIn(),
+                        'ActiveTab': 'tabLogin',
+                        'InActiveTab': 'tabRegister',
+                        'ActiveLink': 'loginToggle',
+                        'InActiveLink': 'registernToggle',
+                        'ShiftFocus': 1,
+                    }
+                    return HttpResponse(render(request, self.template, context))
+            else:
+                return HttpResponse('Invalid Form')
         else:
             form = SignUp(request.POST)
             if form.is_valid():
@@ -37,10 +55,12 @@ class Auth(View):
                 account.last_name = lastname
                 account.save()
 
+                profile = Profile.objects.create(user=account)
+                profile.save()
                 # profile = account.
                 user = authenticate(email=form.cleaned_data['email_address'], password=form.cleaned_data['password'])
                 login(request, user)
-
+                return redirect('/account/profile')
             else:
                 context = {
                     'LoginForm': SignIn(),
@@ -54,11 +74,3 @@ class Auth(View):
                 return HttpResponse(render(request, self.template, context))
 
 
-class Profile(LoginRequiredMixin, UserPassesTestMixin, View):
-    login_url = '/auth/'
-    def get(self, request):
-        template = 'main/account/profile.html'
-        context = {
-
-        }
-        return HttpResponse(render(request, template, context))

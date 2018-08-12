@@ -1,4 +1,4 @@
-"""ehub URL Configuration
+"""APP\Account URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -18,11 +18,10 @@ from django.urls import path, include
 from .views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+app_name='account'
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', Home.as_view() , name='site-home'),
-    path('auth/', include('authentication.urls')),
-    path('account/', include('account.urls')),
+   
+    path('profile/', Profile.as_view(), name='account-profile'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

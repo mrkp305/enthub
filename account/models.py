@@ -8,7 +8,8 @@ class Profile(models.Model):
     phone = models.CharField("User phone number", blank=True, null=True, max_length=15)
     email_confirmed = models.BooleanField("Confirmation status", default=False)
     tags = models.ManyToManyField("utils.Tag", related_name='users', blank=True, verbose_name=_("User tags"))
-
+    bio = models.TextField();
+    
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
