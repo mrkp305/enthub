@@ -9,6 +9,7 @@ from .forms import Profile as ProfileForm
 from .forms import Avatar as AvatarForm
 import base64
 from django.core.files.base import ContentFile
+import os
 
 class Profile(LoginRequiredMixin, View):
     login_url = '/auth/'
@@ -32,6 +33,16 @@ class Profile(LoginRequiredMixin, View):
         if 'update_avatar' in request.POST:
             form = AvatarForm(request.POST)
             if form.is_valid():
+                '''
+                    Delete Old Image\If any.
+
+                '''
+                if request.user.profile.avatar is not None:
+                    try:
+                        os.remove(request.user.profile.avatar.path)
+                    except Exception e:
+                        
+
                 data = form.cleaned_data['base64image']
                 format, imgstr = data.split(';base64,') 
                 ext = format.split('/')[-1]

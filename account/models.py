@@ -1,13 +1,22 @@
 from django.db import models
 from django.utils.translation import ugettext_lazy as _
+from django.core.files.storage import FileSystemStorage
 import uuid
+import os
+from django.conf import settings
+
+class OverwriteStorage(FileSystemStorage):
+
+    def get_available_name(self, name, max_length=None):
+        if self.exists(name):
+            os.remove(os.path.join(settings.MEDIA_ROOT, name))
+        return name
 
 def user_directory_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
+    
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
-    folder_mask = str(uuid.uuid4())
-    return 'avatar/{}{}{}/{}'.format(folder_mask[:4],instance.user.id,folder_mask[-4:], filename)
+    return 'avatar/{}/{}'.format(instance.user.id, filename)
 
 class Profile(models.Model):
 
@@ -18,7 +27,7 @@ class Profile(models.Model):
     email_confirmed = models.BooleanField("Confirmation status", default=False)
     tags = models.ManyToManyField("utils.Tag", related_name='users', blank=True, verbose_name=_("User tags"))
     bio = models.TextField(blank=True, null=True)
-    avatar = models.ImageField(_("Profile Picture"),blank=True, null=True, upload_to=user_directory_path, height_field=None, width_field=None, max_length=None)
+    avatar = models.ImageField(_("Profile Picture"),storage=OverwriteStorage(),blank=True, null=True, upload_to=user_directory_path, height_field=None, width_field=None, max_length=None)
 
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
