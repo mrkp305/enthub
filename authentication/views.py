@@ -5,6 +5,7 @@ from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
+from django.contrib import messages
 import re
 from .forms import *
 from .models import *
@@ -36,20 +37,31 @@ class Auth(View):
                 else:
                     context = {
                         'LoginForm': form,
-                        'RegisterForm': SignIn(),
+                        'RegisterForm': SignUp(),
                         'ActiveTab': 'tabLogin',
                         'InActiveTab': 'tabRegister',
                         'ActiveLink': 'loginToggle',
-                        'InActiveLink': 'registernToggle',
+                        'InActiveLink': 'registerToggle',
                         'ShiftFocus': 1,
                     }
+                    messages.add_message(request, messages.ERROR, 'Login Failed! Invalid account credentials.')
                     return HttpResponse(render(request, self.template, context))
             else:
-                return HttpResponse('Invalid Form')
+                context = {
+                    'LoginForm':form,
+                    'RegisterForm': SignUp(),
+                    'ActiveTab': 'tabLogin',
+                    'InActiveTab': 'tabRegister',
+                    'ActiveLink': 'loginToggle',
+                    'InActiveLink': 'registerToggle',
+                    'ShiftFocus': 1,
+                }
+                messages.add_message(request, messages.WARNING, 'Invalid input.')
+                return HttpResponse(render(request, self.template, context))
         else:
             form = SignUp(request.POST)
             if form.is_valid():
-                account = User.objects.create_user(form.cleaned_data['email_address'], form.cleaned_data['password']);
+                account = User.objects.create_user(form.cleaned_data['email_address'], form.cleaned_data['password'])
                 firstname, lastname = form.cleaned_data['name'].split()
                 account.first_name = firstname
                 account.last_name = lastname
