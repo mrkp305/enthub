@@ -25,7 +25,7 @@ class City(models.Model):
         verbose_name_plural = 'Cities'
 
     def __str__(self):
-        return "{} - {}".format(self.name, self.country.iso_code2)
+        return "{} - {}".format(self.name, self.country)
 
 class Tag(models.Model):
     name = models.CharField("Tag name", max_length=30)
