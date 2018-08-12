@@ -40,8 +40,8 @@ class Profile(LoginRequiredMixin, View):
                 if request.user.profile.avatar is not None:
                     try:
                         os.remove(request.user.profile.avatar.path)
-                    except Exception e:
-                        
+                    except Exception as e:
+                        pass
 
                 data = form.cleaned_data['base64image']
                 format, imgstr = data.split(';base64,') 
