@@ -115,11 +115,19 @@
 				<div class="col-md-4">
 					<!-- Avatar -->
 					<div class="edit-profile-photo">
-						<img src="{% static 'images/agent-02.jpg' %}" alt="">
+							
+						<img src="{{ request.user.profile.avatar.url }}" alt="">
+						
 						<div class="change-photo-btn">
 							<div class="photoUpload">
 							    <span><i class="fa fa-upload"></i> Upload Photo</span>
-							    <input id='image-file-ctrl' type="file" class="upload" />
+								<input id='image-file-ctrl' type="file" class="upload" />
+								<form method="POST" action="" name='profile_picture'>
+									{% csrf_token %}
+									<input name="update_avatar" value="1" type="hidden" />
+									<input id='cropped-base64-picture' name="base64image" type="hidden" />
+								</form>
+							    
 							</div>
 						</div>
 					</div>
@@ -139,7 +147,7 @@
 							</div>
 							<div class="modal-footer">
 							<a class="button medium border" data-dismiss="modal">Close</a>
-							<a class="button medium"><i class="fa fa-save"></i> Save Changes</a>
+							<a id='save-cropped-profile-picture' class="button medium"><i class="fa fa-save"></i> Save Changes</a>
 							</div>
 						</div>
 						</div>
@@ -193,5 +201,15 @@
 			readFile(this);
 			
 		});
+
+		$("#save-cropped-profile-picture").on('click', function(ev){
+			$uploadCrop.croppie('result', {
+				type: 'canvas',
+				size: 'viewport'
+			}).then(function (resp) {
+				$("#cropped-base64-picture").val(resp);
+				$("[name='profile_picture']").submit();
+			});
+		})
   </script>
 {% endblock PAGE_JS %}

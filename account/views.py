@@ -3,10 +3,12 @@ from django.http import HttpResponse
 from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-# from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
-# Create your views here.
+from account.models import Profile as UserProfile
 from .forms import Profile as ProfileForm
+from .forms import Avatar as AvatarForm
+import base64
+from django.core.files.base import ContentFile
 
 class Profile(LoginRequiredMixin, View):
     login_url = '/auth/'
@@ -25,4 +27,21 @@ class Profile(LoginRequiredMixin, View):
             'ProfileForm':ProfileForm(initial=initial),
         }
         return HttpResponse(render(request, template, context))
+
+    def post(self, request):
+        if 'update_avatar' in request.POST:
+            form = AvatarForm(request.POST)
+            if form.is_valid():
+                data = form.cleaned_data['base64image']
+                format, imgstr = data.split(';base64,') 
+                ext = format.split('/')[-1]
+                data = ContentFile(base64.b64decode(imgstr), name='image.' + ext)
+                profile = UserProfile.objects.get(user=request.user)
+                profile.avatar = data
+                profile.save()
+                return redirect('/account/profile')
+            else:
+                return HttpResponse(form.errors['update_avatar'])
+        else:
+            pass
     
