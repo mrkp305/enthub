@@ -39,7 +39,7 @@ class Profile(forms.Form):
     handle = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=30, required=False)
     city = forms.CharField(widget=forms.Select(choices=city_list, attrs={'class':'chosen-select-no-single'}))
     phone = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=15, required=False)
-    tags = forms.CharField(widget=forms.SelectMultiple(choices=tags, attrs={'class':'chosen-select-no-single','placeholder':'Select tags'}), required=False)
+    tags = forms.CharField(widget=forms.SelectMultiple(choices=tags, attrs={'name':'tags[]','class':'chosen-select-no-single','placeholder':'Select tags'}), required=False)
     bio = forms.CharField(widget=forms.Textarea(attrs={'cols':'30','rows':'10'}), required=False)
     twitter = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
     facebook = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)

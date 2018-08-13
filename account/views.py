@@ -22,7 +22,7 @@ from django.contrib import messages
 from authentication.models import User
 from account.models import Profile as UserProfile
 from account.models import Social as SocialProfile
-from utils.models import City
+from utils.models import City, Tag
 '''
     End Models
 '''
@@ -106,10 +106,11 @@ class Profile(LoginRequiredMixin, View):
 
                 user = User.objects.get(pk=request.user.id)
                 profile = UserProfile.objects.get(user=user)
+                social_profile = SocialProfile.objects.get(profile=profile)
 
                 name = form.cleaned_data['name']
                 if "{} {}".format(request.user.first_name, request.user.last_name) != name:
-                    user.firs_name = name.split()[0]
+                    user.first_name = name.split()[0]
                     user.last_name = name.split()[1]
 
                 handle = form.cleaned_data['handle']
@@ -128,7 +129,14 @@ class Profile(LoginRequiredMixin, View):
                 if request.user.profile.bio != bio:
                     profile.bio = bio
 
-                tags = form.cleaned_data['tags']
+                tags = form['tags']
+                tag_list = []
+                if tags is not None:
+                    for tag in tags.value():
+                        t = Tag.objects.get(pk=str(tag))
+                        tag_list.append(t)
+                    profile.tags.set(tag_list)
+
 
                 city = form.cleaned_data['city']
                 if request.user.profile.city != city:
@@ -136,22 +144,23 @@ class Profile(LoginRequiredMixin, View):
 
                 twitter = form.cleaned_data['twitter']
                 if request.user.profile.social.twitter != twitter:
-                    profile.social.twitter = twitter
+                    social_profile.twitter = twitter
 
                 facebook = form.cleaned_data['facebook']
                 if request.user.profile.social.facebook != facebook:
-                    profile.social.facebook = facebook
+                    social_profile.facebook = facebook
 
                 instagram = form.cleaned_data['instagram']
                 if request.user.profile.social.instagram != instagram:
-                    profile.social.instagram = instagram
+                    social_profile.instagram = instagram
 
                 google = form.cleaned_data['google']
                 if request.user.profile.social.google != google:
-                    profile.social.google = google
+                    social_profile.google = google
 
                 user.save()
                 profile.save()
+                social_profile.save()
 
                 messages.add_message(request, messages.SUCCESS, 'Profile Info Updated Successfully')
                 
