@@ -20,8 +20,9 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings
 
+app_name = 'artists'
 urlpatterns = [
-    path('create-profile/', CreateProfile.as_view(), name='create-artist-profile'),
+    path('create-profile/', CreateProfile.as_view(), name='create-profile'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

@@ -1,6 +1,6 @@
 {% extends "layouts/default.html" %}
 {% load static %}
-{% block PAGE_TITLE %} My Profile &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_TITLE %} Create Artist Profile &mdash; Ehub {% endblock PAGE_TITLE %}
 {% block PAGE_CSS %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
   <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
@@ -13,13 +13,13 @@
 		<div class="row">
 			<div class="col-md-12">
 
-				<h2>My Profile</h2>
+				<h2>Create Artist Profile</h2>
 
 				<!-- Breadcrumbs -->
 				<nav id="breadcrumbs">
 					<ul>
 						<li><a href="#">Home</a></li>
-						<li>My Profile</li>
+						<li>Create Artist Profile</li>
 					</ul>
 				</nav>
 
@@ -41,20 +41,21 @@
 
 				<div class="my-account-nav-container">
 					
-					<ul class="my-account-nav">
-						<li class="sub-nav-title">Manage Account</li>
-						<li><a href="{% url 'account:account-profile' %}" class="current"><i class="sl sl-icon-user"></i> My Profile</a></li>
-						<li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
-					</ul>
-					
-					<ul class="my-account-nav">
-							<li class="sub-nav-title">Artist Profile</li>
-							{% if user.profile.artist %}
-								<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
-							{% else %}
-								<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
-							{% endif %}
-					</ul>
+                        <ul class="my-account-nav">
+                                <li class="sub-nav-title">Manage Account</li>
+                                <li><a href="{% url 'account:account-profile' %}" class="current"><i class="sl sl-icon-user"></i> My Profile</a></li>
+                                <li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
+                            </ul>
+                            
+                            <ul class="my-account-nav">
+                                <li class="sub-nav-title">Artist Profile</li>
+                                {% if user.profile.artist %}
+                                    <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
+                                {% endif %}
+                            </ul>
+        
 
 					<ul class="my-account-nav">
 						<li><a href="change-password.html"><i class="sl sl-icon-lock"></i> Change Password</a></li>
@@ -77,69 +78,43 @@
 						
 					</div>
 					{% endif %}
-					<h4 class="margin-top-0 margin-bottom-30">My Account</h4>
+					
 					{% if messages %}
 
 						{% for message in messages %}
 							<div class="notification {% if message.tags %} {{ message.tags }}{% endif %} closeable">
 								<p>
 									{{ message }}
-								<a class="close"></a>
+                                <a class="close"></a>
+                                </p>
 							</div>
 						{% endfor %}
 						
 					{% endif %}
 					<form method="POST" action="">
-						{% csrf_token %}
-						<label>Your Name</label>
-						{{ ProfileForm.name }}
-						<small style="color: #f44336;">{{ ProfileForm.name.errors|first }}</small>
+                        {% csrf_token %}
+						<label>Your stage name</label>
+						{{ form.stage_name }}
+						<small style="color: #f44336;">{{ form.stage_name.errors|first }}</small>
 
-						<label>Handle</label>
-						{{ ProfileForm.handle }}
-						<small style="color: #f44336;">{{ ProfileForm.handle.errors|first }}</small>
+						<label>Alias</label>
+						{{ form.alias }}
+						<small style="color: #f44336;">{{ form.alias.errors|first }}</small>
 
-						<label>Email</label>
-						{{ ProfileForm.email }}
-						<small style="color: #f44336;">{{ ProfileForm.email.errors|first }}</small>
-
-						<label>Phone</label>
-						{{ ProfileForm.phone }}
-						<small style="color: #f44336;">{{ ProfileForm.phone.errors|first }}</small>
-
-						<label>City</label>
-						{{ ProfileForm.city }}
-						<small style="color: #f44336;">{{ ProfileForm.city.errors|first }}</small>
+						<label>Genre</label>
+						{{ form.genre }}
+						<small style="color: #f44336;">{{ form.genre.errors|first }}</small>
 
 						<h4 class="margin-top-50 margin-bottom-25">About Me</h4>
-						{{ ProfileForm.bio }}
-						<small style="color: #f44336;">{{ ProfileForm.bio.errors|first }}</small>
-
-						<h4 class="margin-top-50 margin-bottom-25">Interests</h4>
-						{{ ProfileForm.tags }}
-						<small style="color: #f44336;">{{ ProfileForm.tags.errors|first }}</small>
-						
-
-						<h4 class="margin-top-50 margin-bottom-0">Social</h4>
-
-						<label><i class="fa fa-twitter"></i> Twitter</label>
-						{{ ProfileForm.twitter }}
-						<small style="color: #f44336;">{{ ProfileForm.twitter.errors|first }}</small>
-
-						<label><i class="fa fa-facebook-square"></i> Facebook</label>
-						{{ ProfileForm.facebook }}
-						<small style="color: #f44336;">{{ ProfileForm.facebook.errors|first }}</small>
-
-						<label><i class="fa fa-google-plus"></i> Google+</label>
-						{{ ProfileForm.google }}
-						<small style="color: #f44336;">{{ ProfileForm.google.errors|first }}</small>
-
-						<label><i class="fa fa-instagram"></i> Instagram</label>
-						{{ ProfileForm.instagram }}
-						<small style="color: #f44336;">{{ ProfileForm.instagram.errors|first }}</small>
+						{{ form.bio }}
+						<small style="color: #f44336;">{{ form.bio.errors|first }}</small>
+                        
+                        <label>DOB</label>
+						{{ form.dob }}
+                        <small style="color: #f44336;">{{ form.dob.errors|first }}</small>
 
 						<div class="clear-fix"></div>
-						<button type="submit" name="update_profile_defails" class="button margin-top-20 margin-bottom-20">Save Changes</button>
+						<button type="submit" name="create_artist_profile" class="button margin-top-20 margin-bottom-20">Create Profile</button>
 					</form>
 				</div>
 
