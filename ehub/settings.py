@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'authentication.apps.AuthenticationConfig',
     'account.apps.AccountConfig',
     'utils.apps.UtilsConfig',
+    'artists.apps.ArtistsConfig',
 ]
 
 MIDDLEWARE = [
