@@ -22,6 +22,7 @@ app_name='authentication'
 urlpatterns = [
    
     path('', Auth.as_view(), name='auth'),
+    path('logout/', Logout.as_view(), name='logout'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

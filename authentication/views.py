@@ -7,7 +7,7 @@ from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # from django.contrib.auth.models import User
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 '''
     End Django Imports
@@ -119,4 +119,7 @@ class Auth(View):
                 }
                 return HttpResponse(render(request, self.template, context))
 
-
+class Logout(LoginRequiredMixin, View):
+    def get(self, request):
+        logout(request)
+        return redirect('/')
