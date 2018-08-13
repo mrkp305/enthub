@@ -13,13 +13,11 @@ class OverwriteStorage(FileSystemStorage):
         return name
 
 def user_directory_path(instance, filename):
-    
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return 'avatar/{}/{}'.format(instance.user.id, filename)
 
 class Profile(models.Model):
-
     user = models.OneToOneField('authentication.User', verbose_name=_("Credentials"), on_delete=models.CASCADE)
     handle = models.CharField("Unique username", blank=True, unique=True, null=True, max_length=20)
     city = models.ForeignKey("utils.City", blank=True, null=True, on_delete=models.SET_NULL)
@@ -31,3 +29,14 @@ class Profile(models.Model):
 
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
+
+class Social(models.Model):
+    profile = models.OneToOneField("account.Profile", verbose_name=_("Person"), on_delete=models.CASCADE)
+    twitter = models.CharField(_("Twitter Profile"), blank=True, null=True, max_length=70)
+    facebook = models.CharField(_("Facebook Profile"), blank=True, null=True, max_length=70)
+    instagram = models.CharField(_("Instagram Profile"), blank=True, null=True, max_length=70)
+    google = models.CharField(_("Google Plus Profile"), blank=True, null=True, max_length=70)
+
+    class Meta:
+        verbose_name = 'Social'
+        verbose_name_plural = 'Social Media Links'
