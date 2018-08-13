@@ -120,6 +120,7 @@ class Profile(LoginRequiredMixin, View):
                 email = form.cleaned_data['email']
                 if request.user.email != email:
                     user.email = email
+                    profile.email_confirmed = False
 
                 phone = form.cleaned_data['phone']
                 if request.user.profile.phone != phone:

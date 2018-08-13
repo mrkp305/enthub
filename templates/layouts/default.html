@@ -267,7 +267,16 @@
 				<div class="header-widget">
 					<!-- User Menu -->
 					<div class="user-menu">
-						<div class="user-name"><span><img src="{% static 'images/agent-03.jpg' %}" alt=""></span>Hi, {{ request.user.get_short_name }}!</div>
+						<div class="user-name">
+							<span>
+								{% if user.profile.avatar is not None %}
+									<img src="{{ user.profile.avatar.url }}" alt="">
+								{% else %}
+									<img src="{% static 'images/no-avatar.png' %}" alt="">
+								{% endif %}
+								
+							</span>
+							Hi, {{ request.user.get_short_name }}!</div>
 						<ul>
 							<li><a href="{% url 'account:account-profile' %}"><i class="sl sl-icon-user"></i> My Profile</a></li>
 							<li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarks</a></li>

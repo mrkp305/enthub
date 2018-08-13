@@ -44,6 +44,7 @@
 					<ul class="my-account-nav">
 						<li class="sub-nav-title">Manage Account</li>
 						<li><a href="{% url 'account:account-profile' %}" class="current"><i class="sl sl-icon-user"></i> My Profile</a></li>
+						<li><a href="my-bookmarks.html"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
 						<li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
 					</ul>
 					
@@ -65,9 +66,15 @@
 
 		<div class="col-md-8">
 			<div class="row">
-
+				
 
 				<div class="col-md-8 my-profile">
+					{% if not user.profile.email_confirmed %}
+					<div class="notification notice">
+						<p><span>Notice!</span> Your account is not yet fully functional. Check your mailbox to verify your registration.</p>
+						
+					</div>
+					{% endif %}
 					<h4 class="margin-top-0 margin-bottom-30">My Account</h4>
 					{% if messages %}
 
