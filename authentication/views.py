@@ -1,3 +1,6 @@
+'''
+    Django Imports
+'''
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
@@ -6,12 +9,40 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
+'''
+    End Django Imports
+'''
+
+
+'''
+    Python Imports
+'''
 import re
+'''
+    End Python Imports
+'''
+
+
+'''
+    Form Imports
+'''
 from .forms import *
+'''
+    End Form Imports
+'''
+
+
+'''
+    Model Imports
+'''
 from .models import *
 from account.models import *
 
-# Create your views here.
+'''
+    End Model Imports
+'''
+
+
 class Auth(View):
     template = 'main/auth.html'
     def get(self, request):
@@ -69,6 +100,9 @@ class Auth(View):
 
                 profile = Profile.objects.create(user=account)
                 profile.save()
+
+                social_profile = Social.objects.create(profile=profile)
+                social_profile.save()
                 # profile = account.
                 user = authenticate(email=form.cleaned_data['email_address'], password=form.cleaned_data['password'])
                 login(request, user)

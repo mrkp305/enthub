@@ -30,6 +30,12 @@ class Profile(models.Model):
     def __str__(self):
         return "{} {}".format(self.user.first_name, self.user.last_name)
 
+    class Meta:
+        verbose_name = 'Profile'
+        verbose_name_plural = 'User Profiles'
+
+
+
 class Social(models.Model):
     profile = models.OneToOneField("account.Profile", verbose_name=_("Person"), on_delete=models.CASCADE)
     twitter = models.CharField(_("Twitter Profile"), blank=True, null=True, max_length=70)
@@ -37,6 +43,9 @@ class Social(models.Model):
     instagram = models.CharField(_("Instagram Profile"), blank=True, null=True, max_length=70)
     google = models.CharField(_("Google Plus Profile"), blank=True, null=True, max_length=70)
 
+    def __str__(self):
+        return "Social Media Links for {}".format(self.profile.user)
+    
     class Meta:
         verbose_name = 'Social'
         verbose_name_plural = 'Social Media Links'

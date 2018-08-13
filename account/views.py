@@ -1,31 +1,77 @@
+'''
+    Django Imports
+'''
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth import authenticate, login
+from django.core.files.base import ContentFile
+from django.contrib import messages
+
+'''
+    End Django Imports
+'''
+
+
+'''
+    Models
+'''
+
 from account.models import Profile as UserProfile
+from account.models import Social as SocialProfile
+
+'''
+    End Models
+'''
+
+
+'''
+    Forms
+
+'''
+
 from .forms import Profile as ProfileForm
 from .forms import Avatar as AvatarForm
+
+'''
+    End Forms
+'''
+
+
+'''
+    Python Imports
+'''
+
 import base64
-from django.core.files.base import ContentFile
 import os
+
+'''
+    End Python Imports
+'''
+
 
 class Profile(LoginRequiredMixin, View):
     login_url = '/auth/'
     def get(self, request):
         template = 'main/account/profile.html'
-        initial = {
+        ProfileInitial = {
             'name':request.user,
             'handle':request.user.profile.handle,
             'email':request.user.email,
             'phone':request.user.profile.phone,
             'bio':request.user.profile.bio,
             'tags':[tag.pk for tag in request.user.profile.tags.all()],
-            'city':[request.user.profile.city.id, request.user.profile.city.name] if request.user.profile.city is not None else None
+            'city':[request.user.profile.city.id, request.user.profile.city.name] if request.user.profile.city is not None else None,
+            'twitter':request.user.profile.social.twitter if request.user.profile.social is not None else None,
+            'facebook':request.user.profile.social.facebook if request.user.profile.social is not None else None,
+            'instagram':request.user.profile.social.instagram if request.user.profile.social is not None else None,
+            'google':request.user.profile.social.google if request.user.profile.social is not None else None,
         }
         context = {
-            'ProfileForm':ProfileForm(initial=initial),
+            'ProfileForm':ProfileForm(initial=ProfileInitial),
         }
         return HttpResponse(render(request, template, context))
 
@@ -53,6 +99,35 @@ class Profile(LoginRequiredMixin, View):
                 return redirect('/account/profile')
             else:
                 return HttpResponse(form.errors['update_avatar'])
+        elif 'update_profile_defails' in request.POST:
+            form = ProfileForm(request.POST)
+            if form.is_valid():
+                template = 'main/account/profile.html'
+                messages.add_message(request, messages.SUCCESS, 'Profile Info Updated Successfully')
+                ProfileInitial = {
+                    'name':request.user,
+                    'handle':request.user.profile.handle,
+                    'email':request.user.email,
+                    'phone':request.user.profile.phone,
+                    'bio':request.user.profile.bio,
+                    'tags':[tag.pk for tag in request.user.profile.tags.all()],
+                    'city':[request.user.profile.city.id, request.user.profile.city.name] if request.user.profile.city is not None else None,
+                    'twitter':request.user.profile.social.twitter if request.user.profile.social is not None else None,
+                    'facebook':request.user.profile.social.facebook if request.user.profile.social is not None else None,
+                    'instagram':request.user.profile.social.instagram if request.user.profile.social is not None else None,
+                    'google':request.user.profile.social.google if request.user.profile.social is not None else None,
+                }
+                context = {
+                    'ProfileForm':ProfileForm(initial=ProfileInitial)
+                }
+                return HttpResponse(render(request, template, context))
+            else:
+                template = 'main/account/profile.html'
+                messages.error(request, 'There was something wrong with your input. Please check again.')
+                context = {
+                    'ProfileForm':form,
+                }
+                return HttpResponse(render(request, template, context))
         else:
             pass
     

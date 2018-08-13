@@ -69,46 +69,68 @@
 
 				<div class="col-md-8 my-profile">
 					<h4 class="margin-top-0 margin-bottom-30">My Account</h4>
+					{% if messages %}
+
+						{% for message in messages %}
+							<div class="notification {% if message.tags %} {{ message.tags }}{% endif %} closeable">
+								<p>
+									{{ message }}
+								<a class="close"></a>
+							</div>
+						{% endfor %}
+						
+					{% endif %}
 					<form method="POST" action="">
 						{% csrf_token %}
 						<label>Your Name</label>
 						{{ ProfileForm.name }}
+						<small style="color: #f44336;">{{ ProfileForm.name.errors|first }}</small>
 
 						<label>Handle</label>
 						{{ ProfileForm.handle }}
+						<small style="color: #f44336;">{{ ProfileForm.handle.errors|first }}</small>
 
 						<label>Email</label>
 						{{ ProfileForm.email }}
+						<small style="color: #f44336;">{{ ProfileForm.email.errors|first }}</small>
 
 						<label>Phone</label>
 						{{ ProfileForm.phone }}
+						<small style="color: #f44336;">{{ ProfileForm.phone.errors|first }}</small>
 
 						<label>City</label>
 						{{ ProfileForm.city }}
+						<small style="color: #f44336;">{{ ProfileForm.city.errors|first }}</small>
 
 						<h4 class="margin-top-50 margin-bottom-25">About Me</h4>
 						{{ ProfileForm.bio }}
+						<small style="color: #f44336;">{{ ProfileForm.bio.errors|first }}</small>
 
 						<h4 class="margin-top-50 margin-bottom-25">Interests</h4>
 						{{ ProfileForm.tags }}
+						<small style="color: #f44336;">{{ ProfileForm.tags.errors|first }}</small>
 						
 
 						<h4 class="margin-top-50 margin-bottom-0">Social</h4>
 
 						<label><i class="fa fa-twitter"></i> Twitter</label>
-						<input value="https://www.twitter.com/" type="text">
+						{{ ProfileForm.twitter }}
+						<small style="color: #f44336;">{{ ProfileForm.twitter.errors|first }}</small>
 
 						<label><i class="fa fa-facebook-square"></i> Facebook</label>
-						<input value="https://www.facebook.com/" type="text">
+						{{ ProfileForm.facebook }}
+						<small style="color: #f44336;">{{ ProfileForm.facebook.errors|first }}</small>
 
 						<label><i class="fa fa-google-plus"></i> Google+</label>
-						<input value="https://www.google.com/" type="text">
+						{{ ProfileForm.google }}
+						<small style="color: #f44336;">{{ ProfileForm.google.errors|first }}</small>
 
-						<label><i class="fa fa-linkedin"></i> Linkedin</label>
-						<input value="https://www.linkedin.com/" type="text">
+						<label><i class="fa fa-instagram"></i> Instagram</label>
+						{{ ProfileForm.instagram }}
+						<small style="color: #f44336;">{{ ProfileForm.instagram.errors|first }}</small>
 
-
-						<button class="button margin-top-20 margin-bottom-20">Save Changes</button>
+						<div class="clear-fix"></div>
+						<button name="update_profile_defails" class="button margin-top-20 margin-bottom-20">Save Changes</button>
 					</form>
 				</div>
 

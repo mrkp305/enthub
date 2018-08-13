@@ -1,7 +1,29 @@
 from django import forms
+'''
+    Model Imports
+'''
+
 from utils.models import City, Tag
-import base64
+from authentication.models import User
+
+'''
+    End Model Imports
+'''
+
 from django.core.validators import URLValidator
+
+'''
+    Python Imports
+'''
+
+import re
+import base64
+    
+'''
+    End Python Imports
+'''
+
+
 city_list = []
 for c in City.objects.all():
     city_list.append([c.id,c])
@@ -13,12 +35,86 @@ for t in Tag.objects.all():
 
 class Profile(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=30, required=True)
-    email = forms.EmailField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
-    handle = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=30, required=True)
+    email = forms.EmailField(widget=forms.TextInput(attrs={'class':'input-text'}), required=True)
+    handle = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=30, required=False)
     city = forms.CharField(widget=forms.Select(choices=city_list, attrs={'class':'chosen-select-no-single'}))
     phone = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=15, required=False)
     tags = forms.CharField(widget=forms.SelectMultiple(choices=tags, attrs={'class':'chosen-select-no-single','placeholder':'Select tags'}))
     bio = forms.CharField(widget=forms.Textarea(attrs={'cols':'30','rows':'10'}), required=False)
+    twitter = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
+    facebook = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
+    instagram = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
+    google = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
+    
+    
+    def clean(self):
+        cleaned_data = super(Profile, self).clean()
+
+        name = cleaned_data.get('name')
+        email = cleaned_data.get('email')
+        handle = cleaned_data.get('handle')
+        # city = cleaned_data.get('city')
+        phone = cleaned_data.get('phone')
+        tags = cleaned_data.get('tags')
+        bio = cleaned_data.get('bio')
+        twitter = cleaned_data.get('twitter')
+        facebook = cleaned_data.get('facebook')
+        instagram = cleaned_data.get('instagram')
+        google = cleaned_data.get('google')
+
+        if name:
+            if not len(name.split()) > 1:
+                self.add_error('name', 'Please enter full name.')
+            elif len(name.split()) > 2:
+                self.add_error('name', 'Please enter only first and last names.')
+            else:
+                regex = re.compile(r'^[a-zA-Z]{2,}[\s][a-zA-Z]{2,}$', re.U)
+                if not regex.match(name):
+                    self.add_error('name', 'Please enter a valid name.')
+
+        if handle:
+            if not len(handle) < 5:
+                self.add_error('handle', 'Your handle should be at least 5 characters.')
+            elif len(handle) > 15:
+                self.add_error('handle', 'Your handle should be at most 15 characters.')
+            else:
+                regex = re.compile(r'^[a-zA-Z0-9]', re.U)
+                if not regex.match(handle):
+                    self.add_error('handle', 'Your handle should only contain letters and numbers.')
+
+        if phone:
+            regex = re.compile(r'^\+?1?\d{9,15}$')
+            if not regex.match(phone):
+                self.add_error('phone', 'Please enter a valid phone number.')
+
+        if twitter:
+            try:
+                validate = URLValidator(schemes=('http', 'https'))
+                validate(twitter)
+            except Exception as e:
+                self.add_error('twitter',"Invalid URL")
+        
+        if facebook:
+            try:
+                validate = URLValidator(schemes=('http', 'https'))
+                validate(facebook)
+            except Exception as e:
+                self.add_error('facebook', 'Invalid URL')
+        
+        if instagram:
+            try:
+                validate = URLValidator(schemes=('http', 'https'))
+                validate(instagram)
+            except Exception as e:
+                self.add_error('instagram', 'Invalid URL')
+        
+        if google:
+            try:
+                validate = URLValidator(schemes=('http', 'https'))
+                validate(google)
+            except Exception as e:
+                self.add_error('google', 'Invalid URL')
+
 
 class Avatar(forms.Form):
     update_avatar = forms.CharField(widget=forms.HiddenInput(), required=True)
@@ -30,47 +126,5 @@ class Avatar(forms.Form):
         
         if update_avatar != '1':
             self.add_error('update_avatar', 'Action Unauthorized')
-        
-class Social(forms.Form):
-    twitter = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
-    facebook = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
-    instagram = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
-    google = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
-
-    def clean(self):
-        cleaned_data = super(Social, self).clean()
-        twitter = cleaned_data.get('twitter')
-        facebook = cleaned_data.get('facebook')
-        instagram = cleaned_data.get('instagram')
-        google = cleaned_data.get('google')
-
-        if twitter:
-            try:
-                validate = URLValidator(schemes=('http', 'https'))
-                validate(twitter)
-            except (ValueError, ValidationError):
-                self.add_error('twitter', 'Invalid twitter URL')
-        
-        
-        if facebook:
-            try:
-                validate = URLValidator(schemes=('http', 'https'))
-                validate(facebook)
-            except (ValueError, ValidationError):
-                self.add_error('facebook', 'Invalid twitter URL')
-        
-        if instagram:
-            try:
-                validate = URLValidator(schemes=('http', 'https'))
-                validate(instagram)
-            except (ValueError, ValidationError):
-                self.add_error('instagram', 'Invalid twitter URL')
-        
-        if google:
-            try:
-                validate = URLValidator(schemes=('http', 'https'))
-                validate(google)
-            except (ValueError, ValidationError):
-                self.add_error('google', 'Invalid twitter URL')
         
 
