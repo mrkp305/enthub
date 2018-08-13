@@ -19,10 +19,10 @@ from django.contrib import messages
 '''
     Models
 '''
-
+from authentication.models import User
 from account.models import Profile as UserProfile
 from account.models import Social as SocialProfile
-
+from utils.models import City
 '''
     End Models
 '''
@@ -80,7 +80,7 @@ class Profile(LoginRequiredMixin, View):
             form = AvatarForm(request.POST)
             if form.is_valid():
                 '''
-                    Delete Old Image\If any.
+                    Delete Old Image **if any.
 
                 '''
                 if request.user.profile.avatar is not None:
@@ -103,24 +103,59 @@ class Profile(LoginRequiredMixin, View):
             form = ProfileForm(request.POST)
             if form.is_valid():
                 template = 'main/account/profile.html'
+
+                user = User.objects.get(pk=request.user.id)
+                profile = UserProfile.objects.get(user=user)
+
+                name = form.cleaned_data['name']
+                if "{} {}".format(request.user.first_name, request.user.last_name) != name:
+                    user.firs_name = name.split()[0]
+                    user.last_name = name.split()[1]
+
+                handle = form.cleaned_data['handle']
+                if request.user.profile.handle != handle:
+                    profile.handle = handle
+
+                email = form.cleaned_data['email']
+                if request.user.email != email:
+                    user.email = email
+
+                phone = form.cleaned_data['phone']
+                if request.user.profile.phone != phone:
+                    profile.phone = phone
+
+                bio = form.cleaned_data['bio']
+                if request.user.profile.bio != bio:
+                    profile.bio = bio
+
+                tags = form.cleaned_data['tags']
+
+                city = form.cleaned_data['city']
+                if request.user.profile.city != city:
+                    profile.city = City.objects.get(id=city)
+
+                twitter = form.cleaned_data['twitter']
+                if request.user.profile.social.twitter != twitter:
+                    profile.social.twitter = twitter
+
+                facebook = form.cleaned_data['facebook']
+                if request.user.profile.social.facebook != facebook:
+                    profile.social.facebook = facebook
+
+                instagram = form.cleaned_data['instagram']
+                if request.user.profile.social.instagram != instagram:
+                    profile.social.instagram = instagram
+
+                google = form.cleaned_data['google']
+                if request.user.profile.social.google != google:
+                    profile.social.google = google
+
+                user.save()
+                profile.save()
+
                 messages.add_message(request, messages.SUCCESS, 'Profile Info Updated Successfully')
-                ProfileInitial = {
-                    'name':request.user,
-                    'handle':request.user.profile.handle,
-                    'email':request.user.email,
-                    'phone':request.user.profile.phone,
-                    'bio':request.user.profile.bio,
-                    'tags':[tag.pk for tag in request.user.profile.tags.all()],
-                    'city':[request.user.profile.city.id, request.user.profile.city.name] if request.user.profile.city is not None else None,
-                    'twitter':request.user.profile.social.twitter if request.user.profile.social is not None else None,
-                    'facebook':request.user.profile.social.facebook if request.user.profile.social is not None else None,
-                    'instagram':request.user.profile.social.instagram if request.user.profile.social is not None else None,
-                    'google':request.user.profile.social.google if request.user.profile.social is not None else None,
-                }
-                context = {
-                    'ProfileForm':ProfileForm(initial=ProfileInitial)
-                }
-                return HttpResponse(render(request, template, context))
+                
+                return redirect('/account/profile')
             else:
                 template = 'main/account/profile.html'
                 messages.error(request, 'There was something wrong with your input. Please check again.')

@@ -39,7 +39,7 @@ class Profile(forms.Form):
     handle = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=30, required=False)
     city = forms.CharField(widget=forms.Select(choices=city_list, attrs={'class':'chosen-select-no-single'}))
     phone = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=15, required=False)
-    tags = forms.CharField(widget=forms.SelectMultiple(choices=tags, attrs={'class':'chosen-select-no-single','placeholder':'Select tags'}))
+    tags = forms.CharField(widget=forms.SelectMultiple(choices=tags, attrs={'class':'chosen-select-no-single','placeholder':'Select tags'}), required=False)
     bio = forms.CharField(widget=forms.Textarea(attrs={'cols':'30','rows':'10'}), required=False)
     twitter = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
     facebook = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
@@ -51,12 +51,10 @@ class Profile(forms.Form):
         cleaned_data = super(Profile, self).clean()
 
         name = cleaned_data.get('name')
-        email = cleaned_data.get('email')
         handle = cleaned_data.get('handle')
-        # city = cleaned_data.get('city')
+        city = cleaned_data.get('city')
         phone = cleaned_data.get('phone')
         tags = cleaned_data.get('tags')
-        bio = cleaned_data.get('bio')
         twitter = cleaned_data.get('twitter')
         facebook = cleaned_data.get('facebook')
         instagram = cleaned_data.get('instagram')
@@ -73,12 +71,12 @@ class Profile(forms.Form):
                     self.add_error('name', 'Please enter a valid name.')
 
         if handle:
-            if not len(handle) < 5:
+            if len(handle) < 5:
                 self.add_error('handle', 'Your handle should be at least 5 characters.')
             elif len(handle) > 15:
                 self.add_error('handle', 'Your handle should be at most 15 characters.')
             else:
-                regex = re.compile(r'^[a-zA-Z0-9]', re.U)
+                regex = re.compile(r'[a-zA-Z0-9]+$', re.U)
                 if not regex.match(handle):
                     self.add_error('handle', 'Your handle should only contain letters and numbers.')
 
@@ -86,6 +84,15 @@ class Profile(forms.Form):
             regex = re.compile(r'^\+?1?\d{9,15}$')
             if not regex.match(phone):
                 self.add_error('phone', 'Please enter a valid phone number.')
+
+        if tags:
+            pass
+
+        if city:
+            try:
+                c = City.objects.get(pk=city)
+            except Exception as e:
+                self.add_error('city', 'City not found')
 
         if twitter:
             try:
