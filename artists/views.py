@@ -20,6 +20,7 @@ from django.contrib import messages
 '''
 
 from .forms import Profile as ArtistProfileForm
+from .forms import Contact as ArtistContactsForm
 
 '''
     End form imports
@@ -28,6 +29,7 @@ from .forms import Profile as ArtistProfileForm
 '''Model Imports
 '''
 from .models import Artist as Profile
+from .models import Contact
 from utils.models import *
 
 class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
@@ -72,3 +74,55 @@ class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
                 return HttpResponse(render(request, template,context))
         else:
             pass
+
+
+class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = '/auth'
+    def test_func(self):
+        return self.request.user.profile.artist
+
+    def get(self, request):
+        template = 'main/artists/my-profile.html'
+        context = {
+            
+        }
+        return HttpResponse(render(request, template,context))
+
+class Contacts(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = '/auth'
+    def test_func(self):
+        return self.request.user.profile.artist
+
+    def get(self, request):
+        template = 'main/artists/my-contacts.html'
+        context = {
+            'ContactForm':ArtistContactsForm()
+        }
+        return HttpResponse(render(request, template,context))
+
+    def post(self, request):
+        if 'person' and 'purpose' and 'phone' and 'email' in request.POST:
+            form = ArtistContactsForm(request.POST)
+            if form.is_valid():
+                messages.success(request, 'Contact saved successfully.')
+                con = Contact.objects.create(
+                    artist=request.user.profile.artist,
+                    person=form.cleaned_data.get('person'),
+                    purpose=form.cleaned_data.get('purpose'),
+                    phone=form.cleaned_data.get('phone'),
+                    email=form.cleaned_data.get('email'),
+                    )
+                con.save()
+                template = 'main/artists/my-contacts.html'
+                context = {
+                    
+                    'ContactForm':ArtistContactsForm(),
+                }
+                return HttpResponse(render(request, template,context))
+            else:
+                messages.error(request, 'Invalid input. Check and try again.')
+                template = 'main/artists/my-contacts.html'
+                context = {
+                    'ContactForm':form,
+                }
+                return HttpResponse(render(request, template,context))

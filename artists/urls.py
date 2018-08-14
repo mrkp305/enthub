@@ -23,6 +23,8 @@ from django.conf import settings
 app_name = 'artists'
 urlpatterns = [
     path('create-profile/', CreateProfile.as_view(), name='create-profile'),
+    path('me/', MyProfile.as_view(), name='view-my-profile'),
+    path('me/contacts', Contacts.as_view(), name='my-contacts'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

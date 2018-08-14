@@ -50,7 +50,8 @@
 					<ul class="my-account-nav">
 							<li class="sub-nav-title">Artist Profile</li>
 							{% if user.profile.artist %}
-								<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+								<li><a href="{% url 'artists:view-my-profile' %}" ><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+								<li><a href="{% url 'artists:my-contacts' %}" ><i class="sl sl-icon-call-in"></i> Contacts</a></li>
 							{% else %}
 								<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
 							{% endif %}

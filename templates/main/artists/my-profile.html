@@ -1,0 +1,154 @@
+{% extends "layouts/default.html" %}
+{% load static %}
+{% block PAGE_TITLE %} {{ request.user.profile.artist }} | Profile &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_CSS %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
+  <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
+{% endblock PAGE_CSS %}
+{% block PAGE_CONTENT %}
+    <!-- Titlebar
+================================================== -->
+<div id="titlebar">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<h2>My Profile</h2>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">Profiles</a></li>
+						<li>Artist</li>
+					</ul>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Content
+================================================== -->
+<div class="container">
+	<div class="row">
+
+
+		<!-- Widget -->
+		<div class="col-md-4">
+			<div class="sidebar left">
+
+				<div class="my-account-nav-container">
+					
+                        <ul class="my-account-nav">
+                                <li class="sub-nav-title">Manage Account</li>
+                                <li><a href="{% url 'account:account-profile' %}" ><i class="sl sl-icon-user"></i> My Profile</a></li>
+                                <li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
+                            </ul>
+                            
+                            <ul class="my-account-nav">
+                                <li class="sub-nav-title">Artist Profile</li>
+                                {% if user.profile.artist %}
+                                    <li><a href="{% url 'artists:view-my-profile' %}" class="current"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+                                    <li><a href="{% url 'artists:my-contacts' %}" ><i class="sl sl-icon-call-in"></i> Contacts</a></li>
+                                {% else %}
+                                    <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
+                                {% endif %}
+                            </ul>
+        
+
+					<ul class="my-account-nav">
+						<li><a href="change-password.html"><i class="sl sl-icon-lock"></i> Change Password</a></li>
+						<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
+					</ul>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="col-md-8">
+			<div class="row">
+				
+
+				<div class="col-md-12 my-profile">
+					{% if not user.profile.email_confirmed %}
+					<div class="notification notice">
+						<p><span>Notice!</span> Your account is not yet fully functional. Check your mailbox to verify your registration.</p>
+						
+					</div>
+					{% endif %}
+					
+					{% if messages %}
+
+						{% for message in messages %}
+							<div class="notification {% if message.tags %} {{ message.tags }}{% endif %} closeable">
+								<p>
+									{{ message }}
+                                <a class="close"></a>
+                                </p>
+							</div>
+						{% endfor %}
+						
+					{% endif %}
+					<div class="row">
+						<div class="col-md-4 my-profile">
+							<div class="edit-profile-photo">
+								{% if request.user.profile.avatar %}
+									<img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user }}">
+								{% else %}
+									<img src="{% static 'images/no-avatar.png' %}" alt="{{ request.user }}">
+								{% endif %}
+							</div>
+						</div>
+						<div class="col-md-8 my-profile">
+							<table class="basic-table">
+								<tbody>
+									<tr>
+										<th style="padding-top: 10px;padding-bottom: 10px;background-color:#f44336;" colspan="2" >Artist Details</th>
+										
+									</tr>
+					
+									<tr>
+										<td>Name</td>
+										<td><b>{{ request.user.profile.artist}}</b></td>
+									</tr>
+					
+									<tr>
+										<td>Alias</td>
+										<td><b>{% if request.user.profile.artist.alias is not None %} {{ request.user.profile.artist.alias }} {% else %} Not Set {%endif%}</b></td>
+									</tr>
+					
+									<tr>
+										<td>Genre</td>
+										<td><b><a href="#">{{ request.user.profile.artist.genre }}</a></b></td>
+									</tr>
+					
+									<tr>
+										<td>Bio</td>
+										<td><b>{{ request.user.profile.artist.bio }}</b></td>
+									</tr>
+									<tr>
+										<td colspan="2" align="right">
+											<a style="padding: 3px 10px;" class="button medium border" href="#">Edit Info</a>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+{% endblock PAGE_CONTENT %}
+
+{% block PAGE_JS %}
+  
+  <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
+ 
+{% endblock PAGE_JS %}

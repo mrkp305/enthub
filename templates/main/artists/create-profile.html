@@ -43,18 +43,19 @@
 					
                         <ul class="my-account-nav">
                                 <li class="sub-nav-title">Manage Account</li>
-                                <li><a href="{% url 'account:account-profile' %}" class="current"><i class="sl sl-icon-user"></i> My Profile</a></li>
+                                <li><a href="{% url 'account:account-profile' %}"><i class="sl sl-icon-user"></i> My Profile</a></li>
                                 <li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
                             </ul>
                             
                             <ul class="my-account-nav">
-                                <li class="sub-nav-title">Artist Profile</li>
-                                {% if user.profile.artist %}
-                                    <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
-                                {% else %}
-                                    <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
-                                {% endif %}
-                            </ul>
+                                    <li class="sub-nav-title">Artist Profile</li>
+                                    {% if user.profile.artist %}
+                                        <li><a href="{% url 'artists:view-my-profile' %}" class="current"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+                                        <li><a href="{% url 'artists:my-contacts' %}" ><i class="sl sl-icon-call-in"></i> Contacts</a></li>
+                                    {% else %}
+                                        <li><a href="{% url 'artists:create-profile' %}" class="currrent"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
+                                    {% endif %}
+                                </ul>
         
 
 					<ul class="my-account-nav">
@@ -117,54 +118,6 @@
 						<button type="submit" name="create_artist_profile" class="button margin-top-20 margin-bottom-20">Create Profile</button>
 					</form>
 				</div>
-
-				<div class="col-md-4">
-					<!-- Avatar -->
-					<div class="edit-profile-photo">
-						{% if request.user.profile.avatar %}
-							<img src="{{ request.user.profile.avatar.url }}" alt="{{ request.user }}">
-						{% else %}
-							<img src="{% static 'images/no-avatar.png' %}" alt="{{ request.user }}">
-						{% endif %}
-						
-						
-						<div class="change-photo-btn">
-							<div class="photoUpload">
-							    <span><i class="fa fa-upload"></i> Upload Photo</span>
-								<input id='image-file-ctrl' type="file" class="upload" />
-								<form method="POST" action="" name='profile_picture'>
-									{% csrf_token %}
-									<input name="update_avatar" value="1" type="hidden" />
-									<input id='cropped-base64-picture' name="base64image" type="hidden" />
-								</form>
-							    
-							</div>
-						</div>
-					</div>
-				
-					<!-- Picture Modal -->
-					<div class="modal fade" id="profilePictureModal" tabindex="-1" role="dialog" aria-labelledby="profilePictureModalTitle" aria-hidden="true">
-						<div class="modal-dialog " role="document">
-						<div class="modal-content">
-							<div class="modal-header">
-							<h5 class="modal-title" id="profilePictureModalTitle">Edit Profile Picture</h5>
-							<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">&times;</span>
-							</button> -->
-							</div>
-							<div class="modal-body">
-								<div id="upload-picture-area"></div>
-							</div>
-							<div class="modal-footer">
-							<a class="button medium border" data-dismiss="modal">Close</a>
-							<a id='save-cropped-profile-picture' class="button medium"><i class="fa fa-save"></i> Save Changes</a>
-							</div>
-						</div>
-						</div>
-					</div>
-				</div>
-
-
 			</div>
 		</div>
 

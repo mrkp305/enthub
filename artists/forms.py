@@ -10,6 +10,7 @@ from django import forms
     Other Model Imports
 '''
 from utils.models import *
+from django.utils.translation import ugettext_lazy as _
 '''
     End Other Model Imports
 '''
@@ -65,7 +66,6 @@ class Profile(forms.Form):
             except Exception as e:
                 self.add_error('genre', 'Genre selected does not exist.')
 
-
         if alias:
             if len(alias) < 2:
                 self.add_error('alias', 'Alias should be at least 2 characters.')
@@ -79,4 +79,43 @@ class Profile(forms.Form):
         if dob:
             pass
 
-    
+class Contact(forms.Form):
+    person = forms.CharField(label="Contact Person", max_length=50, required=True)
+    purpose = forms.CharField(label="Contact Type/Purpose (e.g Bookings)",required=True, max_length=50)
+    phone = forms.CharField(label="Contact Person's Phone", max_length=15, required=True)
+    email = forms.EmailField(label="Contact Person's Email Address", required=True)
+
+    def clean(self):
+        cleaned_data = super(Contact, self).clean()
+        person = cleaned_data.get('person')
+        purpose = cleaned_data.get('purpose')
+        phone = cleaned_data.get('phone')
+        email = cleaned_data.get('email')
+
+        if person:
+            if len(person) < 3:
+                self.add_error('person', 'Name too short. Try again.')
+            elif len(person) > 20:
+                self.add_error('person', 'Name too long. Let`s keep it short ;)')
+            else:
+                regex = re.compile(r'^[a-zA-Z\s]+$', re.U)
+                if not regex.match(person):
+                    self.add_error('person', 'Please enter a valid name.')
+        
+        if purpose:
+            if len(purpose) < 3:
+                self.add_error('purpose', 'Purpose too long. Let`s keep it short ;)')
+            elif len(purpose) > 20:
+                self.add_error('purpose', 'Purpose too long. Let`s keep it short ;)')
+            else:
+                regex = re.compile(r'^[a-zA-Z\s]+$', re.U)
+                if not regex.match(purpose):
+                    self.add_error('purpose', 'Please enter a valid purpose as illustrated.')
+
+        if phone:
+            regex = re.compile(r'^\+?1?\d{9,15}$')
+            if not regex.match(phone):
+                self.add_error('phone', 'Please enter a valid phone number, with country code.')
+        
+        if email:
+            pass

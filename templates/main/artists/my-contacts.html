@@ -1,0 +1,180 @@
+{% extends "layouts/default.html" %}
+{% load static %}
+{% block PAGE_TITLE %} {{ request.user.profile.artist }} &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_CSS %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
+  <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
+{% endblock PAGE_CSS %}
+{% block PAGE_CONTENT %}
+    <!-- Titlebar
+================================================== -->
+<div id="titlebar">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<h2>My Contact Information</h2>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs">
+					<ul>
+						<li><a href="#">Home</a></li>
+						<li><a href="#">Profiles</a></li>
+						<li>Contact Information</li>
+					</ul>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Content
+================================================== -->
+<div class="container">
+	<div class="row">
+
+
+		<!-- Widget -->
+		<div class="col-md-4">
+			<div class="sidebar left">
+
+				<div class="my-account-nav-container">
+					
+                        <ul class="my-account-nav">
+                                <li class="sub-nav-title">Manage Account</li>
+                                <li><a href="{% url 'account:account-profile' %}" ><i class="sl sl-icon-user"></i> My Profile</a></li>
+                                <li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
+                            </ul>
+                            
+                            <ul class="my-account-nav">
+									<li class="sub-nav-title">Artist Profile</li>
+									{% if user.profile.artist %}
+										<li><a href="{% url 'artists:view-my-profile' %}" ><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+										<li><a href="{% url 'artists:my-contacts' %}" class="current"><i class="sl sl-icon-call-in"></i> Contacts</a></li>
+									{% else %}
+										<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
+									{% endif %}
+							</ul>
+        
+
+					<ul class="my-account-nav">
+						<li><a href="change-password.html"><i class="sl sl-icon-lock"></i> Change Password</a></li>
+						<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
+					</ul>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="col-md-8">
+				{% if messages %}
+
+					{% for message in messages %}
+						<div class="notification {% if message.tags %} {{ message.tags }}{% endif %} closeable">
+							<p>
+								{{ message }}
+							<a class="close"></a>
+						</div>
+					{% endfor %}
+						
+				{% endif %}
+				<table class="manage-table responsive-table">
+						<tr>
+							<th><i class="fa fa-user"></i> Contact Person</th>
+							<th class="expire-date"><i class="fa fa-calendar"></i> Details </th>
+							<th>
+								<a style="border-radius: 3px; padding: 4px 10px; background-color:#ffffff; color: #000;" href="#" id='add-new-contact-trigger'>add new</a></th>
+						</tr>
+		
+						{% if user.profile.artist.contacts %}
+							{% for contact in user.profile.artist.contacts.all %}
+							<tr>
+								<td class="title-container">
+									<img src="images/listing-02.jpg" alt="">
+									<div class="title">
+										<h4><a href="#">{{ contact.person }}</a></h4>
+										<span>Contact Person</span>
+										<span class="table-property-price">{{ contact.purpose }}</span>
+									</div>
+								</td>
+								<td class="expire-date">
+									<ul>
+										<li>{{ contact.phone }}</li>
+										<li>{{ contact.email }}</li>
+									</ul>
+								</td>
+								<td class="action">
+									<a href="#"><i class="fa fa-pencil"></i> Edit</a>
+									<a href="#" class="delete"><i class="fa fa-remove"></i> Delete</a>
+								</td>
+							</tr>
+							{% endfor %}
+							
+						{% endif %}
+					</table>
+					<!-- Contact Modal -->
+					<div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
+							<div class="modal-dialog " role="document">
+							<div class="modal-content">
+								<div class="modal-header">
+								<h5 class="modal-title" id="addContactModalTitle">Add Contact</h5>
+								<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+									<span aria-hidden="true">&times;</span>
+								</button> -->
+								</div>
+								<div class="modal-body">
+									<div class="row">
+										
+										<div class="col-sm-12 col-md-12 col-lg-12">
+											<form method="POST" name='contact-entry' action="">
+												{% csrf_token %}
+												<label>{{ ContactForm.person.label }}</label>
+												{{ ContactForm.person }}
+												<small style="color: #f44336;">{{  ContactForm.person.errors|first }}</small>
+
+												<label>{{ ContactForm.purpose.label }}</label>
+												{{ ContactForm.purpose }}
+												<small style="color: #f44336;">{{ ContactForm.purpose.errors|first }}</small>
+
+												<label>{{ ContactForm.phone.label }}</label>
+												{{ ContactForm.phone }}
+												<small style="color: #f44336;">{{ ContactForm.phone.errors|first }}</small>
+
+												<label>{{ ContactForm.email.label }}</label>
+												{{ ContactForm.email }}
+												<small style="color: #f44336;">{{ ContactForm.email.errors|first }}</small>
+
+											</form>
+										</div>
+									</div>
+									
+								</div>
+								<div class="modal-footer">
+									<a class="button medium border" data-dismiss="modal">Close</a>
+									<a id='save-contact-entry' class="button medium"><i class="fa fa-save"></i> Save Entry</a>
+								</div>
+							</div>
+							</div>
+						</div>
+		</div>
+
+	</div>
+</div>
+{% endblock PAGE_CONTENT %}
+
+{% block PAGE_JS %}
+  
+  <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
+	<script>
+		$("#add-new-contact-trigger").on('click', function(){
+			$("#addContactModal").modal('show');
+		});
+
+		$("#save-contact-entry").on('click', function(){
+			$("form[name='contact-entry']").submit();
+		});
+	</script>
+{% endblock PAGE_JS %}
