@@ -67,3 +67,9 @@ class Contact(models.Model):
     
     def __str__(self):
         return "Contact info for : {}".format(self.artist)
+
+    def get_initials(self):
+        if len(self.person.split()) > 1:
+            if len(self.person.split()) == 2:
+                return "{}.{}".format(self.person.split()[0][:1], self.person.split()[1][:1])
+            

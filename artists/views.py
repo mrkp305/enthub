@@ -84,7 +84,7 @@ class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
     def get(self, request):
         template = 'main/artists/my-profile.html'
         context = {
-            
+            'ProfileForm':ArtistProfileForm()
         }
         return HttpResponse(render(request, template,context))
 

@@ -86,22 +86,47 @@
 							<th><i class="fa fa-user"></i> Contact Person</th>
 							<th class="expire-date"><i class="fa fa-calendar"></i> Details </th>
 							<th>
-								<a style="border-radius: 3px; padding: 4px 10px; background-color:#ffffff; color: #000;" href="#" id='add-new-contact-trigger'>add new</a></th>
+								<a 
+									style='padding: 1px 10px;
+										line-height: 20px;
+										color: #fff;
+										border: 1px solid rgb(236, 230, 230);
+										border-radius:2px;
+										' 
+									class ="button border"
+									href="javascript:void(0)"
+									id='add-new-contact-trigger'
+									onMouseOver="this.style.backgroundColor ='#fff';this.style.color='#f44336'"
+									onMouseOut="this.style.backgroundColor ='#f44336';this.style.color='#fff'"
+									><i class='fa fa-plus-circle'></i>add</a></th>
 						</tr>
 		
 						{% if user.profile.artist.contacts %}
 							{% for contact in user.profile.artist.contacts.all %}
 							<tr>
 								<td class="title-container">
-									<img src="images/listing-02.jpg" alt="">
-									<div class="title">
+									<h1 style="
+										border-radius: 50%;
+										behavior: url(PIE.htc);
+										width: 100px;
+										height: 100px;
+										background: #f44336;
+										/* border: 2px solid #666; */
+										color: #fff;
+										text-align: center;
+										/* font-size: 58px; */
+										line-height: 2.8;
+									">
+										{{ contact.get_initials }}
+									</h1>
+									<div class="title" style="padding-left: 15px;padding-top: 30px;">
 										<h4><a href="#">{{ contact.person }}</a></h4>
 										<span>Contact Person</span>
 										<span class="table-property-price">{{ contact.purpose }}</span>
 									</div>
 								</td>
 								<td class="expire-date">
-									<ul>
+									<ul class="list-1">
 										<li>{{ contact.phone }}</li>
 										<li>{{ contact.email }}</li>
 									</ul>
@@ -154,7 +179,7 @@
 								</div>
 								<div class="modal-footer">
 									<a class="button medium border" data-dismiss="modal">Close</a>
-									<a id='save-contact-entry' class="button medium"><i class="fa fa-save"></i> Save Entry</a>
+									<a id='save-contact-entry' class="button medium">Save Entry</a>
 								</div>
 							</div>
 							</div>
