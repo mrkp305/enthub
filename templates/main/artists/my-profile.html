@@ -132,11 +132,60 @@
 									</tr>
 									<tr>
 										<td colspan="2" align="right">
-											<a style="padding: 3px 10px;" class="button medium border" href="javascript:void(0)"><i class="fa fa-pencil"></i>Edit Info</a>
+											<a id='edit-modal-trigger' style="padding: 3px 10px;" class="button medium border" href="javascript:void(0)"><i class="fa fa-pencil"></i>Edit Info</a>
 										</td>
 									</tr>
 								</tbody>
 							</table>
+
+							<div class="modal fade" id="editProfile" tabindex="-1" role="dialog" aria-labelledby="editProfileTitle" aria-hidden="true">
+								<div class="modal-dialog " role="document">
+								<div class="modal-content">
+									<div class="modal-header">
+									<h5 class="modal-title" id="editProfileTitle">Edit your profile</h5>
+									<!-- <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+										<span aria-hidden="true">&times;</span>
+									</button> -->
+									</div>
+									<div class="modal-body">
+										<div class="row">
+											<div class="col-sm-12 col-md-12 col-lg-12">
+												<form method="POST" name='edit-profile' action="">
+													{% csrf_token %}
+													<input type="hidden" name="update_profile" value="1">
+													<label>{{ ProfileForm.stage_name.label }}</label>
+													{{ ProfileForm.stage_name }}
+													<small style="color: #f44336;">{{  ProfileForm.stage_name.errors|first }}</small>
+	
+													<label>{{ ProfileForm.alias.label }}</label>
+													{{ ProfileForm.alias }}
+													<small style="color: #f44336;">{{  ProfileForm.alias.errors|first }}</small>
+	
+													<label>{{ ProfileForm.genre.label }}</label>
+													{{ ProfileForm.genre }}
+													<small style="color: #f44336;">{{  ProfileForm.genre.errors|first }}</small>
+	
+													<label>{{ ProfileForm.bio.label }}</label>
+													{{ ProfileForm.bio }}
+													<small style="color: #f44336;">{{  ProfileForm.bio.errors|first }}</small>
+	
+													<label>{{ ProfileForm.dob.label }}</label>
+													{{ ProfileForm.dob }}
+													<small style="color: #f44336;">{{  ProfileForm.dob.errors|first }}</small>
+	
+												</form>
+											</div>
+										</div>
+										
+									</div>
+									<div class="modal-footer">
+										<a class="button medium border" data-dismiss="modal">Close</a>
+										<a id='update-profile' class="button medium">Confirm Changes</a>
+									</div>
+								</div>
+								</div>
+							</div>
+
 						</div>
 					</div>
 				</div>
@@ -149,6 +198,13 @@
 
 {% block PAGE_JS %}
   
-  <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
- 
+  	<script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
+	<script>
+		$("#edit-modal-trigger").on('click', function(){
+			$("#editProfile").modal('show');
+		});
+		$("#update-profile").on('click', function(){
+			$("form[name='edit-profile']").submit()
+		});
+	</script>
 {% endblock PAGE_JS %}

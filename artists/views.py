@@ -2,7 +2,7 @@
     Django Imports
 '''
 
-from django.shortcuts import render, redirect, get_object_or_404
+from django.shortcuts import render, redirect, get_object_or_404, reverse
 from django.http import HttpResponse
 from django.views import View
 from django.views.defaults import *
@@ -83,10 +83,57 @@ class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request):
         template = 'main/artists/my-profile.html'
+        initial = {
+            'stage_name': request.user.profile.artist.stage_name,
+            'alias':request.user.profile.artist.alias,
+            'genre':[request.user.profile.artist.genre.id, request.user.profile.artist.genre],
+            'bio':request.user.profile.artist.bio,
+            'dob':request.user.profile.artist.dob,
+        }
         context = {
-            'ProfileForm':ArtistProfileForm()
+            'ProfileForm':ArtistProfileForm(initial=initial)
         }
         return HttpResponse(render(request, template,context))
+    
+    def post(self, request):
+        if 'update_profile' in request.POST:
+            form = ArtistProfileForm(request.POST)
+            if form.is_valid():
+                artist = Profile.objects.get(user_profile=request.user.profile)
+
+                stage_name = form.cleaned_data.get('stage_name')
+                alias = form.cleaned_data.get('alias')
+                genre = form.cleaned_data.get('genre')
+                bio = form.cleaned_data.get('bio')
+                dob = form.cleaned_data.get('dob')
+
+                if request.user.profile.artist.stage_name != stage_name:
+                    artist.stage_name = stage_name
+                
+                if request.user.profile.artist.alias != alias:
+                    artist.alias = alias
+                
+                if request.user.profile.artist.genre != genre:
+                    artist.genre = Genre.objects.get(id=genre)
+                
+                if request.user.profile.artist.bio != bio:
+                    artist.bio = bio
+
+                if request.user.profile.artist.dob != dob:
+                    artist.dob = dob
+                
+                artist.save()
+                messages.success(request, 'Your profile has been updated successfully')
+                return redirect(reverse('artists:view-my-profile'))
+            else:
+                template = 'main/artists/my-profile.html'
+                messages.error(request, 'Action failed. Invalid input. Please check and try again.')
+                context = {
+                    'ProfileForm':form
+                }
+                return HttpResponse(render(request, template,context))
+        else:
+            pass
 
 class Contacts(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'
