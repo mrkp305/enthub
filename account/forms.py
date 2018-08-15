@@ -1,16 +1,19 @@
-from django import forms
+'''Django Imports
 '''
-    Model Imports
+from django import forms
+from django.core.validators import URLValidator
+'''End Django Imports
+'''
+
+'''Model Imports
 '''
 
 from utils.models import City, Tag
 from authentication.models import User
 
-'''
-    End Model Imports
+'''End Model Imports
 '''
 
-from django.core.validators import URLValidator
 
 '''
     Python Imports

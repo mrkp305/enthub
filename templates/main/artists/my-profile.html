@@ -130,6 +130,11 @@
 										<td>Bio</td>
 										<td><b>{{ request.user.profile.artist.bio }}</b></td>
 									</tr>
+
+									<tr>
+										<td>Website</td>
+										<td><b><a target="_blank" href="{{ request.user.profile.artist.website }}">{{ request.user.profile.artist.website }}&nbsp;<i class="fa fa-external-link"></i></a></b></td>
+									</tr>
 									<tr>
 										<td colspan="2" align="right">
 											<a id='edit-modal-trigger' style="padding: 3px 10px;" class="button medium border" href="javascript:void(0)"><i class="fa fa-pencil"></i>Edit Info</a>
@@ -165,13 +170,18 @@
 													{{ ProfileForm.genre }}
 													<small style="color: #f44336;">{{  ProfileForm.genre.errors|first }}</small>
 	
+													
+													<label>{{ ProfileForm.dob.label }}</label>
+													{{ ProfileForm.dob }}
+													<small style="color: #f44336;">{{  ProfileForm.dob.errors|first }}</small>
+													
 													<label>{{ ProfileForm.bio.label }}</label>
 													{{ ProfileForm.bio }}
 													<small style="color: #f44336;">{{  ProfileForm.bio.errors|first }}</small>
 	
-													<label>{{ ProfileForm.dob.label }}</label>
-													{{ ProfileForm.dob }}
-													<small style="color: #f44336;">{{  ProfileForm.dob.errors|first }}</small>
+													<label>{{ ProfileForm.website.label }}</label>
+													{{ ProfileForm.website }}
+													<small style="color: #f44336;">{{  ProfileForm.website.errors|first }}</small>
 	
 												</form>
 											</div>

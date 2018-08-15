@@ -2,6 +2,7 @@
     Django Imports
 '''
 from django import forms
+from django.core.validators import URLValidator
 '''
     End Django Imports
 '''
@@ -41,6 +42,7 @@ class Profile(forms.Form):
     bio = forms.CharField(widget=forms.Textarea(attrs={'class':'input-text'}))
     dob = forms.DateField(
         widget=forms.DateInput(attrs={'class':'input-text', 'type':'date'}))
+    website = forms.URLField(widget=forms.TextInput(attrs={'class':'input-text'}), required=False)
 
     def clean(self):
         cleaned_data = super(Profile, self).clean()
@@ -48,6 +50,7 @@ class Profile(forms.Form):
         genre = cleaned_data.get('genre')
         alias = cleaned_data.get('alias')
         dob = cleaned_data.get('dob')
+        website = cleaned_data.get('website')
 
         if stage_name:
             if len(stage_name) < 2:
@@ -76,6 +79,12 @@ class Profile(forms.Form):
                 if not regex.match(alias):
                     self.add_error('alias', 'Alias should only contain letters and/or numbers.')
 
+        if website:
+            try:
+                validate = URLValidator(schemes=('http', 'https'))
+                validate(website)
+            except Exception as e:
+                self.add_error('website',"Invalid Website URL")
         if dob:
             pass
 

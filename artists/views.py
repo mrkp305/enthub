@@ -53,18 +53,19 @@ class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
                 genre = form.cleaned_data['genre']
                 bio = form.cleaned_data['bio']
                 dob = form.cleaned_data['dob']
-
+                website = form.cleaned_data['website']
                 artist_profile = Profile.objects.create(
                     user_profile=request.user.profile,
                     stage_name=stage_name,
                     alias=alias,
                     genre = Genre.objects.get(pk=genre),
                     bio = bio,
-                    dob = dob
+                    dob = dob,
+                    website=website
                     )
                 artist_profile.save()
-                messages.success(request, 'Artist Profile Created Successfully. Click <a href="#">here</a> to edit profile.')
-                return redirect(request.META.get('HTTP_REFERER', '/'))
+                messages.success(request, 'Profile Created Successfully. Goto view my profile to view and edit your profile.')
+                return redirect(reverse('artists:view-my-profile'))
             else:
                 messages.error(request, 'There was something with the information you just supplied. Try again.')
                 template = 'main/artists/create-profile.html'
@@ -89,6 +90,7 @@ class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
             'genre':[request.user.profile.artist.genre.id, request.user.profile.artist.genre],
             'bio':request.user.profile.artist.bio,
             'dob':request.user.profile.artist.dob,
+            'website':request.user.profile.artist.website
         }
         context = {
             'ProfileForm':ArtistProfileForm(initial=initial)
@@ -106,7 +108,7 @@ class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
                 genre = form.cleaned_data.get('genre')
                 bio = form.cleaned_data.get('bio')
                 dob = form.cleaned_data.get('dob')
-
+                website = form.cleaned_data.get('website')
                 if request.user.profile.artist.stage_name != stage_name:
                     artist.stage_name = stage_name
                 
@@ -121,6 +123,9 @@ class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
 
                 if request.user.profile.artist.dob != dob:
                     artist.dob = dob
+
+                if request.user.profile.artist.website != website:
+                    artist.website = website
                 
                 artist.save()
                 messages.success(request, 'Your profile has been updated successfully')

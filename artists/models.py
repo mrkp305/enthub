@@ -36,7 +36,6 @@ def user_directory_path(instance, filename):
     filename = "%s.%s" % (uuid.uuid4(), ext)
     return 'artist/{}/{}'.format(instance.user.id, filename)
 
-
 class Artist(models.Model):
     user_profile = models.OneToOneField("account.Profile", verbose_name=_("User Profile"), on_delete=models.CASCADE)
     stage_name = models.CharField(_("Stage name"), max_length=50)
@@ -45,6 +44,7 @@ class Artist(models.Model):
     bio = models.TextField(_("Artist Bio"))
     dob = models.DateField(_("Artist's date of birth"), blank=True, null=True, auto_now=False, auto_now_add=False)
     use_profile_avatar = models.BooleanField(_("Use profile picture as artist profile picture too"), default=True)
+    website = models.URLField(_("Website"), blank=True, null=True, max_length=200)
 
     class Meta:
         verbose_name = 'Artist Profile'
