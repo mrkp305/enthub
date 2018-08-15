@@ -23,6 +23,7 @@ urlpatterns = [
    
     path('', Auth.as_view(), name='auth'),
     path('logout/', Logout.as_view(), name='logout'),
+    path('change-password/', ChangePassword.as_view(), name='change-password'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

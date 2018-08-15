@@ -50,17 +50,20 @@
 		<div class="tabs-container alt">
 			<!-- Login -->
 			<div class="tab-content" id="tabLogin" style="display: none;">
+		
 				{% if messages %}
-					<div class="notification error closeable">
-						<p>
-							{% for message in messages %}
-								{{ message }}<br>
-							{% endfor %}
+
+						{% for message in messages %}
+							<div class="notification {% if message.tags %} {{ message.tags }}{% endif %} closeable">
+								<p>
+									{{ message }}
+								</p>
+								<a class="close"></a>
+							</div>
+						{% endfor %}
 							
-						</p>
-						<a class="close"></a>
-					</div>
 				{% endif %}
+
 				<form method="post" class="login">
 					{% csrf_token %}
 					<p class="form-row form-row-wide">

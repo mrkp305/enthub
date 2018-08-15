@@ -42,4 +42,22 @@ class SignUp(forms.Form):
         elif password != confirm_password:
             self.add_error('password', 'The passwords you entered do not match.')
         
+class ChangePasswordForm(forms.Form):
+    old_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input-text'}), max_length=20, required=True)
+    new_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input-text'}), max_length=20, required=True)
+    verify_password = forms.CharField(widget=forms.PasswordInput(attrs={'class':'input-text'}), max_length=20, required=True)
+
+    def clean(self):
+        cleaned_data = super(ChangePasswordForm, self).clean()
+        new = cleaned_data.get('new_password')
+        verify = cleaned_data.get('verify_password')
+
+        if len(new) < 6:
+            self.add_error('new_password', 'Password too short.')
+        elif new != verify:
+            self.add_error('new_password', 'Passwords do not match.')
+            self.add_error('verify_password', 'Passwords do not match.')
+
+
         
+

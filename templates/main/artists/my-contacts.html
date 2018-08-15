@@ -60,7 +60,7 @@
         
 
 					<ul class="my-account-nav">
-						<li><a href="change-password.html"><i class="sl sl-icon-lock"></i> Change Password</a></li>
+						<li><a href="{% url 'authentication:change-password' %}"><i class="sl sl-icon-lock"></i> Change Password</a></li>
 						<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
 					</ul>
 
@@ -128,7 +128,7 @@
 								<td class="expire-date">
 									<ul class="list-1">
 										<li>{{ contact.phone }}</li>
-										<li>{{ contact.email }}</li>
+										<li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
 									</ul>
 								</td>
 								<td class="action">
