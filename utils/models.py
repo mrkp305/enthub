@@ -47,4 +47,14 @@ class Genre(models.Model):
 
     def __str__(self):
         return self.name
+
+class EventType(models.Model):
+    name = models.CharField(_("Event Type"), max_length=50)
+
+    class Meta:
+        verbose_name = 'Event type'
+        verbose_name_plural = 'Event types'
+
+    def __str__(self):
+            return self.name
     
