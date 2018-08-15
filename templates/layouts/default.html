@@ -269,7 +269,7 @@
 					<div class="user-menu">
 						<div class="user-name">
 							<span>
-								{% if user.profile.avatar is not None %}
+								{% if user.profile.avatar %}
 									<img src="{{ user.profile.avatar.url }}" alt="">
 								{% else %}
 									<img src="{% static 'images/no-avatar.png' %}" alt="">

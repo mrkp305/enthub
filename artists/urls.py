@@ -26,6 +26,7 @@ urlpatterns = [
     path('me/', MyProfile.as_view(), name='view-my-profile'),
     path('me/contacts', Contacts.as_view(), name='my-contacts'),
     re_path(r'^me/contacts/edit-contact/(\d+)/', EditContact.as_view(), name='edit-contact'),
+    re_path(r'^me/contacts/delete-contact/(\d+)/', DeleteContact.as_view(), name='delete-contact'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

@@ -35,7 +35,11 @@ from utils.models import *
 class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'
     def test_func(self):
-        return not self.request.user.profile.artist
+        try:
+            a = Profile.objects.get(user_profile=self.request.user.profile)
+            return False
+        except Exception as e:
+            return True
 
     def get(self, request):
         template = 'main/artists/create-profile.html'
@@ -179,6 +183,25 @@ class Contacts(LoginRequiredMixin, UserPassesTestMixin, View):
                 }
                 return HttpResponse(render(request, template,context))
 
+
+class DeleteContact(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = '/auth'
+    def test_func(self):
+        return self.request.user.profile.artist
+
+    def get(self, request, contact_id):
+        contact = get_object_or_404(Contact, id=contact_id)
+        if contact.artist != request.user.profile.artist:
+            raise (Http404)
+        else:
+            contact = get_object_or_404(Contact, id=contact_id)
+            if contact.artist != request.user.profile.artist:
+                #to change to 403
+                raise (Http404)
+            else:
+                if contact.delete():
+                    return redirect(reverse('artists:my-contacts'))
+                
 
 class EditContact(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'

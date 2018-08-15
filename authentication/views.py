@@ -9,7 +9,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 # from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.sites.shortcuts import get_current_site
+from django.utils.encoding import force_bytes, force_text
 '''
     End Django Imports
 '''
@@ -32,6 +36,7 @@ from .forms import *
     End Form Imports
 '''
 
+from .tokens import account_activation_token
 
 '''
     Model Imports
@@ -48,7 +53,7 @@ class Auth(View):
     template = 'main/auth.html'
     def get(self, request):
         shift_focus = 0
-        if request.session['changed_password'] is not None:
+        if request.session.get('changed_password') is not None:
             if request.session.get('changed_password') == True:
                 shift_focus = 1
 
@@ -101,6 +106,7 @@ class Auth(View):
         elif 'register' in request.POST:
             form = SignUp(request.POST)
             if form.is_valid():
+                #create account, profile, and social profile
                 account = User.objects.create_user(form.cleaned_data['email_address'], form.cleaned_data['password'])
                 firstname, lastname = form.cleaned_data['name'].split()
                 account.first_name = firstname
@@ -112,10 +118,30 @@ class Auth(View):
 
                 social_profile = Social.objects.create(profile=profile)
                 social_profile.save()
-                # profile = account.
+                
+                #send confirmation link
+                current_site = get_current_site(request)
+                message = render_to_string('email_confirmation.html', {
+                    'user':account, 
+                    'domain':current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(account.pk)),
+                    'token': account_activation_token.make_token(account),
+                })
+                mail_subject = 'Activate your Ehub account.'
+                to_email = form.cleaned_data.get('email_address')
+                send_mail(
+                        mail_subject,
+                        message,
+                        'admin@ehub.app',
+                        [to_email],
+                        fail_silently=False,
+                        )
+               
+
+                #auth and login
                 user = authenticate(email=form.cleaned_data['email_address'], password=form.cleaned_data['password'])
                 login(request, user)
-                return redirect('/account/profile')
+                return redirect(reverse('account:account-profile'))
             else:
                 context = {
                     'LoginForm': SignIn(),
@@ -129,6 +155,7 @@ class Auth(View):
                 return HttpResponse(render(request, self.template, context))
 
 class Logout(LoginRequiredMixin, View):
+    login_url='/auth'
     def get(self, request):
         logout(request)
         return redirect('/')
@@ -173,3 +200,22 @@ class ChangePassword(LoginRequiredMixin, View):
         else:
             #to-do Change to 403
             raise (Http404)
+
+
+class Activate(View):
+
+    def get(self, request, uidb64, token):
+        try:
+            uid = force_text(urlsafe_base64_decode(uidb64))
+            user = User.objects.get(pk=uid)
+        except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+            user = None
+        if user is not None and account_activation_token.check_token(user, token):
+            profile = Profile.objects.get(user=user)
+            profile.email_confirmed = True
+            profile.save()
+            login(request, user)
+            # return redirect('home')
+            return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        else:
+            return HttpResponse('Activation link is invalid!')

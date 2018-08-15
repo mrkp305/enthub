@@ -135,11 +135,13 @@ STATICFILES_DIRS = [
 #E-mail Setup
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
+DEFAULT_FROM_EMAIL = 'percivalkayem1@gmail.com'
+SERVER_EMAIL = 'percivalkayem1@gmail.com'
 EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
 EMAIL_HOST_USER = 'percivalkayem1@gmail.com'
 EMAIL_HOST_PASSWORD = '0774181292'
-EMAIL_PORT = 587
 
 #media
 MEDIA_URL = '/media/'

@@ -127,17 +127,16 @@
 								</td>
 								<td class="expire-date">
 									<ul class="list-1">
-										<li>{{ contact.phone }}</li>
+										<li><a href="tel:{{ contact.phone }}">{{ contact.phone }}</a></li>
 										<li><a href="mailto:{{ contact.email }}">{{ contact.email }}</a></li>
 									</ul>
 								</td>
 								<td class="action">
 									<a href="{% url 'artists:edit-contact' contact.id %}"><i class="fa fa-pencil"></i> Edit</a>
-									<a href="#" class="delete"><i class="fa fa-remove"></i> Delete</a>
+									<a href="{% url 'artists:delete-contact' contact.id %}" class="delete"><i class="fa fa-remove"></i> Delete</a>
 								</td>
 							</tr>
 							{% endfor %}
-							
 						{% endif %}
 					</table>
 					<!-- Contact Modal -->
