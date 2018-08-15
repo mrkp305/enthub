@@ -3,7 +3,7 @@
 '''
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
@@ -173,3 +173,71 @@ class Contacts(LoginRequiredMixin, UserPassesTestMixin, View):
                     'ContactForm':form,
                 }
                 return HttpResponse(render(request, template,context))
+
+
+class EditContact(LoginRequiredMixin, UserPassesTestMixin, View):
+    login_url = '/auth'
+    def test_func(self):
+        return self.request.user.profile.artist
+
+    def get(self, request, contact_id):
+        contact = get_object_or_404(Contact, id=contact_id)
+        if contact.artist != request.user.profile.artist:
+            raise (Http404)
+        else:
+            template = 'main/artists/edit-contact.html'
+            initial = {
+                'person': contact.person,
+                'purpose':contact.purpose,
+                'phone':contact.phone,
+                'email':contact.email,
+            }
+            context = {
+                'ContactForm': ArtistContactsForm(initial=initial),
+            }
+            return HttpResponse(render(request, template, context))
+    
+    def post(self, request, contact_id):
+        if 'update_contact' in request.POST:
+            form = ArtistContactsForm(request.POST)
+            if form.is_valid():
+                contact = get_object_or_404(Contact, id=contact_id)
+                if contact.artist != request.user.profile.artist:
+                    #to change to 403
+                    raise (Http404)
+                else:
+                    person = form.cleaned_data.get('person')
+                    purpose = form.cleaned_data.get('purpose')
+                    phone = form.cleaned_data.get('phone')
+                    email = form.cleaned_data.get('email')
+
+                    if contact.person != person:
+                        contact.person = person
+                        contact.save()
+                        messages.success(request, 'Contact detail:Person successfully updated.')
+                    
+                    if contact.purpose != purpose:
+                        contact.purpose = purpose
+                        contact.save()
+                        messages.success(request, 'Contact detail:Purpose successfully updated.')
+                    
+                    if contact.phone != phone:
+                        contact.phone = phone
+                        contact.save()
+                        messages.success(request, 'Contact detail:Phone successfully updated.')
+                    
+                    if contact.email != email:
+                        contact.email = email
+                        contact.save()
+                        messages.success(request, 'Contact detail:Email successfully updated.')
+                    
+                    return redirect(reverse('artists:edit-contact',args=(contact.id,)))
+            else:
+                template = 'main/artists/edit-contact.html'
+                context = {
+                    'ContactForm': form,
+                }
+                messages.error(request, 'There is something wrong with your input. Check and try again.')
+                return HttpResponse(render(request, template, context))
+        else:
+            raise(Http404)

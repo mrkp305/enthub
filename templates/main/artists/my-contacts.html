@@ -132,7 +132,7 @@
 									</ul>
 								</td>
 								<td class="action">
-									<a href="#"><i class="fa fa-pencil"></i> Edit</a>
+									<a href="{% url 'artists:edit-contact' contact.id %}"><i class="fa fa-pencil"></i> Edit</a>
 									<a href="#" class="delete"><i class="fa fa-remove"></i> Delete</a>
 								</td>
 							</tr>
@@ -188,6 +188,8 @@
 
 	</div>
 </div>
+
+
 {% endblock PAGE_CONTENT %}
 
 {% block PAGE_JS %}

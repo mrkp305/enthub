@@ -1,0 +1,131 @@
+{% extends "layouts/default.html" %}
+{% load static %}
+{% block PAGE_TITLE %} Edit Contact &mdash; {{ request.user.profile.artist }} &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_CSS %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
+  <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
+{% endblock PAGE_CSS %}
+{% block PAGE_CONTENT %}
+    <!-- Titlebar
+================================================== -->
+<div id="titlebar">
+	<div class="container">
+		<div class="row">
+			<div class="col-md-12">
+
+				<h2>Edit Contact Information</h2>
+
+				<!-- Breadcrumbs -->
+				<nav id="breadcrumbs">
+					<ul>
+						<li><a href="#">Artist</a></li>
+						<li><a href="#">Profile</a></li>
+						<li>Edit Contact Information</li>
+					</ul>
+				</nav>
+
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Content
+================================================== -->
+<div class="container">
+	<div class="row">
+
+
+		<!-- Widget -->
+		<div class="col-md-4">
+			<div class="sidebar left">
+
+				<div class="my-account-nav-container">
+					
+                        <ul class="my-account-nav">
+                                <li class="sub-nav-title">Manage Account</li>
+                                <li><a href="{% url 'account:account-profile' %}" ><i class="sl sl-icon-user"></i> My Profile</a></li>
+                                <li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
+                            </ul>
+                            
+                            <ul class="my-account-nav">
+									<li class="sub-nav-title">Artist Profile</li>
+									{% if user.profile.artist %}
+										<li><a href="{% url 'artists:view-my-profile' %}" ><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+										<li><a href="{% url 'artists:my-contacts' %}" class="current"><i class="sl sl-icon-call-in"></i> Contacts</a></li>
+									{% else %}
+										<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
+									{% endif %}
+							</ul>
+        
+
+					<ul class="my-account-nav">
+						<li><a href="change-password.html"><i class="sl sl-icon-lock"></i> Change Password</a></li>
+						<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
+					</ul>
+
+				</div>
+
+			</div>
+		</div>
+
+		<div class="col-md-8">
+			<div class="row">
+				<div class="col-md-8 my-profile">
+						{% if messages %}
+
+						{% for message in messages %}
+							<div class="notification {% if message.tags %} {{ message.tags }}{% endif %} closeable">
+								<p>
+									{{ message }}
+								<a class="close"></a>
+							</div>
+						{% endfor %}
+							
+					{% endif %}
+					
+					<form method="POST" name='contact-entry' action="">
+						{% csrf_token %}
+						<input type="hidden" value="{{ contact_id }}" name="contact">
+						<label>{{ ContactForm.person.label }}</label>
+						{{ ContactForm.person }}
+						<small style="color: #f44336;">{{  ContactForm.person.errors|first }}</small>
+	
+						<label>{{ ContactForm.purpose.label }}</label>
+						{{ ContactForm.purpose }}
+						<small style="color: #f44336;">{{ ContactForm.purpose.errors|first }}</small>
+	
+						<label>{{ ContactForm.phone.label }}</label>
+						{{ ContactForm.phone }}
+						<small style="color: #f44336;">{{ ContactForm.phone.errors|first }}</small>
+	
+						<label>{{ ContactForm.email.label }}</label>
+						{{ ContactForm.email }}
+						<small style="color: #f44336;">{{ ContactForm.email.errors|first }}</small>
+						<div class="clear-fix"></div>
+						<button name="update_contact" class="button medium border">Update Info</button>
+					</form>
+					<br>
+				</div>
+			</div>
+		</div>
+
+	</div>
+</div>
+
+
+{% endblock PAGE_CONTENT %}
+
+{% block PAGE_JS %}
+  
+  <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
+	<script>
+		$("#add-new-contact-trigger").on('click', function(){
+			$("#addContactModal").modal('show');
+		});
+
+		$("#save-contact-entry").on('click', function(){
+			$("form[name='contact-entry']").submit();
+		});
+	</script>
+{% endblock PAGE_JS %}
