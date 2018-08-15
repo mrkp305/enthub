@@ -27,6 +27,7 @@ urlpatterns = [
     path('auth/', include('authentication.urls')),
     path('account/', include('account.urls')),
     path('artists/', include('artists.urls')),
+    path('events/', include('events.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
