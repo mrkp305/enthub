@@ -168,7 +168,7 @@
 							
 						</li>
 
-						<li><a href="#">Listings</a>
+						<li><a href="#">Events</a>
 							<ul>
 								<li><a href="#">List Layout</a>
 									<ul>
@@ -195,43 +195,10 @@
 							</ul>
 						</li>
 
-						<li><a href="#">Features</a>
+						<li><a href="#">Calendar</a>
 							<ul>
-								<li><a href="#">Single Properties</a>
-									<ul>
-										<li><a href="single-property-page-1.html">Property Style 1</a></li>
-										<li><a href="single-property-page-2.html">Property Style 2</a></li>
-										<li><a href="single-property-page-3.html">Property Style 3</a></li>
-									</ul>
-								</li>
-								<li><a href="#">Search Styles</a>
-									<ul>
-										<li><a href="index-2.html">Home Search 1</a></li>
-										<li><a href="index-3.html">Home Search 2</a></li>
-										<li><a href="index-4.html">Home Search 3</a></li>
-										<li><a href="listings-list-full-width.html">Advanced Style</a></li>
-										<li><a href="listings-list-with-sidebar.html">Sidebar Search</a></li>
-									</ul>
-								</li>
-								<li><a href="#">My Account</a>
-									<ul>
-										<li><a href="my-profile.html">My Profile</a></li>
-										<li><a href="my-bookmarks.html">Bookmarked Listings</a></li>
-										<li><a href="my-properties.html">My Properties</a></li>
-										<li><a href="change-password.html">Change Password</a></li>
-									</ul>
-								</li>
-								<li><a href="#">Agencies & Agents</a>
-									<ul>
-										<li><a href="agencies-list.html">Agencies List</a></li>
-										<li><a href="agency-page.html">Agency Page</a></li>
-										<li><a href="agents-list.html">Agents List</a></li>
-										<li><a href="agent-page.html">Agent Page</a></li>
-									</ul>
-								</li>
-
-								<li><a href="compare-properties.html">Compare Properties</a></li>
-								<li><a href="submit-property.html">Submit Property</a></li>
+								<li><a href="compare-properties.html">Browse</a></li>
+								<li><a href="submit-property.html">Sync to phone</a></li>
 							</ul>
 						</li>
 
@@ -280,19 +247,19 @@
 						<ul>
 							<li><a href="{% url 'account:account-profile' %}"><i class="sl sl-icon-user"></i> My Profile</a></li>
 							<li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarks</a></li>
-							<li><a href="my-properties.html"><i class="sl sl-icon-docs"></i> My Properties</a></li>
+							<li><a href="my-properties.html"><i class="sl sl-icon-docs"></i> My Events</a></li>
 							<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
 						</ul>
 					</div>
 
-					<a href="submit-property.html" class="button border">Post Event</a>
+					<a href="{% url 'events:post-event' %}" class="button border">Post Event</a>
 				</div>
 				<!-- Header Widget / End -->
 				{% else %}
 				<!-- Header Widget -->
 					<div class="header-widget">
 						<a href="{% url 'authentication:auth' %}" class="sign-in"><i class="fa fa-user"></i> Log In / Register</a>
-						<a href="submit-property.html" class="button border">Post Event</a>
+						<a href="{% url 'events:post-event' %}" class="button border">Post Event</a>
 					</div>
 				<!-- Header Widget / End -->
 				{% endif %}
@@ -329,7 +296,7 @@
 				<ul class="footer-links">
 					<li><a href="{% url 'authentication:auth' %}">Login/Register</a></li>
 					<li><a href="{% url 'account:account-profile' %}">My Account</a></li>
-					<li><a href="#">Add Event</a></li>
+					<li><a href="{% url 'events:post-event' %}">Add Event</a></li>
 					<li><a href="#">Pricing</a></li>
 					<li><a href="#">Privacy Policy</a></li>
 				</ul>

@@ -1,0 +1,254 @@
+{% extends "layouts/default.html" %}
+{% load static %}
+{% block PAGE_TITLE %}
+  Post Event &mdash; Ehub
+{% endblock PAGE_TITLE %}
+{% block PAGE_CONTENT %}
+    <!-- Titlebar
+================================================== -->
+<div id="titlebar" class="submit-page">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h2><i class="fa fa-plus-circle"></i> Add Event</h2>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <!-- Content
+    ================================================== -->
+    <div class="container">
+    <div class="row">
+    
+        <!-- Submit Page -->
+        <div class="col-md-12">
+                <div class="submit-page">
+        
+                    <!-- <div class="notification notice large margin-bottom-55">
+                        <h4>Don't Have an Account?</h4>
+                        <p>If you don't have an account you can create one by entering your email address in contact details section. A password will be automatically emailed to you.</p>
+                    </div> -->
+                
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <!-- Section -->
+                        <h3>Basic Information</h3>
+                        <div class="submit-section">
+                            <div class="row with-forms">
+                                <!-- Title -->
+                                <div class="col-md-8">
+                                    <h5>Event Title <i class="tip" data-tip-content="e.g {% now 'Y' %} Summer Festival"></i></h5>
+                                    {{ EventForm.title }}
+                                    <small style="color:#f44336">{{ EventForm.title.errors|first }}</small>
+                                </div>
+
+                                <!-- Type -->
+                                <div class="col-md-4">
+                                    <h5>Event Type</h5>
+                                    {{ EventForm.type }}
+                                    <small style="color:#f44336">{{ EventForm.type.errors|first }}</small>
+                                </div>
+                            </div>
+                        
+                            <!-- Row -->
+                            <div class="row with-forms">
+                                <!-- Start Date -->
+                                <div class="col-md-3">
+                                    <h5>Start Date</h5>
+                                    {{ EventForm.start_date }}
+                                    <small style="color:#f44336">{{ EventForm.start_date.errors|first }}</small>
+                                </div>
+                
+                                <!-- Start time -->			
+                                <div class="col-md-3">
+                                    <h5>Start Time</h5>
+                                    {{ EventForm.start_time }}
+                                    <small style="color:#f44336">{{ EventForm.start_time.errors|first }}</small>
+                                </div>
+
+                                <!-- End Date -->
+                                <div class="col-md-3">
+                                    <h5>End Date</h5>
+                                    {{ EventForm.end_date }}
+                                    <small style="color:#f44336">{{ EventForm.end_date.errors|first }}</small>
+                                </div>
+                
+                                <!-- ENd Time -->			
+                                <div class="col-md-3">
+                                    <h5>Start Time</h5>
+                                    {{ EventForm.end_time }}
+                                    <small style="color:#f44336">{{ EventForm.end_time.errors|first }}</small>
+                                </div>
+                
+                            </div>
+                            <!-- Row / End -->
+                            
+                            <div class="row with-forms">
+                                <!-- Admission -->
+                                <div class="col-md-12">
+                                    <h5>Admission</h5>
+                                    {{ EventForm.admission }}
+                                    <small style="color:#f44336">{{ EventForm.admission.errors|first }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Section / End -->
+                
+                        <!-- Section -->
+                        <h3>Gallery</h3>
+                        <div class="submit-section">
+                            <div class="row with-forms">
+                                <!-- Main Picture -->
+                                <div class="col-md-6">
+                                    <h5>Main Poster/Banner</h5>
+                                    {{ EventForm.main_poster }}
+                                    <small style="color:#f44336">{{ EventForm.main_poster.errors|first }}</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Other Images</h5>
+                                    {{ EventForm.other_images }}
+                                    <small style="color:#f44336">{{ EventForm.other_images.errors|first }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Section / End -->
+                
+                        <!-- Section -->
+                        <h3>Location</h3>
+                        <div class="submit-section">
+                
+                            <!-- Row -->
+                            <div class="row with-forms">
+                
+                                <!-- Address -->
+                                <div class="col-md-6">
+                                    <h5>Name</h5>
+                                    {{ EventForm.location_name }}
+                                    <small style="color:#f44336">{{ EventForm.location_name.errors|first }}</small>
+                                </div>
+                
+                                <!-- City -->
+                                <div class="col-md-6">
+                                    <h5>Name</h5>
+                                    {{ EventForm.city }}
+                                    <small style="color:#f44336">{{ EventForm.city.errors|first }}</small>
+                                </div>
+                
+                                <!-- City -->
+                                <div class="col-md-6">
+                                    <h5>Street Address</h5>
+                                    {{ EventForm.street_address }}
+                                    <small style="color:#f44336">{{ EventForm.street_address.errors|first }}</small>
+                                </div>
+                                
+                                <!-- Zip-Code -->
+                                <div class="col-md-6">
+                                    <h5>Zip-Code</h5>
+                                    {{ EventForm.zip_code }}
+                                    <small style="color:#f44336">{{ EventForm.zip_code.errors|first }}</small>
+                                </div>
+                
+                            </div>
+                            <!-- Row / End -->
+                            <div class="row with-forms">
+                                <!-- Map Coordinates -->
+                                <div class="col-md-6">
+                                    <h5>Latitude</h5>
+                                    {{ EventForm.latitude }}
+                                    <small style="color:#f44336">{{ EventForm.latitude.errors|first }}</small>
+                                </div>
+                                <div class="col-md-6">
+                                    <h5>Longitude</h5>
+                                    {{ EventForm.longitude }}
+                                    <small style="color:#f44336">{{ EventForm.longitude.errors|first }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Section / End -->
+                
+                        <!-- Section -->
+                        <h3>Detailed Information</h3>
+                        <div class="submit-section">
+                
+                            <!-- Description -->
+                            <div class="form">
+                                <h5>Description</h5>
+                                {{ EventForm.about }}
+                                <small style="color:#f44336">{{ EventForm.about.errors|first }}</small>
+                            </div>
+                
+                        </div>
+                        <!-- Section / End -->
+                
+                
+                        <!-- Section -->
+                        <h3>Contact Details</h3>
+                        <div class="submit-section">
+                
+                            <!-- Row -->
+                            <div class="row with-forms">
+                
+                                <!-- Name -->
+                                <div class="col-md-4">
+                                    <h5>Name</h5>
+                                    {{ EventForm.contact_person }}
+                                    <small style="color:#f44336">{{ EventForm.contact_person.errors|first }}</small>
+                                </div>
+                
+                                <!-- Email -->
+                                <div class="col-md-4">
+                                    <h5>Phone</h5>
+                                    {{ EventForm.phone }}
+                                    <small style="color:#f44336">{{ EventForm.phone.errors|first }}</small>
+                                </div>
+                
+                                <!-- Name -->
+                                <div class="col-md-4">
+                                    <h5>E-Mail <span>(optional)</span></h5>
+                                    {{ EventForm.email }}
+                                    <small style="color:#f44336"> {{ EventForm.email.errors|first }}</small>
+                                </div>
+                
+                            </div>
+                            <div class="row with-forms">
+                
+                                <!-- Web -->
+                                <div class="col-md-4">
+                                    <h5>Website(optional)</h5>
+                                    {{ EventForm.website }}
+                                    <small style="color:#f44336">{{ EventForm.website.errors|first }}</small>
+                                </div>
+                            </div>
+                            <!-- Row / End -->
+                            <!-- Row -->
+                        
+                            <div class="checkboxes in-row margin-bottom-20">
+                                <input id="{{ EventForm.is_on_whatsapp.auto_id  }}" type="checkbox" name="{{ EventForm.is_on_whatsapp.name }}">
+                                <label for="{{ EventForm.is_on_whatsapp.auto_id  }}">{{ EventForm.is_on_whatsapp.label }}</label>
+                            </div>
+
+                        </div>
+                        <!-- Section / End -->
+                
+                
+                        <div class="divider"></div>
+                        <button href="#" name="post_event" class="button preview margin-top-5">Submit <i class="fa fa-arrow-circle-right"></i></button>
+                    </form>
+                </div>
+                <br>
+        </div>
+    
+    </div>
+    </div>
+{% endblock PAGE_CONTENT %}
+{% block PAGE_JS %}
+<!-- DropZone | Documentation: http://dropzonejs.com -->
+<script type="text/javascript" src="{% static 'scripts/dropzone.js' %}"></script>
+<script>
+	$(".dropzoneMain").dropzone({
+		dictDefaultMessage: "<i class='sl sl-icon-plus'></i> Click here or drop file to upload",
+	});
+</script>
+{% endblock PAGE_JS %}

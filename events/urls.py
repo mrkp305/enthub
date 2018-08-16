@@ -23,7 +23,7 @@ from django.conf import settings
 app_name='events'
 urlpatterns = [
    
-    path('', Events.as_view(), name='events'),
+    path('post', Add.as_view(), name='post-event'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
