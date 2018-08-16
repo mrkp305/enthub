@@ -24,6 +24,9 @@ app_name='events'
 urlpatterns = [
    
     path('post', Add.as_view(), name='post-event'),
+    path('my', My.as_view(), name='my-events'),
+    re_path('delete-event/(\d+)/', Delete.as_view(), name='delete'),
+    path('get-details/', Details.as_view(), name='get_details'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

@@ -3,13 +3,14 @@
 '''
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse, Http404, HttpResponseForbidden, JsonResponse
 from django.views import View
 from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.base import ContentFile
 from django.contrib import messages
 from datetime import *
+import json
 
 '''
     End Django Imports
@@ -136,13 +137,16 @@ class Add(LoginRequiredMixin, UserPassesTestMixin, View):
                     main=True
                 )
                 
-                if request.FILES['other_images']:
+                if request.FILES.get('other_images'):
                     files = request.FILES.getlist('other_images')
                     for f in files:
                         Poster.objects.create(
                             event=event,
                             image=f
                         )
+                
+                messages.success(request, 'Event Added Successfully. Manage your event(s) here.')
+                return redirect(reverse('events:my-events'))
             else:
                 template = "main/events/add.html"
                 context = {
@@ -150,4 +154,47 @@ class Add(LoginRequiredMixin, UserPassesTestMixin, View):
                 }
                 return HttpResponse(render(request, template, context))
         else:
+            pass
+
+class My(LoginRequiredMixin, View):
+    login_url = '/auth'
+    def get(self, request):
+        template = 'main/events/my.html'
+        context = {
+            'events':Event.objects.filter(added_by=User.objects.get(id=request.user.id)).order_by('created_at')
+        }
+        return HttpResponse(render(request, template, context))
+    def post(self, request):
+        pass
+
+class Delete(LoginRequiredMixin, View):
+    login_url = '/auth'
+    def get(self, request, event_id):
+        event = get_object_or_404(Event, id=event_id)
+        if event.added_by != User.objects.get(id=request.user.id):
+            return HttpResponseForbidden()
+        else:
+            if event.delete():
+                messages.success(request, 'Event deleted successfully.')
+                return redirect(reverse('events:my-events'))
+
+class Details(LoginRequiredMixin, View):
+    login_url = '/auth'
+    def post(self, request):
+        try:
+            event = Event.objects.get(id=request.POST.get('event'))
+            data = {
+                'name': event.name,
+                'type': event.type.name,
+                'about': event.about,
+                'start_date': event.start_date,
+                'end_date': event.end_date,
+                'added_by': event.added_by.first_name + ' ' + event.added_by.last_name,
+                'website': event.website,
+                'location': event.location.name,
+                'paid': event.paid_for,
+                'accepted': event.verified,
+            }
+            return JsonResponse(data)
+        except Event.DoesNotExist as e:
             pass

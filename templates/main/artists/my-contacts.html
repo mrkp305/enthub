@@ -84,7 +84,7 @@
 				<table class="manage-table responsive-table">
 						<tr>
 							<th><i class="fa fa-user"></i> Contact Person</th>
-							<th class="expire-date"><i class="fa fa-calendar"></i> Details </th>
+							<th class="expire-date">Details </th>
 							<th>
 								<a 
 									style='padding: 1px 10px;
@@ -139,7 +139,7 @@
 							{% endfor %}
 						{% endif %}
 					</table>
-					<!-- Contact Modal -->
+					<!--  Modal -->
 					<div class="modal fade" id="addContactModal" tabindex="-1" role="dialog" aria-labelledby="addContactModalTitle" aria-hidden="true">
 							<div class="modal-dialog " role="document">
 							<div class="modal-content">
@@ -193,7 +193,7 @@
 
 {% block PAGE_JS %}
   
-  <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
+  	<script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
 	<script>
 		$("#add-new-contact-trigger").on('click', function(){
 			$("#addContactModal").modal('show');

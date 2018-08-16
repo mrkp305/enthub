@@ -15,12 +15,28 @@ class Event(models.Model):
     website = models.URLField(verbose_name="Website",blank=True, null=True, max_length=200)
     admission = models.TextField(_("Admission"), blank=True, null=True)
     location = models.ForeignKey("events.Location", verbose_name=_("Location"),blank=True, null=True, on_delete=models.SET_NULL)
+    paid_for = models.BooleanField(_("Paid for"), default=False)
+    verified = models.BooleanField(_("Accepted by Moderator"), default=False)
+    created_at= models.DateTimeField(_("Last Updated On"), auto_now_add=True)
+    last_modified = models.DateTimeField(_("Last Updated On"), auto_now=True)
+    
+
     class Meta:
         verbose_name = 'Event'
         verbose_name_plural = 'Events'
     
     def __str__(self):
             return self.name
+
+    def get_poster_url(self):
+        return self.poster_set.filter(main=True)[0].image.url
+
+    def get_address(self):
+        if self.location.street_address is not None:
+            if len(self.location.street_address) > 22:
+                return "{}, {}-{}".format(self.location.street_address[:22],self.location.city, self.location.city.country.iso_code2)
+            else:
+                return "{}, {}".format(self.location.street_address,self.location.city.name)
 
 
 class Location(models.Model):
@@ -36,7 +52,8 @@ class Location(models.Model):
         verbose_name_plural = 'Event Locations'
 
     def __str__(self):
-            return self.name
+        return self.name
+
 
 class Contact(models.Model):
     event = models.ForeignKey("events.Event", verbose_name=_("Event"), on_delete=models.CASCADE)
@@ -44,13 +61,15 @@ class Contact(models.Model):
     phone = models.CharField(verbose_name="Phone Number", max_length=15)
     email = models.EmailField(verbose_name="Email Address",blank=True, null=True, max_length=254)
     whatsapp = models.BooleanField(verbose_name="Is on WhatsApp", default=False)
-    
+    created_at= models.DateTimeField(_("Last Updated On"), auto_now_add=True)
+    last_modified = models.DateTimeField(_("Last Updated On"), auto_now=True)
+
     class Meta:
         verbose_name = 'Event contact'
         verbose_name_plural = 'Event contacts'
     
     def __str__(self):
-            return self.phone
+        return self.phone
 
 def directory_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -66,5 +85,5 @@ class Poster(models.Model):
             return "Poster for '{}'".format(self.event)
 
     class Meta:
-        verbose_name = 'Event poster'
-        verbose_name_plural = 'Event Posters'
+        verbose_name = 'poster'
+        verbose_name_plural = 'Posters'
