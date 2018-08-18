@@ -41,28 +41,33 @@
 			<div class="sidebar left">
 
 				<div class="my-account-nav-container">
-					
-                        <ul class="my-account-nav">
-                                <li class="sub-nav-title">Manage Account</li>
-                                <li><a href="{% url 'account:account-profile' %}" ><i class="sl sl-icon-user"></i> My Profile</a></li>
-                                <li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Listings</a></li>
-                            </ul>
-                            
-                            <ul class="my-account-nav">
-                                <li class="sub-nav-title">Artist Profile</li>
-                                {% if user.profile.artist %}
-                                    <li><a href="{% url 'artists:view-my-profile' %}" class="current"><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
-                                    <li><a href="{% url 'artists:my-contacts' %}" ><i class="sl sl-icon-call-in"></i> Contacts</a></li>
-                                {% else %}
-                                    <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
-                                {% endif %}
-                            </ul>
-        
-
-					<ul class="my-account-nav">
-						<li><a href="change-password.html"><i class="sl sl-icon-lock"></i> Change Password</a></li>
-						<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
-					</ul>
+						<ul class="my-account-nav">
+								<li class="sub-nav-title">Manage Account</li>
+								<li><a href="{% url 'account:account-profile' %}" ><i class="sl sl-icon-user"></i> My Profile</a></li>
+								<li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarked Items</a></li>
+							</ul>
+								
+							<ul class="my-account-nav">
+								<li class="sub-nav-title">Artist Profile</li>
+								{% if user.profile.artist %}
+									<li><a href="{% url 'artists:view-my-profile' %}" ><i class="sl sl-icon-microphone"></i> View Your Profile</a></li>
+									<li><a href="{% url 'artists:my-contacts' %}"><i class="sl sl-icon-call-in"></i> Contacts</a></li>
+								{% else %}
+									<li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Create Artist Profile</a></li>
+								{% endif %}
+							</ul>
+	
+							<ul class="my-account-nav">
+								<li class="sub-nav-title">Events</li>
+								<li><a href="{% url 'events:my-events' %}" class="current"><i class="fa fa-clone"></i> My Events</a></li>
+							   
+							</ul>
+			
+	
+						<ul class="my-account-nav">
+							<li><a href="{% url 'authentication:change-password' %}"><i class="sl sl-icon-lock"></i> Change Password</a></li>
+							<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
+						</ul>
 
 				</div>
 

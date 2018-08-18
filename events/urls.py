@@ -26,6 +26,8 @@ urlpatterns = [
     path('post', Add.as_view(), name='post-event'),
     path('my', My.as_view(), name='my-events'),
     re_path('delete-event/(\d+)/', Delete.as_view(), name='delete'),
+    re_path('edit-event/(\d+)/', Edit.as_view(), name='edit'),
+    re_path('edit-event-location/(\d+)/', EditLocation.as_view(), name='edit-location'),
     path('get-details/', Details.as_view(), name='get_details'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

@@ -111,13 +111,14 @@
                                     <img src="{{ event.get_poster_url }}" alt="">
                                     <div class="title">
                                         <h4><a href="#">{{ event.name }}</a></h4>
-                                        <span>{{ event.get_address }} </span>
+                                        <span><a href="{% url 'events:edit' event.id %}"><i class="fa fa-map-marker"></i> {{ event.get_address }}</a></span>
+                                        <span><a style="border-bottom: 1px dotted #f66446;" href="{% url 'events:edit-location' event.id %}">Edit Location</a></span>
                                         <span class="table-property-price">{{ event.type }}</span>
                                     </div>
                                 </td>
                                 <td class="expire-date"><b>{{ event.start_date|date:'F d, Y H:i' }}hrs</b></td>
                                 <td class="action">
-                                    <a href="#"><i class="fa fa-pencil"></i> Edit</a>
+                                    <a href="{% url 'events:edit' event.id %}"><i class="fa fa-pencil"></i> Edit</a>
                                     <a id='detailsTrigger' data-eid="{{ event.id }}" href="javascript:void(0)"><i class="fa fa-eye"></i> Details</a>
                                     <a href="{% url 'events:delete' event.id %}" class="delete"><i class="fa fa-remove"></i> Delete</a>
                                 </td>
@@ -147,10 +148,15 @@
 								<div class="modal-body">
 									<div class="row">
 										<div class="col-sm-12 col-md-12 col-lg-12">
-                                            <table class="basic-table">
+                                            <table id='details-table' class="basic-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th colspan="2" id=''>Details</th>
+                                                    </tr>
+                                                </thead>
                                                 <tbody>
                                                     <tr>
-                                                        <th colspan="2" id='detail-name'></th>
+                                                        <th colspan="2" id=''>Details</th>
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -181,11 +187,22 @@
             csrfmiddlewaretoken: "{{ csrf_token }}",
             event: eid
         }, function(data){
-               var Event = data;
-               $("#detail-name").html(Event.name)
-               $("#detailsModal").modal('show')
-
+            var Event = data;
+            
+            $("#details-table > tbody:last-child").empty()
+            $.each(data, function(i,val){
+                //$trow
+                
+                $("#details-table > tbody:last-child").append($('<tr>')
+                    .append($('<td>').append(i))
+                    .append($('<td>').append(val))
+                    );
+            });
+           
+            $("#detailsModal").modal('show')
         });
+
+       
     });
 
 </script>
