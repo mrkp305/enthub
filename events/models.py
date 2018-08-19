@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 import uuid
 from django.conf import settings
-
+from datetime import datetime
 
 class Event(models.Model):
     name = models.CharField(verbose_name="Event Title", max_length=255)
@@ -37,6 +37,50 @@ class Event(models.Model):
                 return "{}, {}-{}".format(self.location.street_address[:22],self.location.city, self.location.city.country.iso_code2)
             else:
                 return "{}, {}".format(self.location.street_address,self.location.city.name)
+
+    def poster_count(self):
+        return self.poster_set.count()
+    
+    def get_other_posters(self):
+        return self.poster_set.all()
+    
+    def time_since_added(self):
+        then = self.created_at.replace(tzinfo=None)
+        now = datetime.now().replace(tzinfo=None)
+
+        duration = now - then
+        seconds_since = duration.total_seconds()
+
+        days_since =duration.days
+        days  = divmod(seconds_since, 86400)[0]
+        hours = divmod(seconds_since, 3600)[0]
+        minutes = divmod(seconds_since, 60)[0]
+        seconds = duration.seconds
+
+        if days <= 0:
+            if minutes < 60:
+                if minutes < 1:
+                    return "{}s ago.".format(str(seconds).split('.')[0])
+                else:
+                    return "{}m ago.".format(str(minutes).split('.')[0])
+            else:
+                return "{}h ago.".format(str(hours).split('.')[0])
+        else:
+            if days == 1:
+                return "{}d ago.".format(str(days).split('.')[0])
+            elif days > 7:
+                if days <= 30:
+                    weeks = days//7
+                    return "{}w ago.".format(str(weeks).split('.')[0])
+                elif days <= 365:
+                    months = days//30
+                    return "{}mo ago.".format(str(months).split('.')[0])
+                else:
+                    years = days//365
+                    return "{}y ago.".format(str(years).split('.')[0])
+
+
+
 
 
 class Location(models.Model):

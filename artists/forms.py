@@ -93,7 +93,8 @@ class Contact(forms.Form):
     purpose = forms.CharField(label="Contact Type/Purpose (e.g Bookings)",required=True, max_length=50)
     phone = forms.CharField(label="Contact Person's Phone", max_length=15, required=True)
     email = forms.EmailField(label="Contact Person's Email Address", required=True)
-
+    whatsapp = forms.BooleanField(label=_("Phone is on WhatsApp?"), required=False)
+    
     def clean(self):
         cleaned_data = super(Contact, self).clean()
         person = cleaned_data.get('person')

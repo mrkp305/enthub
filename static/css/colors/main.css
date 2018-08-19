@@ -131,7 +131,7 @@ a.button.border.white:hover {
 }
 
 .list-layout .listing-img-container:after {
-    background: linear-gradient(to bottom, transparent 55%, #274abb)
+    background: linear-gradient(to bottom, transparent 55%, #f44336)
 }
 
 #titlebar.property-titlebar span.property-badge,
@@ -147,7 +147,7 @@ a.button.border.white:hover {
 .pagination ul li a:hover,
 .pagination-next-prev ul li a:hover,
 .property-features.checkboxes li:before {
-    background-color: #274abb
+    background-color: #f44336
 }
 
 .post-img:after,

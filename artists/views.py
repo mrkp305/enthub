@@ -219,6 +219,7 @@ class EditContact(LoginRequiredMixin, UserPassesTestMixin, View):
                 'purpose':contact.purpose,
                 'phone':contact.phone,
                 'email':contact.email,
+                'whatsapp': contact.whatsapp
             }
             context = {
                 'ContactForm': ArtistContactsForm(initial=initial),
@@ -238,6 +239,7 @@ class EditContact(LoginRequiredMixin, UserPassesTestMixin, View):
                     purpose = form.cleaned_data.get('purpose')
                     phone = form.cleaned_data.get('phone')
                     email = form.cleaned_data.get('email')
+                    whatsapp = form.cleaned_data.get('whatsapp')
 
                     if contact.person != person:
                         contact.person = person
@@ -259,6 +261,14 @@ class EditContact(LoginRequiredMixin, UserPassesTestMixin, View):
                         contact.save()
                         messages.success(request, 'Contact detail:Email successfully updated.')
                     
+                    if whatsapp:
+                        contact.whatsapp = True
+                        contact.save()
+                    else:
+                        contact.whatsapp = False
+                        contact.save()
+                        
+                    messages.success(request, "Contact Info Updated Successfully.")
                     return redirect(reverse('artists:edit-contact',args=(contact.id,)))
             else:
                 template = 'main/artists/edit-contact.html'

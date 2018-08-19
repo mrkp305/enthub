@@ -1,0 +1,253 @@
+{% extends "layouts/default.html" %}
+{% block PAGE_TITLE %}
+    Latest Events &mdash; Ehub
+{% endblock PAGE_TITLE %}
+{% block PAGE_CONTENT %}
+    
+
+<!-- Search
+================================================== -->
+<section class="search margin-bottom-50">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+        
+                    <!-- Title -->
+                    <h3 class="search-title">Search</h3>
+        
+                    <!-- Form -->
+                    <div class="main-search-box no-shadow">
+        
+        
+                        <!-- Row With Forms -->
+                        <div class="row with-forms">
+                             <!-- Main Search Input -->
+                            <div class="col-md-5">
+                                <div class="main-search-input">
+                                    <input type="text" placeholder="Enter name e.g. Summer Festival" value=""/>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="col-md-3">
+                                <input placeholder='Between date-' type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="input-text" >
+                                   
+                            </div>
+        
+                            <!-- Property Type -->
+                            <div class="col-md-4">
+                                <div class="main-search-input">
+                                <input placeholder='And date-' type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="input-text" >
+                                  
+                                <button class="button">Search</button>
+                                </div>
+                            </div>
+        
+                           
+        
+                        </div>
+                        <!-- Row With Forms / End -->
+                        
+
+                        <div class="row with-forms">
+                            <!-- Main Search Input -->
+                            <div class="col-md-4">
+                                <div class="main-search-input">
+                                    <select data-placeholder="Any Type" class="chosen-select-no-single" >
+                                        <option selected disabled>Any Type</option>
+                                        {% for type in types %}
+                                            <option value="{{ type.id }}">{{ type }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Status -->
+                            <div class="col-md-4">
+                                <select data-placeholder="Any Type" class="chosen-select-no-single" >
+                                    <option selected disabled>Any City</option>
+                                    {% for city in cities %}
+                                        <option value="{{ city.id }}">{{ city }}</option>
+                                    {% endfor %}
+                                </select>   
+                            </div>
+        
+                            <!-- Property Type -->
+                            <div class="col-md-4">
+                                <select data-placeholder="Any Location" class="chosen-select-no-single" >
+                                    <option selected disabled>Any Location</option>
+                                    {% for location in locations %}
+                                        <option value="{{ location.id }}">{{ location }}</option>
+                                    {% endfor %}
+                                </select> 
+                            </div>
+        
+                            
+        
+                        </div>
+
+
+                    </div>
+                    <!-- Box / End -->
+                </div>
+            </div>
+        </div>
+</section>
+        
+        
+        
+    <!-- Content
+    ================================================== -->
+    <div class="container">
+        <div class="row fullwidth-layout">
+    
+            <div class="col-md-12">
+    
+                <!-- Sorting / Layout Switcher -->
+                <div class="row margin-bottom-15">
+    
+                    <div class="col-md-6">
+                        <!-- Sort by -->
+                        <div class="sort-by">
+                            <label>Sort by:</label>
+    
+                            <div class="sort-by-select">
+                                <select data-placeholder="Default order" class="chosen-select-no-single" >
+                                    <option>Default Order</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+    
+                    <div class="col-md-6">
+                        <!-- Layout Switcher -->
+                        <div class="layout-switcher">
+                            <a href="#" class="list"><i class="fa fa-th-list"></i></a>
+                            <a href="#" class="grid"><i class="fa fa-th-large"></i></a>
+                            <a href="#" class="grid-three"><i class="fa fa-th"></i></a>
+                        </div>
+                    </div>
+                </div>
+    
+                
+                <!-- Listings -->
+                <div class="listings-container list-layout">
+                    
+                    {% for event in events %}
+                        <div class="listing-item">
+                            <a href="javascript:void(0)" class="listing-img-container">
+                    
+                                <div class="listing-badges">
+                                    <!-- <span class="featured">Featurehhd</span> -->
+                                    <span>{{ event.type|title }}</span>
+                                </div>
+                    
+                                <div class="listing-img-content">
+                                    <span class="listing-price">{{ event.start_date|date:'d M' }}<i>{{ event.start_date|date:'H:i' }}</i></span>
+                                    <span class="like-icon with-tip" data-tip-content="Add to Bookmarks"></span>
+                                    <span class="compare-button with-tip" data-tip-content="Add to Compare"></span>
+                                </div>
+                                
+                                {% if event.poster_count > 1 %}
+                                    <div class="listing-carousel">
+                                        {% for poster in event.get_other_posters %}
+                                            <div><img src="{{ poster.image.url }}"></div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <img src="{{ event.get_poster_url }}" alt="">
+                                {% endif %}
+                                
+                            </a>
+                            
+                            <div class="listing-content">
+                    
+                                <div class="listing-title">
+                                    <h4><a href="single-property-page-1.html">{{ event.name|title }}</a></h4>
+                                    <a href="#" class="listing-address popup-gmaps">
+                                        <i class="fa fa-map-marker"></i>
+                                        <b>{{ event.location.name|upper }}</b> - {{ event.location.street_address|title }}, {{ event.location.city|title }}
+                                    </a>
+                    
+                                    <a href="{% url 'events:view-event' event.id event.name|slugify %}" class="details button border">Details</a>
+                                </div>
+                    
+                                <ul class="listing-details">
+                                    <li>{{ event.about|lower|capfirst|truncatechars:25 }}</li>
+                                    <li>
+                                        {% with event.contact_set.all|first as contact %}
+                                            {% if contact.whatsapp %}
+
+                                                <a id='lnk-{{event.id}}' href=""><i class="fa fa-whatsapp"></i> {{ contact.phone }}</a>
+                                                
+                                                <script type="text/javascript">
+                                                    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                                    
+                                                    if (isMobile) {
+                                                        document.getElementById("lnk-{{event.id}}").setAttribute('href', "whatsapp://send?phone=263775735516&text=Hi%2C%20concerning%20the%20event%20%27{{event.name|upper}}%27.%20I%27d%20Like%20to%20enquire%20about%20");
+                                                    } else {
+                                                        document.getElementById("lnk-{{event.id}}").setAttribute('href',"https://web.whatsapp.com/send?phone=263775735516&text=Hi%2C%20concerning%20the%20event%20%27{{event.name|upper}}%27.%20I%27d%20Like%20to%20enquire%20about%20" );
+                                                    }
+                                                </script>
+
+                                                </script>
+                                            {% endif %}
+                                        {% endwith %}
+                                    </li>
+                                  
+                                </ul>
+                                
+                                <div class="listing-footer">
+                                    <a href="#"><i class="fa fa-user"></i> {{ event.added_by }}</a>
+                                    <span><i class="fa fa-calendar-o"></i> {{ event.created_at|timesince }}</span>
+                                    <!-- <span><i class="fa fa-calendar-o"></i> {{ event.time_since_added }}</span> -->
+                                </div>
+                    
+                            </div>
+                    
+                        </div>
+                    {% endfor %}
+                
+                </div>
+                <!-- Listings Container / End -->
+    
+                <div class="clearfix"></div>
+                <!-- Pagination -->
+                <div class="pagination-container margin-top-20">
+                    <nav class="pagination">
+                        <ul>
+                            {% for i in page_range %}
+                                {% if events.number == i %}
+                                    <li><a href="javascript:void(0)" class="current-page">{{ i }}</a></li>
+                                {% else %}
+                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                {% endif %}
+                            {% endfor %}
+                            
+                        </ul>
+                    </nav>
+    
+                    <nav class="pagination-next-prev">
+                        <ul>
+                            {% if events.has_previous %}
+                                <li><a href="?page={{ events.previous_page_number }}" class="prev">Previous</a></li>
+                            {% else %}
+                                <li><a href="javascript:void(0)" class="disabled prev">Previous</a></li>
+                            {% endif %}
+
+                            {% if events.has_next %}
+                                <li><a href="?page={{ events.next_page_number }}" class="next">Next</a></li>
+                            {% else %}
+                                <li><a href="javascript:void(0)" class="next disabled">Next</a></li>
+                            {% endif %}
+                        </ul>
+                    </nav>
+                </div>
+                <!-- Pagination / End -->
+    
+            </div>
+    
+        </div>
+    </div>
+{% endblock PAGE_CONTENT %} 

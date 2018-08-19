@@ -60,6 +60,7 @@ class Contact(models.Model):
     phone = models.CharField(_("Contact Person's Phone"), max_length=50)
     email = models.EmailField(_("Contact Person's Email Address"), max_length=254, blank=True, null=True)
     last_updated = models.DateTimeField(_("Last Updated On"), auto_now=True)
+    whatsapp = models.BooleanField(_("Phone Number is on WhatsApp?"), default=True)
     
     class Meta:
         verbose_name = 'Contact'

@@ -1,5 +1,4 @@
-'''
-    Django Imports
+'''Django Imports
 '''
 
 from django.shortcuts import render, redirect, get_object_or_404, reverse
@@ -11,21 +10,19 @@ from django.core.files.base import ContentFile
 from django.contrib import messages
 from datetime import *
 import json
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-'''
-    End Django Imports
+''' End Django Imports
 '''
 
 
-'''
-    Form Imports
+''' Form Imports
 '''
 
 from .forms import *
 
 
-'''
-    End form imports
+''' End form imports
 '''
 
 '''Model Imports
@@ -34,10 +31,6 @@ from .models import *
 from utils.models import *
 from authentication.models import User
 
-
-class Events(View):
-    def get(self, request):
-        pass
 
 class Add(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'
@@ -188,8 +181,8 @@ class Details(LoginRequiredMixin, View):
                 'Event name': event.name,
                 'Type': event.type.name,
                 'About': event.about,
-                'Starts': event.end_date,
-                'Ends': datetime.strftime(event.end_date, '%B %d, %Y @%I:%M hrs'),
+                'Starts': datetime.strftime(event.start_date, '%B %d, %Y @%H:%M hrs'),
+                'Ends': datetime.strftime(event.end_date, '%B %d, %Y @%H:%M hrs'),
                 'Added By': event.added_by.first_name + ' ' + event.added_by.last_name,
                 'Website': event.website,
                 'Location': event.location.name,
@@ -248,6 +241,7 @@ class Edit(LoginRequiredMixin, View):
                     end_time = form.cleaned_data.get('end_time')
                     admission = form.cleaned_data.get('admission')
                     
+
                     
                     location_name = form.cleaned_data.get('location_name')
                     city = form.cleaned_data.get('city')
@@ -264,7 +258,7 @@ class Edit(LoginRequiredMixin, View):
                     
                     #The Location first, since Event Object depends on it
                     location = Location.objects.get(
-                        id=event.location.id
+                        event=event
                     )
                     if location_name:
                         location.name = location_name
@@ -284,7 +278,7 @@ class Edit(LoginRequiredMixin, View):
                     
                     if title:
                         event.name = title
-                        
+                    
                     if type:
                         event.type = EventType.objects.get(id=type)
                         
@@ -293,7 +287,10 @@ class Edit(LoginRequiredMixin, View):
                         
                     if about:
                         event.about = about
-                        
+
+                    event.start_date=datetime.combine(start_date, start_time)
+                    event.end_date=datetime.combine(end_date, end_time)
+                    
                     if website:
                         event.website = website
                     event.save()
@@ -311,39 +308,46 @@ class Edit(LoginRequiredMixin, View):
                 return HttpResponseForbidden()
 
 
-
-class EditLocation(LoginRequiredMixin, View):
+class Events(View):
     login_url = '/auth'
-    def get(self, request, event_id):
+    def get(self, request):
+        event_list = Event.objects.all().order_by('start_date')
+
+        paginator = Paginator(event_list, 9)
+        page=request.GET.get('page', 1)
+
+        template = 'main/events/index.html'
+        events = paginator.get_page(page)
+        # Get the index of the current page
+        index = events.number - 1  # edited to something easier without index
+        # This value is maximum index of your pages, so the last page - 1
+        max_index = len(paginator.page_range)
+        # You want a range of 7, so lets calculate where to slice the list
+        start_index = index - 3 if index >= 3 else 0
+        end_index = index + 3 if index <= max_index - 3 else max_index
+        # Get our new page range. In the latest versions of Django page_range returns 
+        # an iterator. Thus pass it to list, to make our slice possible again.
+        page_range = list(paginator.page_range)[start_index:end_index]
+        context = {
+            'page_range':page_range,
+            'types':EventType.objects.all(),
+            'cities':City.objects.all(),
+            'locations':Location.objects.all(),
+            'events':events
+        }
+        return HttpResponse(render(request, template, context))
+
+class ViewEvent(View):
+    def get(self, request, event_id, slug=""):
         event = get_object_or_404(Event, id=event_id)
-        if event.added_by != User.objects.get(id=request.user.id):
-            return HttpResponseForbidden()
-        else:
-            template = 'main/events/edit-location.html'
-            context = {
-                'event':event,
-                'form':EditLocationForm(initial=initial)
-            }
-            return HttpResponse(render(request, template, context))
+        featured = Event.objects.exclude(id=event.id)[:3]
+        similar = Event.objects.filter(type=event.type)[:5]
+        template = 'main/events/view.html'
+        context = {
+            'event':event,
+            'featured':featured,
+            'similar':similar,
+            
+        }
+        return HttpResponse(render(request, template, context))
     
-    def post(self, request, event_id):
-        event = get_object_or_404(Event, id=event_id)
-        if event.added_by != User.objects.get(id=request.user.id):
-            return HttpResponseForbidden()
-        else:
-            if 'edit_location' in request.POST:
-                form = EditLocationForm(request.POST)
-                if form.is_valid():
-                    pass
-                else:
-                    template = 'main/events/edit-location.html'
-                    context = {
-                        'event':event,
-                        'form':form
-                    }
-                    messages.error(request, 'Please check your input and try again.')
-                    return HttpResponse(render(request, template, context))
-
-
-
-

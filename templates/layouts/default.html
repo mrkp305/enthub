@@ -164,29 +164,30 @@
 				<nav id="navigation" class="style-1">
 					<ul id="responsive">
 
-						<li><a class="current" href="{% url 'site-home' %}">Home</a>
+						<li>
+							<a class="current" href="{% url 'site-home' %}">Home</a>
 							
 						</li>
 
 						<li><a href="#">Events</a>
 							<ul>
-								<li><a href="">Browse</a></li>
-								<li><a href="{% url 'events:post-event' %}">Post and Event</a></li>
+								<li><a href="{% url 'events:index' %}">Browse</a></li>
+								<li><a href="{% url 'events:post-event' %}">Post an Event</a></li>
 							</ul>
 						</li>
 
 						<li><a href="#">Calendar</a>
 							<ul>
-								<li><a href="compare-properties.html">Browse</a></li>
-								<li><a href="submit-property.html">Sync to phone</a></li>
+								<li><a href="javascript:void(0)">Browse</a></li>
+								<li><a href="javascript:void(0)">Sync to phone</a></li>
 							</ul>
 						</li>
 
 						<li><a href="#">Ehub News</a>
 							<ul>
-								<li><a href="contact.html">Updates</a></li>
-								<li><a href="elements.html">Top News</a></li>
-								<li><a href="elements.html">Latest</a></li>
+								<li><a href="javascript:void(0)">Site Updates</a></li>
+								<li><a href="javascript:void(0)">Top News</a></li>
+								<li><a href="javascript:void(0)">Latest</a></li>
 							</ul>
 						</li>
 
@@ -218,8 +219,8 @@
 							Hi, {{ request.user.get_short_name }}!</div>
 						<ul>
 							<li><a href="{% url 'account:account-profile' %}"><i class="sl sl-icon-user"></i> My Profile</a></li>
-							<li><a href="my-bookmarks.html"><i class="sl sl-icon-star"></i> Bookmarks</a></li>
-							<li><a href="my-properties.html"><i class="sl sl-icon-docs"></i> My Events</a></li>
+							<li><a href="javascript:void(0)"><i class="sl sl-icon-star"></i> Bookmarks</a></li>
+							<li><a href="{% url 'events:my-events' %}"><i class="sl sl-icon-docs"></i> My Events</a></li>
 							<li><a href="{% url 'authentication:logout' %}"><i class="sl sl-icon-power"></i> Log Out</a></li>
 						</ul>
 					</div>

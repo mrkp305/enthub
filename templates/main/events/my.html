@@ -112,14 +112,13 @@
                                     <div class="title">
                                         <h4><a href="#">{{ event.name }}</a></h4>
                                         <span><a href="{% url 'events:edit' event.id %}"><i class="fa fa-map-marker"></i> {{ event.get_address }}</a></span>
-                                        <span><a style="border-bottom: 1px dotted #f66446;" href="{% url 'events:edit-location' event.id %}">Edit Location</a></span>
-                                        <span class="table-property-price">{{ event.type }}</span>
+                                         <span class="table-property-price">{{ event.type }}</span>
                                     </div>
                                 </td>
                                 <td class="expire-date"><b>{{ event.start_date|date:'F d, Y H:i' }}hrs</b></td>
                                 <td class="action">
                                     <a href="{% url 'events:edit' event.id %}"><i class="fa fa-pencil"></i> Edit</a>
-                                    <a id='detailsTrigger' data-eid="{{ event.id }}" href="javascript:void(0)"><i class="fa fa-eye"></i> Details</a>
+                                    <a id='detailsTrigger{{ event.id }}' data-eid="{{ event.id }}" href="javascript:void(0)"><i class="fa fa-eye"></i> Details</a>
                                     <a href="{% url 'events:delete' event.id %}" class="delete"><i class="fa fa-remove"></i> Delete</a>
                                 </td>
                             </tr>
@@ -180,7 +179,8 @@
 {% block PAGE_JS %}
 <script type="text/javascript" src="{% static 'scripts/customized/bootstrap/bootstrap.js' %}"></script>
 <script>
-    $("#detailsTrigger").on('click', function(){
+    
+    $("[id^=detailsTrigger]").on('click', function(){
         var eid;
         eid = $(this).attr("data-eid");
         $.post("/events/get-details/", {

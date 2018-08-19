@@ -1,6 +1,6 @@
 {% extends "layouts/default.html" %}
 {% load static %}
-{% block PAGE_TITLE %} Edit Contact &mdash; {{ request.user.profile.artist }} &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_TITLE %} {{ event.name }} &mdash; Edit Location &mdash; Ehub {% endblock PAGE_TITLE %}
 {% block PAGE_CSS %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
   <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
@@ -13,14 +13,14 @@
 		<div class="row">
 			<div class="col-md-12">
 
-				<h2>Edit Contact Information</h2>
+				<h2>{{ event.name }}</h2>
 
 				<!-- Breadcrumbs -->
 				<nav id="breadcrumbs">
 					<ul>
-						<li><a href="#">Artist</a></li>
-						<li><a href="#">Profile</a></li>
-						<li>Edit Contact Information</li>
+						<li><a href="#">Events</a></li>
+						<li><a href="#">Edit</a></li>
+						<li>Location</li>
 					</ul>
 				</nav>
 
@@ -78,6 +78,7 @@
 		<div class="col-md-8">
 			<div class="row">
 				<div class="col-md-8 my-profile">
+                    <h4 class="margin-top-0 margin-bottom-30">{{ event.name }} Location Details</h4>
 					{% if messages %}
 
 						{% for message in messages %}
@@ -93,29 +94,33 @@
 					<form method="POST" name='contact-entry' action="">
 						{% csrf_token %}
 						<input type="hidden" value="{{ contact_id }}" name="contact">
-						<label>{{ ContactForm.person.label }}</label>
-						{{ ContactForm.person }}
-						<small style="color: #f44336;">{{  ContactForm.person.errors|first }}</small>
+						<label>{{ form.location_name.label }}</label>
+						{{ form.location_name }}
+						<small style="color: #f44336;">{{  form.location_name.errors|first }}</small>
 	
-						<label>{{ ContactForm.purpose.label }}</label>
-						{{ ContactForm.purpose }}
-						<small style="color: #f44336;">{{ ContactForm.purpose.errors|first }}</small>
+						<label>{{ form.street_address.label }}</label>
+						{{ form.street_address }}
+						<small style="color: #f44336;">{{ form.street_address.errors|first }}</small>
 	
-						<label>{{ ContactForm.phone.label }}</label>
-						{{ ContactForm.phone }}
-						<small style="color: #f44336;">{{ ContactForm.phone.errors|first }}</small>
-
-						
-						<div class="checkboxes in-row margin-bottom-20">
-							<input id="{{ ContactForm.whatsapp.auto_id  }}" type="checkbox" name="{{ ContactForm.whatsapp.name }}" {% if ContactForm.whatsapp.value %} checked {% endif %}>
-							<label for="{{ ContactForm.whatsapp.auto_id  }}">{{ ContactForm.whatsapp.label }}</label>
-						</div>
-							
-						<label>{{ ContactForm.email.label }}</label>
-						{{ ContactForm.email }}
-						<small style="color: #f44336;">{{ ContactForm.email.errors|first }}</small>
+						<label>{{ form.city.label }}</label>
+						{{ form.city }}
+						<small style="color: #f44336;">{{ form.city.errors|first }}</small>
+	
+						<label>{{ form.zip_code.label }}</label>
+						{{ form.zip_code }}
+						<small style="color: #f44336;">{{ form.zip_code.errors|first }}</small>
+	
+						<label>{{ form.latitude.label }}</label>
+						{{ form.latitude }}
+						<small style="color: #f44336;">{{ form.latitude.errors|first }}</small>
+	
+						<label>{{ form.longitude.label }}</label>
+						{{ form.longitude }}
+						<small style="color: #f44336;">{{ form.longitude.errors|first }}</small>
+	
+                        
 						<div class="clear-fix"></div>
-						<button name="update_contact" class="button medium border">Update Info</button>
+						<button name="edit_location" class="button medium border">Update Location Info</button>
 					</form>
 					<br>
 				</div>
