@@ -22,80 +22,35 @@
                         <!-- Row With Forms -->
                         <div class="row with-forms">
                              <!-- Main Search Input -->
-                            <div class="col-md-5">
+                            <div class="col-md-8">
                                 <div class="main-search-input">
-                                    <input type="text" placeholder="Enter name e.g. Summer Festival" value=""/>
+                                    <input id="sq" type="text" placeholder="Enter name e.g. Summer Festival" value=""/>
                                     
                                 </div>
                             </div>
 
-                            <!-- Status -->
-                            <div class="col-md-3">
-                                <input placeholder='Between date-' type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="input-text" >
-                                   
-                            </div>
-        
                             <!-- Property Type -->
-                            <div class="col-md-4">
+                            <div  class="col-md-4">
                                 <div class="main-search-input">
-                                <input placeholder='And date-' type="text" onfocus="(this.type='date')" onblur="(this.type='text')" class="input-text" >
-                                  
-                                <button class="button">Search</button>
+                                        <select id="stype" data-placeholder="Any Type" class="chosen-select-no-single" >
+                                            <option disabled selected="selected">Any type</option>
+                                                {% for type in types %}
+                                                    <option value="{{ type.id }}">{{ type }}</option>
+                                                {% endfor %}
+                                            </select>   
+                                <button class="button" id='searchbtn'>Search</button>
                                 </div>
                             </div>
         
-                           
-        
                         </div>
-                        <!-- Row With Forms / End -->
-                        
-
-                        <div class="row with-forms">
-                            <!-- Main Search Input -->
-                            <div class="col-md-4">
-                                <div class="main-search-input">
-                                    <select data-placeholder="Any Type" class="chosen-select-no-single" >
-                                        <option selected disabled>Any Type</option>
-                                        {% for type in types %}
-                                            <option value="{{ type.id }}">{{ type }}</option>
-                                        {% endfor %}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Status -->
-                            <div class="col-md-4">
-                                <select data-placeholder="Any Type" class="chosen-select-no-single" >
-                                    <option selected disabled>Any City</option>
-                                    {% for city in cities %}
-                                        <option value="{{ city.id }}">{{ city }}</option>
-                                    {% endfor %}
-                                </select>   
-                            </div>
-        
-                            <!-- Property Type -->
-                            <div class="col-md-4">
-                                <select data-placeholder="Any Location" class="chosen-select-no-single" >
-                                    <option selected disabled>Any Location</option>
-                                    {% for location in locations %}
-                                        <option value="{{ location.id }}">{{ location }}</option>
-                                    {% endfor %}
-                                </select> 
-                            </div>
-        
-                            
-        
-                        </div>
-
+                      
 
                     </div>
                     <!-- Box / End -->
                 </div>
             </div>
         </div>
-</section>
-        
-        
+</section>  
         
     <!-- Content
     ================================================== -->
@@ -136,7 +91,7 @@
                     
                     {% for event in events %}
                         <div class="listing-item">
-                            <a href="javascript:void(0)" class="listing-img-container">
+                            <a href="{% url 'events:view-event' event.id event.name|slugify %}" class="listing-img-container">
                     
                                 <div class="listing-badges">
                                     <!-- <span class="featured">Featurehhd</span> -->
@@ -164,8 +119,8 @@
                             <div class="listing-content">
                     
                                 <div class="listing-title">
-                                    <h4><a href="single-property-page-1.html">{{ event.name|title }}</a></h4>
-                                    <a href="#" class="listing-address popup-gmaps">
+                                    <h4><a href="{% url 'events:view-event' event.id event.name|slugify %}">{{ event.name|title }}</a></h4>
+                                    <a href="{% url 'events:view-event' event.id event.name|slugify %}#location" class="listing-address">
                                         <i class="fa fa-map-marker"></i>
                                         <b>{{ event.location.name|upper }}</b> - {{ event.location.street_address|title }}, {{ event.location.city|title }}
                                     </a>
@@ -221,7 +176,7 @@
                                 {% if events.number == i %}
                                     <li><a href="javascript:void(0)" class="current-page">{{ i }}</a></li>
                                 {% else %}
-                                    <li><a href="?page={{ i }}">{{ i }}</a></li>
+                                    <li><a class="paginator-link" data-page-target="{{ i }}" href="javascript:void(0)">{{ i }}</a></li>
                                 {% endif %}
                             {% endfor %}
                             
@@ -231,13 +186,14 @@
                     <nav class="pagination-next-prev">
                         <ul>
                             {% if events.has_previous %}
-                                <li><a href="?page={{ events.previous_page_number }}" class="prev">Previous</a></li>
+                                <li><a data-page-target="{{ events.previous_page_number }}" href="javascript:void(0)" class="paginator-link prev">Previous</a></li>
                             {% else %}
                                 <li><a href="javascript:void(0)" class="disabled prev">Previous</a></li>
                             {% endif %}
 
                             {% if events.has_next %}
-                                <li><a href="?page={{ events.next_page_number }}" class="next">Next</a></li>
+                            <li><a data-page-target="{{ events.next_page_number }}" href="javascript:void(0)" class="paginator-link next">Next</a></li>
+                         
                             {% else %}
                                 <li><a href="javascript:void(0)" class="next disabled">Next</a></li>
                             {% endif %}
@@ -251,3 +207,57 @@
         </div>
     </div>
 {% endblock PAGE_CONTENT %} 
+{% block PAGE_JS %}
+  <script>
+    $(document).ready(function(){
+        ($.urlParam('query') !== null && $.urlParam('query') != '')? $('#sq').val((decodeURIComponent($.urlParam('query')))): //pass;
+        
+        $('#stype').find('option:contains("' + decodeURIComponent($.urlParam('event_type')) + '")').attr('selected', 'selected');
+        //    return this.text == decodeURIComponent($.urlParam('event_type')); 
+        //}).attr('selected', true);
+
+    });
+
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
+      $(".paginator-link").on('click', function() {
+            page = $(this).attr('data-page-target');
+            var query, event_type, city;
+            query = String($('#sq').val());
+           
+            event_type = String($('#stype').find(":selected").text());
+           
+            var params = {
+                page:page,
+                query: query,
+               
+                event_type: event_type,
+               
+            };
+            var new_href = window.location.href.split('?')[0] +'?'+$.param(params);
+            window.location.href = new_href;
+      });
+      $("#searchbtn").on('click',function(){
+        page = 1;
+        var query, event_type, city;
+        query = String($('#sq').val());
+       
+        event_type = String($('#stype').find(":selected").text());
+        
+        var params = {
+            page:page,
+            query: query,
+           
+            event_type: event_type,
+           
+        };
+        
+        var new_href = window.location.href.split('?')[0] +'?'+$.param(params);
+        window.location.href = new_href;
+
+      });
+     
+  </script>
+{% endblock PAGE_JS %}

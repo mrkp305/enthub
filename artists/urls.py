@@ -22,6 +22,8 @@ from django.conf import settings
 
 app_name = 'artists'
 urlpatterns = [
+    path('', Index.as_view(), name='index'),
+    re_path(r'^(\d+)/([a-zA-Z0-9\-\'\w]*)', ViewArtist.as_view(), name='view'),
     path('create-profile/', CreateProfile.as_view(), name='create-profile'),
     path('me/', MyProfile.as_view(), name='view-my-profile'),
     path('me/contacts', Contacts.as_view(), name='my-contacts'),

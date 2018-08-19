@@ -172,14 +172,21 @@
 						<li><a href="#">Events</a>
 							<ul>
 								<li><a href="{% url 'events:index' %}">Browse</a></li>
+								<li><a href="{% url 'events:index' %}">Calendar</a>
+									<ul>
+										<li><a href="javascript:void(0)">Browse</a></li>
+										<li><a href="javascript:void(0)">Sync to phone</a></li>
+									</ul>
+								</li>
 								<li><a href="{% url 'events:post-event' %}">Post an Event</a></li>
 							</ul>
 						</li>
 
-						<li><a href="#">Calendar</a>
+					
+						
+						<li><a href="#">Artists</a>
 							<ul>
-								<li><a href="javascript:void(0)">Browse</a></li>
-								<li><a href="javascript:void(0)">Sync to phone</a></li>
+								<li><a href="{% url 'events:index' %}">Listing</a></li>
 							</ul>
 						</li>
 

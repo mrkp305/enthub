@@ -3,6 +3,12 @@
 {% block PAGE_TITLE %}
    {{ event.name|upper }} &mdash; Ehub
 {% endblock PAGE_TITLE %}
+{% block PAGE_CSS %}
+<link rel="stylesheet" href="{% static 'css/leaflet.css' %}"/>
+<script src="https://unpkg.com/leaflet@1.3.3/dist/leaflet.js"
+   integrity="sha512-tAGcCfR4Sc5ZP5ZoVz0quoZDYX5aCtEm/eu1KhSLj2c9eFrylXZknQYmxUssFaVJKvvc0dJQixhGjG2yXWiV9Q=="
+   crossorigin=""></script>
+{% endblock PAGE_CSS %}
 {% block PAGE_CONTENT %}
     
 <!-- Titlebar
@@ -73,17 +79,8 @@
             <div class="col-lg-8 col-md-7">
                 <div class="property-description">
     
-                    <!-- Main Features
-                    <ul class="property-main-features">
-                        <li>Area <span>1450 sq ft</span></li>
-                        <li>Rooms <span>4</span></li>
-                        <li>Bedrooms <span>2</span></li>
-                        <li>Bathrooms <span>1</span></li>
-                    </ul> -->
-    
-    
                     <!-- Description -->
-                    <h3 class="desc-headline">About {{ event.name|title }}</h3>
+                    <h3 class="desc-headline"><i class="fa fa-info-circle"></i> About {{ event.name|title }}</h3>
                     <div class="show">
                         <p>
                             {{ event.about|title }}
@@ -93,18 +90,29 @@
                     </div>
     
                     <!-- Details -->
-                    <h3 class="desc-headline">Admission</h3>
+                    <h3 class="desc-headline"><i class="fa fa-dollar"></i> Admission</h3>
                     <p>
-                        {{ event.admission }}
+                        {% if similar_event.admission %} {{ similar_event.admission }} {% else %} Not Specified {% endif %}
+                       
                     </p>                
     
                   
                     
                     <!-- Location -->
-                    <h3 class="desc-headline no-border" id="location">Location</h3>
+                    <h3 class="desc-headline" id="location"><i class="fa fa-map-marker"></i> Location</h3>
+                    <ul class="property-features margin-top-0">
+                        <li>Location name: <span>{{ event.location.name }}</span></li>
+                        <li>Street Adress: <span>{% if event.location.street_address %} {{ event.location.street_address }} {% else %} Not Specified {% endif %}</span></li>
+                        <li>City: <span>{{ event.location.city.name }}</span></li>
+                        <li>Country: <span>{{ event.location.city.country }}</span></li>
+                        <li>Zip Code: <span>{% if event.location.zip_code %} {{ event.location.zip_code }} {% else %} &mdash; {% endif %}</span></li>
+                        <li>Latitude: <span>{% if event.location.latitude %} {{ event.location.latitude }} {% else %} &mdash; {% endif %}</span></li>
+                        <li>Longitude: <span>{% if event.location.longitude %} {{ event.location.longitude }} {% else %} &mdash; {% endif %}</span></li>
+                    </ul>
+                    <hr>
                     <div id="propertyMap-container">
-                        <div id="propertyMap" data-latitude="{{ event.location.latitude }}" data-longitude="{{ event.location.longitude }}"></div>
-                        <a href="#" id="streetView">Street View</a>
+                        <div id="eventMap" style="height: 400px;position: relative;overflow: hidden;border-radius: 3px;" data-latitude="{{ event.location.latitude }}" data-longitude="{{ event.location.longitude }}"></div>
+                        <a href="javascript:void(0)" id="streetView">Street View</a>
                     </div>
     
     
@@ -115,7 +123,59 @@
     
                     <div class="layout-switcher hidden"><a href="#" class="list"><i class="fa fa-th-list"></i></a></div>
                     <div class="listings-container list-layout">
-    
+                        
+                        {% if similar %}
+                            {% for similar_event in similar %}
+                                <!-- Listing Item -->
+                                <div class="listing-item">
+
+                                        <a href="{% url 'events:view-event' similar_event.id similar_event.name|slugify %}" class="listing-img-container">
+                
+                                            <div class="listing-badges">
+                                                <span>{{ similar_event.type }}</span>
+                                            </div>
+                
+                                            <div class="listing-img-content">
+                                                <span class="listing-price">{{ similar_event.start_date|date:'d M'}}<i>{{ similar_event.start_date|date:'H:i'}}</i></span>
+                                                <span class="like-icon"></span>
+                                            </div>
+                
+                                            <img src="{{ similar_event.get_poster_url }}" alt="">
+                
+                                        </a>
+                                        
+                                        <div class="listing-content">
+                
+                                            <div class="listing-title">
+                                                <h4><a href="{% url 'events:view-event' similar_event.id similar_event.name|slugify %}">{{ similar_event.name|title }}</a></h4>
+                                                <a href="#" class="listing-address popup-gmaps">
+                                                    <i class="fa fa-map-marker"></i>
+                                                    <b>{{ similar_event.location.name|upper }}</b> - {{ similar_event.location.street_address|truncatechars:20 }}, {{ similar_event.location.city.name| title }}
+                                                </a>
+                
+                                                <a href="{% url 'events:view-event' similar_event.id similar_event.name|slugify %}" class="details button border">Details</a>
+                                            </div>
+                
+                                            <ul class="listing-details">
+                                                <li><i class="sl sl-icon-info"></i> {{ similar_event.about|capfirst|truncatechars:20 }}</li>
+                                                <li><i class="fa fa-dollar"></i> - {% if similar_event.admission %} {{ similar_event.admission }} {% else %} Not Specified {% endif %}</li>
+                                            </ul>
+                
+                                            <div class="listing-footer">
+                                                <a href="#"><i class="fa fa-user"></i> {{ similar_event.added_by|title }}</a>
+                                                <span><i class="fa fa-calendar-o"></i> {{ similar_event.created_at|timesince }}</span>
+                                            </div>
+                
+                                        </div>
+                                        <!-- Listing Item / End -->
+                
+                                    </div>
+                                    <!-- Listing Item / End -->
+                
+                            {% endfor %}
+                        {% else %}
+                            None
+                        {% endif %}
                       
                     </div>
                     <!-- Similar Listings Container / End -->
@@ -214,3 +274,27 @@
     </div>
     
 {% endblock PAGE_CONTENT %} 
+
+{% block PAGE_JS %}
+    <script type="text/javascript">
+      
+        var eventMap = L.map('eventMap').setView([{{ event.location.latitude }}, {{ event.location.longitude }}], 13);
+        eventMap.setZoom(200);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(eventMap);
+        html = "<div style=\"font-family:'Varela Round' !important;color:#fff !important;\">"
+                    + "<h3>{{ event.location.name|title}}</h3>"
+                    + "<p>{{ event.location.street_address|title}}</p>"
+                + "</div>";
+         L.marker([{{ event.location.latitude }}, {{ event.location.longitude }}]).addTo(eventMap).bindPopup(html)
+        .openPopup();
+
+        L.circle([{{ event.location.latitude }}, {{ event.location.longitude }}], {
+            color: '#ffffff00',
+            fillColor: '#f44336',
+            fillOpacity: 0.5,
+            radius: 100
+        }).addTo(eventMap);
+    </script>
+{% endblock PAGE_JS %}

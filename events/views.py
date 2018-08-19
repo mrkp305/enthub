@@ -311,9 +311,18 @@ class Edit(LoginRequiredMixin, View):
 class Events(View):
     login_url = '/auth'
     def get(self, request):
-        event_list = Event.objects.all().order_by('start_date')
+        event_list = None
+        #?page=2&query=&date_from=&date_to=&event_type=Party&city=Kwekwe%20-%20Zimbabwe&location=OLikjuhg
+        if request.GET.get('query') is not None and request.GET.get('event_type') is not None and request.GET.get('event_type') != 'Any type':
+            event_list = Event.objects.filter(name__icontains=request.GET.get('query'), type=EventType.objects.get(name=request.GET.get('event_type')))
+        elif request.GET.get('query') is None and request.GET.get('event_type') is not None:
+            event_list = Event.objects.filter(type=EventType.objects.get(name=request.GET.get('event_type')))
+        elif request.GET.get('query') is not None and (request.GET.get('event_type') is None or request.GET.get('event_type') =='Any type'):
+            event_list = Event.objects.filter(name__icontains=request.GET.get('query'))
+        else:
+            event_list = Event.objects.all().order_by('start_date')
 
-        paginator = Paginator(event_list, 9)
+        paginator = Paginator(event_list, 1)
         page=request.GET.get('page', 1)
 
         template = 'main/events/index.html'
@@ -341,7 +350,7 @@ class ViewEvent(View):
     def get(self, request, event_id, slug=""):
         event = get_object_or_404(Event, id=event_id)
         featured = Event.objects.exclude(id=event.id)[:3]
-        similar = Event.objects.filter(type=event.type)[:5]
+        similar = Event.objects.filter(type=event.type).exclude(id=event.id)[:5]
         template = 'main/events/view.html'
         context = {
             'event':event,

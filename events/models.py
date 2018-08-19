@@ -26,7 +26,7 @@ class Event(models.Model):
         verbose_name_plural = 'Events'
     
     def __str__(self):
-            return self.name
+            return self.name or ''
 
     def get_poster_url(self):
         return self.poster_set.filter(main=True)[0].image.url
@@ -96,7 +96,7 @@ class Location(models.Model):
         verbose_name_plural = 'Event Locations'
 
     def __str__(self):
-        return self.name
+        return self.name or ''
 
 
 class Contact(models.Model):
@@ -113,7 +113,7 @@ class Contact(models.Model):
         verbose_name_plural = 'Event contacts'
     
     def __str__(self):
-        return self.phone
+        return self.phone or ''
 
 def directory_path(instance, filename):
     ext = filename.split('.')[-1]
@@ -126,7 +126,7 @@ class Poster(models.Model):
     main = models.BooleanField(_("Is Main"), default=False)
 
     def __str__(self):
-            return "Poster for '{}'".format(self.event)
+            return "Poster for '{}'".format(self.event) or ''
 
     class Meta:
         verbose_name = 'poster'

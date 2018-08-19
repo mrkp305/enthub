@@ -1,0 +1,174 @@
+{% extends "layouts/default.html" %}
+{% block PAGE_TITLE %}
+    Artists &mdash; Ehub
+{% endblock PAGE_TITLE %}
+{% block PAGE_CONTENT %}
+    
+<!-- Titlebar
+================================================== -->
+<div id="titlebar">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12">
+    
+                    <h2>Artists</h2>
+                    <span>The ultimate list</span>
+                    
+                    <!-- Breadcrumbs -->
+                    <nav id="breadcrumbs">
+                        <ul>
+                            <li><a href="#">Home</a></li>
+                            <li>Artists</li>
+                        </ul>
+                    </nav>
+    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+     
+    
+    <!-- Content
+    ================================================== -->
+    <div class="container">
+        <div class="row">
+    
+            <div class="col-md-12">
+                <!-- Main Search Input -->
+                <div class="main-search-input margin-bottom-40">
+                    <input type="text" class="ico-01" placeholder="Type an artist name or genre" value=""/>
+                    <button class="button">Search</button>
+                </div>
+            </div>
+    
+    
+            <div class="col-md-12">
+                <div class="row">
+    
+                    <!-- Agents Container -->
+                    <div class="agents-grid-container">
+                        
+                        {% if artists %}
+                            {% for artist in artists %}
+                                <!-- Agent -->
+                                <div class="grid-item col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <div class="agent">
+                
+                                            <div class="agent-avatar">
+                                                <a href="{% url 'artists:view' artist.id artist.stage_name|slugify %}">
+                                                    <img src="{{ artist.user_profile.avatar.url }}" alt="">
+                                                    <span class="view-profile-btn">View Profile</span>
+                                                </a>
+                                            </div>
+                
+                                            <div class="agent-content">
+                                                <div class="agent-name">
+                                                    <h4><a href="{% url 'artists:view' artist.id artist.stage_name|slugify %}">{{ artist.stage_name|title }}</a></h4>
+                                                    <span><a href="#">{{artist.genre }}</a> artist</span>
+                                                </div>
+                
+                                                <ul class="social-icons">
+                                                    <li><a class="facebook" href="#"><i class="icon-facebook"></i></a></li>
+                                                    <li><a class="twitter" href="#"><i class="icon-twitter"></i></a></li>
+                                                    <li><a class="gplus" href="#"><i class="icon-gplus"></i></a></li>
+                                                    <li><a class="linkedin" href="#"><i class="icon-linkedin"></i></a></li>
+                                                </ul>
+                                                <div class="clearfix"></div>
+                                            </div>
+                
+                                        </div>
+                                    </div>
+                                    <!-- Agent / End -->
+                            {% endfor %}
+                        {% endif %}
+                       
+    
+    
+                    </div>
+                    <!-- Agents Container / End -->
+    
+                </div>
+            </div>
+    
+    
+            <div class="col-md-12">
+                <div class="clearfix"></div>
+                <!-- Pagination -->
+                <div class="pagination-container margin-top-20">
+                    <nav class="pagination">
+                        <ul>
+                            <li><a href="#" class="current-page">1</a></li>
+                            <li><a href="#">2</a></li>
+                            <li><a href="#">3</a></li>
+                        </ul>
+                    </nav>
+    
+                    <nav class="pagination-next-prev">
+                        <ul>
+                            <li><a href="#" class="prev">Previous</a></li>
+                            <li><a href="#" class="next">Next</a></li>
+                        </ul>
+                    </nav>
+                </div>
+                <!-- Pagination / End -->
+            </div>
+    
+        </div>
+    </div>
+
+{% endblock PAGE_CONTENT %} 
+{% block PAGE_JS %}
+  <script>
+    $(document).ready(function(){
+        ($.urlParam('query') !== null && $.urlParam('query') != '')? $('#sq').val((decodeURIComponent($.urlParam('query')))): //pass;
+        
+        $('#stype').find('option:contains("' + decodeURIComponent($.urlParam('event_type')) + '")').attr('selected', 'selected');
+        //    return this.text == decodeURIComponent($.urlParam('event_type')); 
+        //}).attr('selected', true);
+
+    });
+
+    $.urlParam = function(name){
+        var results = new RegExp('[\?&]' + name + '=([^&#]*)').exec(window.location.href);
+        return results[1] || 0;
+    }
+      $(".paginator-link").on('click', function() {
+            page = $(this).attr('data-page-target');
+            var query, event_type, city;
+            query = String($('#sq').val());
+           
+            event_type = String($('#stype').find(":selected").text());
+           
+            var params = {
+                page:page,
+                query: query,
+               
+                event_type: event_type,
+               
+            };
+            var new_href = window.location.href.split('?')[0] +'?'+$.param(params);
+            window.location.href = new_href;
+      });
+      $("#searchbtn").on('click',function(){
+        page = 1;
+        var query, event_type, city;
+        query = String($('#sq').val());
+       
+        event_type = String($('#stype').find(":selected").text());
+        
+        var params = {
+            page:page,
+            query: query,
+           
+            event_type: event_type,
+           
+        };
+        
+        var new_href = window.location.href.split('?')[0] +'?'+$.param(params);
+        window.location.href = new_href;
+
+      });
+     
+  </script>
+{% endblock PAGE_JS %}

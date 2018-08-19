@@ -23,7 +23,7 @@ from django.conf import settings
 app_name='events'
 urlpatterns = [
     path('', Events.as_view(), name='index'),
-    re_path('(\d+)/([a-zA-Z\-\']*)', ViewEvent.as_view(), name='view-event'),
+    re_path(r'^(\d+)/([a-zA-Z\-\']*)', ViewEvent.as_view(), name='view-event'),
     path('post', Add.as_view(), name='post-event'),
     path('my', My.as_view(), name='my-events'),
     re_path('delete-event/(\d+)/', Delete.as_view(), name='delete'),

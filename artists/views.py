@@ -80,7 +80,23 @@ class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
         else:
             pass
 
+class Index(View):
+    def get(self, request):
+        template = 'main/artists/index.html'
+        context = {
+            'artists':Profile.objects.all()
+        }
+        return HttpResponse(render(request, template, context))
+    
 
+class ViewArtist(View):
+    def get(self, request, artist_id, slug=""):
+        artist = get_object_or_404(Profile, id=artist_id)
+        template = 'main/artists/view.html'
+        context = {
+            'artist':artist
+        }
+        return HttpResponse(render(request, template, context))
 class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'
     def test_func(self):
