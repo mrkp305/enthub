@@ -1,7 +1,7 @@
 {% extends "layouts/default.html" %}
 {% load static %}
 {% block PAGE_TITLE %}
-   {{ event.name|upper }} &mdash; Ehub
+   {{ venue.name|title }} &mdash; Ehub Venues
 {% endblock PAGE_TITLE %}
 {% block PAGE_CSS %}
 <link rel="stylesheet" href="{% static 'css/leaflet.css' %}"/>
@@ -18,13 +18,13 @@
             <div class="row">
                 <div class="col-md-12">
                     
-                    <a href="{% url 'events:index' %}" class="back-to-listings"></a>
+                    <a href="javascript:history.back()" class="back-to-listings"></a>
                     <div class="property-title">
-                        <h2>{{ event.name|title }} <span class="property-badge">{{ event.type|title }}</span></h2>
+                        <h2>{{ venue.name|title }} <span class="property-badge">{{ venue.city.name|title }}</span></h2>
                         <span>
                             <a href="#location" class="listing-address">
                                 <i class="fa fa-map-marker"></i>
-                                <b>{{ event.location.name }}</b> - {{ event.location.street_address }}, {{ event.location.city.name }}
+                                <b>{{ venue.street_address }}</b> - {{ venue.city.name|title }}, {{ venue.city.country }}
                             </a>
                         </span>
                     </div>
@@ -48,23 +48,23 @@
             <div class="col-md-12">
                 <!-- Slider -->
                 <div class="property-slider default">
-                    {% if event.poster_count > 1 %}
-                        {% for poster in event.get_other_posters %}
+                    {% if venue.poster_count > 1 %}
+                        {% for poster in venue.get_other_posters %}
                             <a href="{{ poster.image.url }}" style="background-position: initial" data-background-image="{{ poster.image.url }}" class="item mfp-gallery"></a>
                         {% endfor %}
                     {% else %}
-                        <a href="{{ event.get_poster_url }}" style="background-position: initial" data-background-image="{{ event.get_poster_url }}" class="item mfp-gallery"></a>
+                        <a href="{{ poster.get_img_url }}" style="background-position: initial" data-background-image="{{ venue.get_img_url }}" class="item mfp-gallery"></a>
                     {% endif %}
                 </div>
     
                 <!-- Slider Thumbs -->
                 <div class="property-slider-nav">
-                    {% if event.poster_count > 1 %}
-                        {% for poster in event.get_other_posters %}
+                    {% if venue.poster_count > 1 %}
+                        {% for poster in venue.get_other_posters %}
                             <div class="item"><img src="{{ poster.image.url }}" alt=""></div>
                         {% endfor %}
                     {% else %}
-                        <div class="item"><img src="{{ event.get_poster_url }}" alt=""></div>
+                        <div class="item"><img src="{{ venue.get_img_url }}" alt=""></div>
                     {% endif %}
                 </div>
             </div>
@@ -78,46 +78,60 @@
             <!-- Property Description -->
             <div class="col-lg-8 col-md-7">
                 <div class="property-description">
-    
+                    {% for p in venue.get_purposes %}
+                        <li><mark class="color">{{ p }}</mark></li>
+                    {% endfor %}
                     <!-- Description -->
-                    <h3 class="desc-headline"><i class="fa fa-info-circle"></i> About {{ event.name|title }}</h3>
+                    <h3 class="desc-headline"><i class="fa fa-info-circle"></i> Venue Description</h3>
                     <div class="show">
                         <p>
-                            {{ event.about|title }}
+                            {{ venue.description|title }}
                         </p>
-                        <p></p>
-                        <!-- <a href="#" class="show-more-button">Show More <i class="fa fa-angle-down"></i></a> -->
+                    
+                    </div>
+
+
+                    <h3 class="desc-headline"><i class="fa fa-info-circle"></i> Contact Details</h3>
+                    <div class="show">
+                        <style>
+                            dt,dd{
+                                line-height: 2.428571;
+                            }
+                        </style>
+                        <p>
+                            <dl>
+                                <dt>Contact Person</dt>
+                                <dd>{{ venue.contact_person }}</dd>
+                                <dt>Phone Number</dt>
+                                <dd>{{ venue.phone }}</dd>
+                                <dt>Email address</dt>
+                                <dd><a href="mailto:{{ venue.email }}">{{ venue.email }}</a></dd>
+                                <dt>Website</dt>
+                                <dd>{% if venue.website %} <a target="_blank" href="{{ venue.website }}">{{ venue.website }} <i class="fa fa-external-link"></i></a>{% else %} &mdash; {% endif %}</dd>
+                            </dl>
+                        </p>
+                       
                     </div>
     
-                    <!-- Details -->
-                    <h3 class="desc-headline"><i class="fa fa-dollar"></i> Admission</h3>
-                    <p>
-                        {% if event.admission %} {{ event.admission }} {% else %} Not Specified {% endif %}
-                       
-                    </p>                
-    
-                  
                     
                     <!-- Location -->
                     <h3 class="desc-headline" id="location"><i class="fa fa-map-marker"></i> Location</h3>
                     <ul class="property-features margin-top-0">
-                        <li>Location name: <span>{{ event.location.name }}</span></li>
-                        <li>Street Adress: <span>{% if event.location.street_address %} {{ event.location.street_address }} {% else %} Not Specified {% endif %}</span></li>
-                        <li>City: <span>{{ event.location.city.name }}</span></li>
-                        <li>Country: <span>{{ event.location.city.country }}</span></li>
-                        <li>Zip Code: <span>{% if event.location.zip_code %} {{ event.location.zip_code }} {% else %} &mdash; {% endif %}</span></li>
-                        <li>Latitude: <span>{% if event.location.latitude %} {{ event.location.latitude }} {% else %} &mdash; {% endif %}</span></li>
-                        <li>Longitude: <span>{% if event.location.longitude %} {{ event.location.longitude }} {% else %} &mdash; {% endif %}</span></li>
+                        <li>Street Adress: <span>{% if venue.street_address %} {{ venue.street_address }} {% else %} Not Specified {% endif %}</span></li>
+                        <li>City: <span>{{ venue.city.name }}</span></li>
+                        <li>Country: <span>{{ venue.city.country }}</span></li>
+                        <li>Latitude: <span>{% if venue.latitude %} {{ venue.latitude }} {% else %} &mdash; {% endif %}</span></li>
+                        <li>Longitude: <span>{% if venue.longitude %} {{ venue.longitude }} {% else %} &mdash; {% endif %}</span></li>
                     </ul>
                     <hr>
                     <div id="propertyMap-container">
-                        <div id="eventMap" style="height: 400px;position: relative;overflow: hidden;border-radius: 3px;" data-latitude="{{ event.location.latitude }}" data-longitude="{{ event.location.longitude }}"></div>
+                        <div id="venueMap" style="height: 400px;position: relative;overflow: hidden;border-radius: 3px;" data-latitude="{{  venue.latitude }}" data-longitude="{{ venue.longitude }}"></div>
                         <a href="javascript:void(0)" id="streetView">Street View</a>
                     </div>
     
     
                     <!-- Similar Listings Container -->
-                    <h3 class="desc-headline no-border margin-bottom-35 margin-top-60">Similar Events</h3>
+                    <h3 class="desc-headline no-border margin-bottom-35 margin-top-60">Similar Venues</h3>
     
                     <!-- Layout Switcher -->
     
@@ -125,45 +139,47 @@
                     <div class="listings-container list-layout">
                         
                         {% if similar %}
-                            {% for similar_event in similar %}
+                            {% for similar_venue in similar %}
                                 <!-- Listing Item -->
                                 <div class="listing-item">
 
-                                        <a href="{% url 'events:view-event' similar_event.id similar_event.name|slugify %}" class="listing-img-container">
+                                        <a href="{% url 'venues:view-venue' similar_venue.id similar_venue.name|slugify %}" class="listing-img-container">
                 
                                             <div class="listing-badges">
-                                                <span>{{ similar_event.type }}</span>
+                                                <span>{{ similar_venue.city.name }}</span>
                                             </div>
                 
                                             <div class="listing-img-content">
-                                                <span class="listing-price">{{ similar_event.start_date|date:'d M'}}<i>{{ similar_event.start_date|date:'H:i'}}</i></span>
+                                                <span class="listing-price">{{ similar_venue.name|title }}</span>
                                                 <span class="like-icon"></span>
                                             </div>
                 
-                                            <img src="{{ similar_event.get_poster_url }}" alt="">
+                                            <img src="{{ similar_venue.get_img_url }}" alt="">
                 
                                         </a>
                                         
                                         <div class="listing-content">
                 
                                             <div class="listing-title">
-                                                <h4><a href="{% url 'events:view-event' similar_event.id similar_event.name|slugify %}">{{ similar_event.name|title }}</a></h4>
+                                                <h4><a href="{% url 'venues:view-venue' similar_venue.id similar_venue.name|slugify %}">{{ similar_venue.name|title }}</a></h4>
                                                 <a href="#" class="listing-address popup-gmaps">
                                                     <i class="fa fa-map-marker"></i>
-                                                    <b>{{ similar_event.location.name|upper }}</b> - {{ similar_event.location.street_address|truncatechars:20 }}, {{ similar_event.location.city.name| title }}
+                                                    <b>{{ similar_venue.street_address|title }}</b> - {{ similar_venue.city.name| title }}
                                                 </a>
                 
-                                                <a href="{% url 'events:view-event' similar_event.id similar_event.name|slugify %}" class="details button border">Details</a>
+                                                <a href="{% url 'venues:view-venue' similar_venue.id similar_venue.name|slugify %}" class="details button border">Details</a>
                                             </div>
                 
                                             <ul class="listing-details">
-                                                <li><i class="sl sl-icon-info"></i> {{ similar_event.about|capfirst|truncatechars:20 }}</li>
-                                                <li><i class="fa fa-dollar"></i> - {% if similar_event.admission %} {{ similar_event.admission }} {% else %} Not Specified {% endif %}</li>
+                                                <li><i class="sl sl-icon-info"></i> {{ similar_venue.description|capfirst|truncatechars:20 }}</li>
+                                                {% for p in venue.get_purposes %}
+                                                    <li>{{ p }}</li>
+                                                {% endfor %}
                                             </ul>
                 
                                             <div class="listing-footer">
-                                                <a href="#"><i class="fa fa-user"></i> {{ similar_event.added_by|title }}</a>
-                                                <span><i class="fa fa-calendar-o"></i> {{ similar_event.created_at|timesince }}</span>
+                                                <a href="#"><i class="fa fa-user"></i> {{ similar_venue.added_by|title }}</a>
+                                                <span><i class="fa fa-calendar-o"></i> {{ similar_venue.created_at|timesince }}</span>
                                             </div>
                 
                                         </div>
@@ -206,7 +222,7 @@
                                 <div class="agent-details">
                                         <span>Send message</span>
                                         <span>to</span>
-                                    <h4><a href="#">{{ event.added_by|title }}</a></h4>
+                                    <h4><a href="#">{{ venue.name|title }}</a></h4>
                                     
                                 </div>
                                 <div class="clearfix"></div>
@@ -216,7 +232,7 @@
                                 <input type="text" placeholder="Your Phone">
                             {% endif %}
                            
-                            <textarea>I'm interested in this event [{{event.name|title}}] and I'd like to know more details.</textarea>
+                            <textarea>I'm interested in this venue [{{venue.name|title}}] and I'd like to know more details.</textarea>
                             <button class="button fullwidth margin-top-5">Send Message</button>
                         </div>
                         <!-- Agent Widget / End -->
@@ -278,23 +294,23 @@
 {% block PAGE_JS %}
     <script type="text/javascript">
       
-        var eventMap = L.map('eventMap').setView([{{ event.location.latitude }}, {{ event.location.longitude }}], 13);
-        eventMap.setZoom(200);
+        var map = L.map('venueMap').setView([{{ venue.latitude }}, {{ venue.longitude }}], 13);
+        map.setZoom(200);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(eventMap);
+        }).addTo(map);
         html = "<div style=\"font-family:'Varela Round' !important;color:#fff !important;\">"
-                    + "<h3 style='color:#fff !important'>{{ event.location.name|title}}</h3>"
-                    + "<p><i>{{ event.location.street_address|title}}, {{ event.location.city.name|title }} - {{ event.location.city.country.iso_code2|title }} </i></p>"
+                    + "<h3 style='color:#fff !important'>{{ venue.name|title}}</h3>"
+                    + "<p><i>{{ venue.street_address|title}}, {{ venue.city.name|title }} - {{ venue.city.country.iso_code2|title }} </i></p>"
                 + "</div>";
-         L.marker([{{ event.location.latitude }}, {{ event.location.longitude }}]).addTo(eventMap).bindPopup(html)
+         L.marker([{{ venue.latitude }}, {{ venue.longitude }}]).addTo(map).bindPopup(html)
         .openPopup();
 
-        L.circle([{{ event.location.latitude }}, {{ event.location.longitude }}], {
+        L.circle([{{ venue.latitude }}, {{ map.longitude }}], {
             color: '#ffffff00',
             fillColor: '#f44336',
             fillOpacity: 0.5,
             radius: 100
-        }).addTo(eventMap);
+        }).addTo(map);
     </script>
 {% endblock PAGE_JS %}

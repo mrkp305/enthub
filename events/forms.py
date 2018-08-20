@@ -50,7 +50,7 @@ class EventForm(forms.Form):
             title = data.get('title')
             if len(title) < 4:
                 self.add_error('title', 'Title too short. Try again.')
-            elif len(title) > 20:
+            elif len(title) > 200:
                 self.add_error('title', 'Title too long. Let`s keep it short ;)')
             else:
                 regex = re.compile(r'^[a-zA-Z0-9\s\-\'\w]+$', re.U)

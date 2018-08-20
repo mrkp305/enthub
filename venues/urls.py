@@ -1,4 +1,4 @@
-"""ehub\events URL Configuration
+"""ehub\venues URL Configuration
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/2.1/topics/http/urls/
@@ -20,16 +20,13 @@ from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings
 
-app_name='events'
+app_name='venues'
 urlpatterns = [
-    path('', Events.as_view(), name='index'),
-    re_path(r'^(\d+)/([a-zA-Z\-\']*)', ViewEvent.as_view(), name='view-event'),
-    path('post', Add.as_view(), name='post-event'),
-    path('my', My.as_view(), name='my-events'),
-    re_path('delete-event/(\d+)/', Delete.as_view(), name='delete'),
-    re_path('edit-event/(\d+)/', Edit.as_view(), name='edit'),
-    path('get-details/', Details.as_view(), name='get_details'),
-    path('get-GeoSon-event-data/', GeoData.as_view(), name='geo-data'),
+    
+    path('', Index.as_view(), name='index'),
+    path('post', Add.as_view(), name='post-venue'),
+    re_path(r'^(\d+)/([a-zA-Z0-9\-\'\w]+)/', ViewVenue.as_view(), name='view-venue'),
+   
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

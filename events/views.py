@@ -176,7 +176,8 @@ class Details(LoginRequiredMixin, View):
     def post(self, request):
         try:
             #2018-09-20 00:00:00+00:00
-            event = Event.objects.get(id=request.POST.get('event'))
+            event = Event.objects.all()
+            
             data = {
                 'Event name': event.name,
                 'Type': event.type.name,
@@ -192,6 +193,25 @@ class Details(LoginRequiredMixin, View):
         except Event.DoesNotExist as e:
             pass
             #2018-09-20T00:00:00Z
+
+class GeoData(View):
+    def get(self, request):
+        
+        events = {'events':[]}
+        for event in Event.objects.all():
+            html = "<div style=\"font-family:'Varela Round' !important;color:#fff !important;\">\
+                    <img src='{}'>\
+                    <h5 style='color:#fff !important'><a href='/events/{}/'>{}</a></h5>\
+                    <p>{}</p></div>".format(event.get_poster_url(),event.id, event.name, datetime.strftime(event.start_date,'%b %d'))
+            data = {
+                'name':event.name,
+                'lat':event.location.latitude,
+                'lon':event.location.longitude,
+                'html':html,
+            }
+            events['events'].append(data)
+        return JsonResponse(events)
+       
 
 class Edit(LoginRequiredMixin, View):
     login_url = '/auth'
@@ -322,7 +342,7 @@ class Events(View):
         else:
             event_list = Event.objects.all().order_by('start_date')
 
-        paginator = Paginator(event_list, 1)
+        paginator = Paginator(event_list, 9)
         page=request.GET.get('page', 1)
 
         template = 'main/events/index.html'
@@ -360,3 +380,4 @@ class ViewEvent(View):
         }
         return HttpResponse(render(request, template, context))
     
+

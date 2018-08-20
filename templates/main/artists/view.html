@@ -51,25 +51,87 @@
 
                 <div class="agent-content">
                     <div class="agent-name">
-                        <h4>{{ artist.stage_name|title }}</h4>
+                        <h4>{{ artist.stage_name|title }}{% if artist.alias %} aka {{ artist.alias }} {% endif %} </h4>
                         <span><a href="#">{{ artist.genre|title }}</a> artist</span>
                     </div>
-
+                   
                     <p>
                         {{ artist.bio }}
                     </p>
-
-                    <ul class="agent-contact-details">
-                        <li><i class="sl sl-icon-call-in"></i>(123) 123-456</li>
-                        <li><i class="fa fa-envelope-o "></i><a href="#"><span class="__cf_email__" data-cfemail="0f656a6161666a4f6a776e627f636a216c6062">[email&#160;protected]</span></a></li>
-                    </ul>
-
+                    {% if artist.website %}
+                        <p>
+                            <a target="_blank" href="{{ artist.website }}">{{artist.website}} <i class="fa fa-external-link"></i></a>
+                        </p>
+                    {% endif %}
                     <ul class="social-icons">
-                        <li><a class="facebook" href="#"><i class="icon-facebook"></i></a></li>
-                        <li><a class="twitter" href="#"><i class="icon-twitter"></i></a></li>
-                        <li><a class="gplus" href="#"><i class="icon-gplus"></i></a></li>
-                        <li><a class="linkedin" href="#"><i class="icon-linkedin"></i></a></li>
+                        {% if artist.user_profile.facebook %}
+                          <li><a target="_blank" class="facebook" href="{{artist.user_profile.social.facebook }}"><i class="icon-facebook"></i></a></li>  
+                        {% endif %}
+
+                        {% if artist.user_profile.twitter %}
+                          <li><a target="_blank" class="twitter" href="{{artist.user_profile.social.twitter }}"><i class="icon-twitter"></i></a></li>  
+                        {% endif %}
+                       
+                        {% if artist.user_profile.google %}
+                          <li><a target="_blank" class="gplus" href="{{artist.user_profile.social.google }}"><i class="icon-gplus"></i></a></li>  
+                        {% endif %}
+                       
+                        {% if artist.user_profile.instagram %}
+                          <li><a target="_blank" class="instagram" href="{{artist.user_profile.social.instagram }}"><i class="icon-instagram"></i></a></li>  
+                        {% endif %}
+                      
                     </ul>
+                    <div class="clearfix"></div>
+
+                    {% if artist.has_contacts %}
+                        <div class="row">
+                            {% for contact in artist.contacts.all %}
+                                
+                                <ul class="agent-contact-details">
+                                    For <mark class="color">{{ contact.purpose }}</mark> contact:
+                                    <li><i class="fa fa-user"></i>{{ contact.person }}</li>
+                                    
+                                    {% if contact.email %}
+                                        <li>
+                                            <i class="fa fa-envelope-o "></i>
+                                            <a href="mailto:{{ contact.email }}">
+                                                <span>Send Email</span>
+                                            </a>
+                                        </li>
+                                    {% endif %}
+
+                                    {% if contact.phone %}
+                                        {% if contact.whatsapp %}
+                                            <li>
+                                                <i class="sl sl-icon-call-in"></i><a href="tel:{{ contact.phone }}">Call Now</a>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-whatsapp"></i>
+                                                <a id="wa-link-{{ contact.id }}" href="#">Whatsapp</a>
+                                            </li>
+                                        {% else %}
+                                            <li><i class="sl sl-icon-call-in"></i><a href="tel:{{ contact.phone }}">Call</a></li>
+                                        {% endif %}
+                                    {% endif %}
+                                    
+                                </ul>
+                                <script type="text/javascript">
+                                    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+                                    
+                                    if (isMobile) {
+                                        var text = "Hi {{ contact.person }}, i'm contacting you concerning artist - {{ artist.stage_name|title }} for {{ contact.purpose }}.";
+                                        document.getElementById("wa-link-{{contact.id}}").setAttribute('href', "whatsapp://send?phone={{ contact.phone }}&text="+text);
+                                    } else {
+                                        var text = "Hi {{ contact.person }}, i'm contacting you concerning artist - {{ artist.stage_name|title }} for {{ contact.purpose }}.";
+                                        document.getElementById("wa-link-{{contact.id}}").setAttribute('href',"https://web.whatsapp.com/send?phone={{ contact.phone }}&text="+text);
+                                    }
+                                </script>
+                                <br>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                        
                     <div class="clearfix"></div>
                 </div>
 
@@ -87,13 +149,7 @@
 
         <div class="col-lg-8 col-md-8">
 
-            <h4 class="headline">My Listings</h4>
-
-            <!-- Main Search Input -->
-            <div class="main-search-input margin-bottom-35">
-                <input type="text" class="ico-01" placeholder="Enter address e.g. street, city and state or zip" value=""/>
-                <button class="button">Search</button>
-            </div>
+            <h4 class="headline">Featured Events</h4>
 
             <!-- Sorting / Layout Switcher -->
             <div class="row margin-bottom-15">
@@ -106,10 +162,7 @@
                         <div class="sort-by-select">
                             <select data-placeholder="Default order" class="chosen-select-no-single" >
                                 <option>Default Order</option>	
-                                <option>Price Low to High</option>
-                                <option>Price High to Low</option>
-                                <option>Newest Properties</option>
-                                <option>Oldest Properties</option>
+                               
                             </select>
                         </div>
                     </div>
@@ -127,229 +180,68 @@
             
             <!-- Listings -->
             <div class="listings-container list-layout">
+                {% if featured_events %}
+                    {% for event in featured_events %}
+                    <div class="listing-item">
 
-                <!-- Listing Item -->
-                <div class="listing-item">
-
-                    <a href="#" class="listing-img-container">
-
-                        <div class="listing-badges">
-                            <span class="featured">Featured</span>
-                            <span>For Sale</span>
-                        </div>
-
-                        <div class="listing-img-content">
-                            <span class="listing-price">$275,000 <i>$520 / sq ft</i></span>
-                            <span class="like-icon tooltip"></span>
-                        </div>
-
-                        <div class="listing-carousel">
-                            <div><img src="images/listing-01.jpg" alt=""></div>
-                            <div><img src="images/listing-01b.jpg" alt=""></div>
-                            <div><img src="images/listing-01c.jpg" alt=""></div>
-                        </div>
-                    </a>
-                    
-                    <div class="listing-content">
-
-                        <div class="listing-title">
-                            <h4><a href="#">Eagle Apartments</a></h4>
-                            <a href="https://maps.google.com/maps?q=221B+Baker+Street,+London,+United+Kingdom&amp;hl=en&amp;t=v&amp;hnear=221B+Baker+St,+London+NW1+6XE,+United+Kingdom" class="listing-address popup-gmaps">
-                                <i class="fa fa-map-marker"></i>
-                                9364 School St. Lynchburg, NY
+                            <a href="#" class="listing-img-container">
+        
+                                <div class="listing-badges">
+                                    <span class="featured">Featured</span>
+                                    <span>{{ event.type }}</span>
+                                </div>
+        
+                                <div class="listing-img-content">
+                                    <span class="listing-price">
+                                        {{ event.start_date|date:'d M'}} 
+                                        <i>{{ event.start_date|date:'H:i'}}</i>
+                                    </span>
+                                    <span class="like-icon tooltip"></span>
+                                </div>
+                                {% if event.poster_count > 1 %}
+                                    <div class="listing-carousel">
+                                        {% for poster in event.get_other_posters %}
+                                            <div><img src="{{ poster.image.url }}"></div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <img src="{{ event.get_poster_url }}" alt="">
+                                {% endif %}
+                              
                             </a>
-
-                            <a href="#" class="details button border">Details</a>
+                            
+                            <div class="listing-content">
+        
+                                <div class="listing-title">
+                                    <h4><a href="{% url 'events:view-event' event.id event.name|slugify %}">{{ event.name|title }}</a></h4>
+                                    <a href="javascript:void(0)">
+                                        <i class="fa fa-map-marker"></i>
+                                        <b>{{ event.location.name|title }}</b> - {{ event.location.street_address|title|truncatechars:15 }}
+                                    </a>
+                                    
+                                    <a href="{% url 'events:view-event' event.id event.name|slugify %}" class="details button border">Details</a>
+                                </div>
+        
+                                <ul class="listing-details">
+                                    <li>{{ event.about|truncatechars:50}}</li>
+                                </ul>
+        
+                                <div class="listing-footer">
+                                    <a href="#"><i class="fa fa-user"></i> {{ event.added_by|title }}</a>
+                                    <span><i class="fa fa-calendar-o"></i> {{ event.created_at|timesince }}</span>
+                                </div>
+        
+                            </div>
+        
                         </div>
-
-                        <ul class="listing-details">
-                            <li>530 sq ft</li>
-                            <li>1 Bedroom</li>
-                            <li>3 Rooms</li>
-                            <li>1 Bathroom</li>
-                        </ul>
-
-                        <div class="listing-footer">
-                            <a href="#"><i class="fa fa-user"></i> David Strozier</a>
-                            <span><i class="fa fa-calendar-o"></i> 1 day ago</span>
-                        </div>
-
-                    </div>
-
-                </div>
+                    {% endfor %}
+                {% else %}
+                    Nothing yet
+                {% endif %}
+              
                 <!-- Listing Item / End -->
-
-
-                <!-- Listing Item -->
-                <div class="listing-item">
-
-                    <a href="#" class="listing-img-container">
-
-                        <div class="listing-badges">
-                            <span>For Rent</span>
-                        </div>
-
-                        <div class="listing-img-content">
-                            <span class="listing-price">$900 <i>monthly</i></span>
-                            <span class="like-icon"></span>
-                        </div>
-
-                        <img src="images/listing-02.jpg" alt="">
-
-                    </a>
-                    
-                    <div class="listing-content">
-
-                        <div class="listing-title">
-                            <h4><a href="#">Serene Uptown</a></h4>
-                            <a href="https://maps.google.com/maps?q=221B+Baker+Street,+London,+United+Kingdom&amp;hl=en&amp;t=v&amp;hnear=221B+Baker+St,+London+NW1+6XE,+United+Kingdom" class="listing-address popup-gmaps">
-                                <i class="fa fa-map-marker"></i>
-                                6 Bishop Ave. Perkasie, PA
-                            </a>
-
-                            <a href="#" class="details button border">Details</a>
-                        </div>
-
-                        <ul class="listing-details">
-                            <li>440 sq ft</li>
-                            <li>1 Bedroom</li>
-                            <li>1 Room</li>
-                            <li>1 Bathroom</li>
-                        </ul>
-
-                        <div class="listing-footer">
-                            <a href="#"><i class="fa fa-user"></i> Harriette Clark</a>
-                            <span><i class="fa fa-calendar-o"></i> 2 days ago</span>
-                        </div>
-
-                    </div>
-
-                </div>
-                <!-- Listing Item / End -->
-
-
-                <!-- Listing Item -->
-                <div class="listing-item">
-
-                    <a href="#" class="listing-img-container">
-
-                        <div class="listing-badges">
-                            <span class="featured">Featured</span>
-                            <span>For Rent</span>
-                        </div>
-
-                        <div class="listing-img-content">
-                            <span class="listing-price">$1700 <i>monthly</i></span>
-                            <span class="like-icon"></span>
-                        </div>
-
-                        <img src="images/listing-03.jpg" alt="">
-
-                    </a>
-                    
-                    <div class="listing-content">
-
-                        <div class="listing-title">
-                            <h4><a href="#">Meridian Villas</a></h4>
-                            <a href="https://maps.google.com/maps?q=221B+Baker+Street,+London,+United+Kingdom&amp;hl=en&amp;t=v&amp;hnear=221B+Baker+St,+London+NW1+6XE,+United+Kingdom" class="listing-address popup-gmaps">
-                                <i class="fa fa-map-marker"></i>
-                                778 Country St. Panama City, FL
-                            </a>
-
-                            <a href="#" class="details button border">Details</a>
-                        </div>
-
-                        <ul class="listing-details">
-                            <li>1450 sq ft</li>
-                            <li>1 Bedroom</li>
-                            <li>2 Rooms</li>
-                            <li>2 Rooms</li>
-                        </ul>
-
-                        <div class="listing-footer">
-                            <a href="#"><i class="fa fa-user"></i> Chester Miller</a>
-                            <span><i class="fa fa-calendar-o"></i> 4 days ago</span>
-                        </div>
-
-                    </div>
-                    <!-- Listing Item / End -->
-
-                </div>
-                <!-- Listing Item / End -->
-
-
-                <!-- Listing Item -->
-                <div class="listing-item">
-
-                    <a href="#" class="listing-img-container">
-
-                        <div class="listing-badges">
-                            <span>For Sale</span>
-                        </div>
-
-                        <div class="listing-img-content">
-                            <span class="listing-price">$420,000 <i>$770 / sq ft</i></span>
-                            <span class="like-icon"></span>
-                        </div>
-
-                        <div class="listing-carousel">
-                            <div><img src="images/listing-04.jpg" alt=""></div>
-                            <div><img src="images/listing-04b.jpg" alt=""></div>
-                        </div>
-
-                    </a>
-                    
-                    <div class="listing-content">
-
-                        <div class="listing-title">
-                            <h4><a href="#">Selway Apartments</a></h4>
-                            <a href="https://maps.google.com/maps?q=221B+Baker+Street,+London,+United+Kingdom&amp;hl=en&amp;t=v&amp;hnear=221B+Baker+St,+London+NW1+6XE,+United+Kingdom" class="listing-address popup-gmaps">
-                                <i class="fa fa-map-marker"></i>
-                                33 William St. Northbrook, IL
-                            </a>
-
-                            <a href="#" class="details button border">Details</a>
-                        </div>
-
-                        <ul class="listing-details">
-                            <li>540 sq ft</li>
-                            <li>1 Bedroom</li>
-                            <li>3 Rooms</li>
-                            <li>2 Bathroom</li>
-                        </ul>
-
-                        <div class="listing-footer">
-                            <a href="#"><i class="fa fa-user"></i> Kristen Berry</a>
-                            <span><i class="fa fa-calendar-o"></i> 3 days ago</span>
-                        </div>
-
-                    </div>
-                    <!-- Listing Item / End -->
-
-                </div>
-                <!-- Listing Item / End -->
-
             </div>
             <!-- Listings Container / End -->
-
-            
-            <!-- Pagination -->
-            <div class="pagination-container margin-top-20">
-                <nav class="pagination">
-                    <ul>
-                        <li><a href="#" class="current-page">1</a></li>
-                        <li><a href="#">2</a></li>
-                    </ul>
-                </nav>
-
-                <nav class="pagination-next-prev">
-                    <ul>
-                        <li><a href="#" class="prev">Previous</a></li>
-                        <li><a href="#" class="next">Next</a></li>
-                    </ul>
-                </nav>
-            </div>
-            <!-- Pagination / End -->
 
         </div>
 
@@ -360,215 +252,29 @@
 
                 <!-- Widget -->
                 <div class="widget margin-bottom-40">
-                    <h3 class="margin-top-0 margin-bottom-35">Find New Home</h3>
+                    <h3 class="margin-top-0 margin-bottom-35">Find Artists</h3>
+
+                    <!-- Row -->
+                    <div class="row with-forms">
+                        <!-- Status -->
+                        <div class="col-md-12">
+                            <input type="text" placeholder="Artist name">
+                        </div>
+                    </div>
+                    <!-- Row / End -->
+
 
                     <!-- Row -->
                     <div class="row with-forms">
                         <!-- Status -->
                         <div class="col-md-12">
                             <select data-placeholder="Any Status" class="chosen-select-no-single" >
-                                <option>Any Status</option>	
-                                <option>For Sale</option>
-                                <option>For Rent</option>
+                                <option>Any Genre</option>	
+                             
                             </select>
                         </div>
                     </div>
                     <!-- Row / End -->
-
-
-                    <!-- Row -->
-                    <div class="row with-forms">
-                        <!-- Type -->
-                        <div class="col-md-12">
-                            <select data-placeholder="Any Type" class="chosen-select-no-single" >
-                                <option>Any Type</option>	
-                                <option>Apartments</option>
-                                <option>Houses</option>
-                                <option>Commercial</option>
-                                <option>Garages</option>
-                                <option>Lots</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Row / End -->
-
-
-                    <!-- Row -->
-                    <div class="row with-forms">
-                        <!-- States -->
-                        <div class="col-md-12">
-                            <select data-placeholder="All States" class="chosen-select" >
-                                <option>All States</option>	
-                                <option>Alabama</option>
-                                <option>Alaska</option>
-                                <option>Arizona</option>
-                                <option>Arkansas</option>
-                                <option>California</option>
-                                <option>Colorado</option>
-                                <option>Connecticut</option>
-                                <option>Delaware</option>
-                                <option>Florida</option>
-                                <option>Georgia</option>
-                                <option>Hawaii</option>
-                                <option>Idaho</option>
-                                <option>Illinois</option>
-                                <option>Indiana</option>
-                                <option>Iowa</option>
-                                <option>Kansas</option>
-                                <option>Kentucky</option>
-                                <option>Louisiana</option>
-                                <option>Maine</option>
-                                <option>Maryland</option>
-                                <option>Massachusetts</option>
-                                <option>Michigan</option>
-                                <option>Minnesota</option>
-                                <option>Mississippi</option>
-                                <option>Missouri</option>
-                                <option>Montana</option>
-                                <option>Nebraska</option>
-                                <option>Nevada</option>
-                                <option>New Hampshire</option>
-                                <option>New Jersey</option>
-                                <option>New Mexico</option>
-                                <option>New York</option>
-                                <option>North Carolina</option>
-                                <option>North Dakota</option>
-                                <option>Ohio</option>
-                                <option>Oklahoma</option>
-                                <option>Oregon</option>
-                                <option>Pennsylvania</option>
-                                <option>Rhode Island</option>
-                                <option>South Carolina</option>
-                                <option>South Dakota</option>
-                                <option>Tennessee</option>
-                                <option>Texas</option>
-                                <option>Utah</option>
-                                <option>Vermont</option>
-                                <option>Virginia</option>
-                                <option>Washington</option>
-                                <option>West Virginia</option>
-                                <option>Wisconsin</option>
-                                <option>Wyoming</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Row / End -->
-
-
-                    <!-- Row -->
-                    <div class="row with-forms">
-                        <!-- Cities -->
-                        <div class="col-md-12">
-                            <select data-placeholder="All Cities" class="chosen-select" >
-                                <option>All Cities</option>
-                                <option>New York</option>
-                                <option>Los Angeles</option>
-                                <option>Chicago</option>
-                                <option>Brooklyn</option>
-                                <option>Queens</option>
-                                <option>Houston</option>
-                                <option>Manhattan</option>
-                                <option>Philadelphia</option>
-                                <option>Phoenix</option>
-                                <option>San Antonio</option>
-                                <option>Bronx</option>
-                                <option>San Diego</option>
-                                <option>Dallas</option>
-                                <option>San Jose</option>
-                            </select>
-                        </div>
-                    </div>
-                    <!-- Row / End -->
-
-
-                    <!-- Row -->
-                    <div class="row with-forms">
-
-                        <!-- Min Area -->
-                        <div class="col-md-6">
-                            <select data-placeholder="Beds" class="chosen-select-no-single" >
-                                <option label="blank"></option>	
-                                <option>Beds (Any)</option>	
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-
-                        <!-- Max Area -->
-                        <div class="col-md-6">
-                            <select data-placeholder="Baths" class="chosen-select-no-single" >
-                                <option label="blank"></option>	
-                                <option>Baths (Any)</option>	
-                                <option>1</option>
-                                <option>2</option>
-                                <option>3</option>
-                                <option>4</option>
-                                <option>5</option>
-                            </select>
-                        </div>
-
-                    </div>
-                    <!-- Row / End -->
-
-                    <br>
-
-                    <!-- Area Range -->
-                    <div class="range-slider">
-                        <label>Area Range</label>
-                        <div id="area-range" data-min="0" data-max="1500" data-unit="sq ft"></div>
-                        <div class="clearfix"></div>
-                    </div>
-
-                    <br>
-                    
-                    <!-- Price Range -->
-                    <div class="range-slider">
-                        <label>Price Range</label>
-                        <div id="price-range" data-min="0" data-max="400000" data-unit="$"></div>
-                        <div class="clearfix"></div>
-                    </div>
-
-
-
-                    <!-- More Search Options -->
-                    <a href="#" class="more-search-options-trigger margin-bottom-10 margin-top-30" data-open-title="Additional Features" data-close-title="Additional Features"></a>
-
-                    <div class="more-search-options relative">
-
-                        <!-- Checkboxes -->
-                        <div class="checkboxes one-in-row margin-bottom-10">
-                    
-                            <input id="check-2" type="checkbox" name="check">
-                            <label for="check-2">Air Conditioning</label>
-
-                            <input id="check-3" type="checkbox" name="check">
-                            <label for="check-3">Swimming Pool</label>
-
-                            <input id="check-4" type="checkbox" name="check" >
-                            <label for="check-4">Central Heating</label>
-
-                            <input id="check-5" type="checkbox" name="check">
-                            <label for="check-5">Laundry Room</label>	
-
-
-                            <input id="check-6" type="checkbox" name="check">
-                            <label for="check-6">Gym</label>
-
-                            <input id="check-7" type="checkbox" name="check">
-                            <label for="check-7">Alarm</label>
-
-                            <input id="check-8" type="checkbox" name="check">
-                            <label for="check-8">Window Covering</label>
-                    
-                        </div>
-                        <!-- Checkboxes / End -->
-
-                    </div>
-                    <!-- More Search Options / End -->
-
                     <button class="button fullwidth margin-top-30">Search</button>
 
 
@@ -578,96 +284,41 @@
 
                 <!-- Widget -->
                 <div class="widget margin-top-55">
-                    <h3 class="margin-bottom-35">Featured Properties</h3>
-
-                    <div class="listing-carousel outer">
-                        <!-- Item -->
-                        <div class="item">
-                            <div class="listing-item compact">
-
-                                <a href="#" class="listing-img-container">
-
-                                    <div class="listing-badges">
-                                        <span class="featured">Featured</span>
-                                        <span>For Sale</span>
+                    <h3 class="margin-bottom-35">Featured Artists</h3>
+                    {% if featured_artists %}
+                        <div class="listing-carousel outer">
+                            {% for artist in featured_artists %}
+                                <!-- Item -->
+                                <div class="item">
+                                    <div class="listing-item compact">
+        
+                                        <a href="#" class="listing-img-container">
+        
+                                            <div class="listing-badges">
+                                                <span class="featured">Featured</span>
+                                                <span>{{ artist.genre }}</span>
+                                            </div>
+        
+                                            <div class="listing-img-content">
+                                                <span class="listing-compact-title">{{ artist.stage_name}} <i>{{ artist.alias }}</i></span>
+        
+                                                <ul class="listing-hidden-content">
+                                                    <li>{{ artist.bio }}</li>
+                                                </ul>
+                                            </div>
+        
+                                            <img src="{{ artist.user_profile.avatar.url }}" alt="">
+                                        </a>
+        
                                     </div>
-
-                                    <div class="listing-img-content">
-                                        <span class="listing-compact-title">Eagle Apartments <i>$275,000</i></span>
-
-                                        <ul class="listing-hidden-content">
-                                            <li>Area <span>530 sq ft</span></li>
-                                            <li>Rooms <span>3</span></li>
-                                            <li>Beds <span>1</span></li>
-                                            <li>Baths <span>1</span></li>
-                                        </ul>
-                                    </div>
-
-                                    <img src="images/listing-01.jpg" alt="">
-                                </a>
-
-                            </div>
+                                </div>
+                                <!-- Item / End -->
+                            {% endfor %}
                         </div>
-                        <!-- Item / End -->
-
-                        <!-- Item -->
-                        <div class="item">
-                            <div class="listing-item compact">
-
-                                <a href="#" class="listing-img-container">
-
-                                    <div class="listing-badges">
-                                        <span class="featured">Featured</span>
-                                        <span>For Sale</span>
-                                    </div>
-
-                                    <div class="listing-img-content">
-                                        <span class="listing-compact-title">Selway Apartments <i>$245,000</i></span>
-
-                                        <ul class="listing-hidden-content">
-                                            <li>Area <span>530 sq ft</span></li>
-                                            <li>Rooms <span>3</span></li>
-                                            <li>Beds <span>1</span></li>
-                                            <li>Baths <span>1</span></li>
-                                        </ul>
-                                    </div>
-
-                                    <img src="images/listing-02.jpg" alt="">
-                                </a>
-
-                            </div>
-                        </div>
-                        <!-- Item / End -->
-
-                        <!-- Item -->
-                        <div class="item">
-                            <div class="listing-item compact">
-
-                                <a href="#" class="listing-img-container">
-
-                                    <div class="listing-badges">
-                                        <span class="featured">Featured</span>
-                                        <span>For Sale</span>
-                                    </div>
-
-                                    <div class="listing-img-content">
-                                        <span class="listing-compact-title">Oak Tree Villas <i>$325,000</i></span>
-
-                                        <ul class="listing-hidden-content">
-                                            <li>Area <span>530 sq ft</span></li>
-                                            <li>Rooms <span>3</span></li>
-                                            <li>Beds <span>1</span></li>
-                                            <li>Baths <span>1</span></li>
-                                        </ul>
-                                    </div>
-
-                                    <img src="images/listing-03.jpg" alt="">
-                                </a>
-
-                            </div>
-                        </div>
-                        <!-- Item / End -->
-                    </div>
+                    {% else %}
+                        Nothing yet
+                    {% endif %}
+                   
 
                 </div>
                 <!-- Widget / End -->

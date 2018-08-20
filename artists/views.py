@@ -31,6 +31,7 @@ from .forms import Contact as ArtistContactsForm
 from .models import Artist as Profile
 from .models import Contact
 from utils.models import *
+from events.models import *
 
 class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'
@@ -94,6 +95,8 @@ class ViewArtist(View):
         artist = get_object_or_404(Profile, id=artist_id)
         template = 'main/artists/view.html'
         context = {
+            'featured_artists': Profile.objects.all().exclude(id=artist.id),
+            'featured_events': Event.objects.all()[:5],
             'artist':artist
         }
         return HttpResponse(render(request, template, context))
@@ -206,17 +209,13 @@ class DeleteContact(LoginRequiredMixin, UserPassesTestMixin, View):
         return self.request.user.profile.artist
 
     def get(self, request, contact_id):
-        contact = get_object_or_404(Contact, id=contact_id)
-        if contact.artist != request.user.profile.artist:
+        contact = get_object_or_404(Contact, pk=contact_id)
+        # return HttpResponse(str(contact.artist.id) )
+        if str(contact.artist.id) != str(request.user.profile.artist.id):
             raise (Http404)
         else:
-            contact = get_object_or_404(Contact, id=contact_id)
-            if contact.artist != request.user.profile.artist:
-                #to change to 403
-                raise (Http404)
-            else:
-                if contact.delete():
-                    return redirect(reverse('artists:my-contacts'))
+            if contact.delete():
+                return redirect(reverse('artists:my-contacts'))
                 
 
 class EditContact(LoginRequiredMixin, UserPassesTestMixin, View):

@@ -110,7 +110,7 @@
                                 <td class="title-container">
                                     <img src="{{ event.get_poster_url }}" alt="">
                                     <div class="title">
-                                        <h4><a href="#">{{ event.name }}</a></h4>
+                                        <h4><a href="{% url 'events:view-event' event.id event.name|slugify %}">{{ event.name }}</a></h4>
                                         <span><a href="{% url 'events:edit' event.id %}"><i class="fa fa-map-marker"></i> {{ event.get_address }}</a></span>
                                          <span class="table-property-price">{{ event.type }}</span>
                                     </div>

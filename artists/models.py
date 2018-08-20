@@ -52,7 +52,12 @@ class Artist(models.Model):
     
     def __str__(self):
         return self.stage_name
-    
+
+
+    def has_contacts(self):
+        if self.contacts.all() is not None:
+            return True
+
 class Contact(models.Model):
     artist = models.ForeignKey("artists.Artist", related_name='contacts', verbose_name=_("Artist"), on_delete=models.CASCADE)
     person = models.CharField(_("Contact Person"), max_length=50)

@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'utils.apps.UtilsConfig',
     'artists.apps.ArtistsConfig',
     'events.apps.EventsConfig',
+    'venues.apps.VenuesConfig',
 ]
 
 MIDDLEWARE = [

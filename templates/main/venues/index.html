@@ -1,6 +1,6 @@
 {% extends "layouts/default.html" %}
 {% block PAGE_TITLE %}
-    Latest Events &mdash; Ehub
+    Venue Directory &mdash; Ehub Venues
 {% endblock PAGE_TITLE %}
 {% block PAGE_CONTENT %}
     
@@ -24,7 +24,7 @@
                              <!-- Main Search Input -->
                             <div class="col-md-8">
                                 <div class="main-search-input">
-                                    <input id="sq" type="text" placeholder="Enter name e.g. Summer Festival" value=""/>
+                                    <input id="sq" type="text" placeholder="Enter name e.g. Pamuzinda Lodge" value=""/>
                                     
                                 </div>
                             </div>
@@ -89,13 +89,13 @@
                 <!-- Listings -->
                 <div class="listings-container list-layout">
                     
-                    {% for event in events %}
+                    {% for venue in venues %}
                         <div class="listing-item">
-                            <a href="{% url 'events:view-event' event.id event.name|slugify %}" class="listing-img-container">
+                            <a href="{% url 'venues:view-venue' venue.id venue.name|slugify %}" class="listing-img-container">
                     
                                 <div class="listing-badges">
                                     <!-- <span class="featured">Featurehhd</span> -->
-                                    <span>{{ event.type|title }}</span>
+                                    <span>{{ venue.city|title }}</span>
                                 </div>
                     
                                 <div class="listing-img-content">
@@ -104,14 +104,14 @@
                                     <!-- <span class="compare-button with-tip" data-tip-content="Add to Compare"></span> -->
                                 </div>
                                 
-                                {% if event.poster_count > 1 %}
+                                {% if venue.poster_count > 1 %}
                                     <div class="listing-carousel">
-                                        {% for poster in event.get_other_posters %}
+                                        {% for poster in venue.get_other_posters %}
                                             <div><img src="{{ poster.image.url }}"></div>
                                         {% endfor %}
                                     </div>
                                 {% else %}
-                                    <img src="{{ event.get_poster_url }}" alt="">
+                                    <img src="{{ venue.get_img_url }}" alt="">
                                 {% endif %}
                                 
                             </a>
@@ -119,17 +119,17 @@
                             <div class="listing-content">
                     
                                 <div class="listing-title">
-                                    <h4><a href="{% url 'events:view-event' event.id event.name|slugify %}">{{ event.name|title }}</a></h4>
-                                    <a href="{% url 'events:view-event' event.id event.name|slugify %}#location" class="listing-address">
+                                    <h4><a href="{% url 'venues:view-venue' venue.id venue.name|slugify %}">{{ venue.name|title }}</a></h4>
+                                    <a href="{% url 'venues:view-venue' venue.id venue.name|slugify %}#location" class="listing-address">
                                         <i class="fa fa-map-marker"></i>
-                                        <b>{{ event.location.name|upper }}</b> - {{ event.location.street_address|title }}, {{ event.location.city|title }}
+                                        <b>{{ venue.street_address|title }}</b> - {{ venue.city|title }}, {{ venue.city.country|title }}
                                     </a>
                     
-                                    <a href="{% url 'events:view-event' event.id event.name|slugify %}" class="details button border">Details</a>
+                                    <a href="{% url 'venues:view-venue' venue.id venue.name|slugify %}" class="details button border">Details</a>
                                 </div>
                     
                                 <ul class="listing-details">
-                                    <li>{{ event.about|lower|capfirst|truncatechars:25 }}</li>
+                                    <li>{{ venue.description|lower|capfirst|truncatechars:25 }}</li>
                                     <li>
                                         {% with event.contact_set.all|first as contact %}
                                             {% if contact.whatsapp %}
@@ -152,8 +152,8 @@
                                 </ul>
                                 
                                 <div class="listing-footer">
-                                    <a href="#"><i class="fa fa-user"></i> {{ event.added_by }}</a>
-                                    <span><i class="fa fa-calendar-o"></i> {{ event.created_at|timesince }} ago</span>
+                                    <a href="#">&nbsp;</a>
+                                    <span><i class="fa fa-calendar-o"></i> {{ venue.created_at|timesince }} ago</span>
                                     <!-- <span><i class="fa fa-calendar-o"></i> {{ event.time_since_added }}</span> -->
                                 </div>
                     
@@ -171,7 +171,7 @@
                     <nav class="pagination">
                         <ul>
                             {% for i in page_range %}
-                                {% if events.number == i %}
+                                {% if venues.number == i %}
                                     <li><a href="javascript:void(0)" class="current-page">{{ i }}</a></li>
                                 {% else %}
                                     <li><a class="paginator-link" data-page-target="{{ i }}" href="javascript:void(0)">{{ i }}</a></li>
@@ -183,14 +183,14 @@
     
                     <nav class="pagination-next-prev">
                         <ul>
-                            {% if events.has_previous %}
-                                <li><a data-page-target="{{ events.previous_page_number }}" href="javascript:void(0)" class="paginator-link prev">Previous</a></li>
+                            {% if venues.has_previous %}
+                                <li><a data-page-target="{{ venues.previous_page_number }}" href="javascript:void(0)" class="paginator-link prev">Previous</a></li>
                             {% else %}
                                 <li><a href="javascript:void(0)" class="disabled prev">Previous</a></li>
                             {% endif %}
 
-                            {% if events.has_next %}
-                            <li><a data-page-target="{{ events.next_page_number }}" href="javascript:void(0)" class="paginator-link next">Next</a></li>
+                            {% if venues.has_next %}
+                            <li><a data-page-target="{{ venues.next_page_number }}" href="javascript:void(0)" class="paginator-link next">Next</a></li>
                          
                             {% else %}
                                 <li><a href="javascript:void(0)" class="next disabled">Next</a></li>

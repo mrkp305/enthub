@@ -81,12 +81,12 @@
 						
 					</p>
 
-					<p class="form-row">
-						<input type="submit" class="button border margin-top-10" name="login" value="Login" />
-
-						<label for="rememberme" class="rememberme">
-						<input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember Me</label>
-					</p>
+						<p class="form-row">
+							<input type="submit" class="button border margin-top-10" name="login" value="Login" />
+	
+							<label for="rememberme" class="rememberme">
+							<input name="rememberme" type="checkbox" id="rememberme" value="forever" /> Remember Me</label>
+						</p>
 
 					<p class="lost_password">
 						<a href="#" >Lost Your Password?</a>
@@ -132,6 +132,9 @@
 					<small style="color: #f44336;">{{ RegisterForm.confirm_password.errors|first }}</small>
 				</p>
 
+				<p class="form-row">
+					By clicking Register, I agree to the <a href="#">Terms and Conditions</a>
+				</p>
 				<p class="form-row">
 					<input type="submit" class="button border fw margin-top-10" name="register" value="Register" />
 				</p>

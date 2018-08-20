@@ -34,10 +34,25 @@ class Profile(models.Model):
         verbose_name = 'Profile'
         verbose_name_plural = 'User Profiles'
 
-
+    def facebook(self):
+        if self.social.facebook is not None:
+            return True
+    
+    def instagram(self):
+        if self.social.instagram is not None:
+            return True
+    
+    def twitter(self):
+        if self.social.twitter is not None:
+            return True
+    
+    def google(self):
+        if self.social.google is not None:
+            return True
+    
 
 class Social(models.Model):
-    profile = models.OneToOneField("account.Profile", verbose_name=_("Person"), on_delete=models.CASCADE)
+    profile = models.OneToOneField("account.Profile", related_name='social', verbose_name=_("Person"), on_delete=models.CASCADE)
     twitter = models.CharField(_("Twitter Profile"), blank=True, null=True, max_length=70)
     facebook = models.CharField(_("Facebook Profile"), blank=True, null=True, max_length=70)
     instagram = models.CharField(_("Instagram Profile"), blank=True, null=True, max_length=70)

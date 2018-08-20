@@ -58,3 +58,15 @@ class EventType(models.Model):
     def __str__(self):
             return self.name
     
+class EventPurpose(models.Model):
+    purpose = models.CharField(_("Purpose"), max_length=50)
+
+    class Meta:
+    
+        verbose_name = 'Purpose'
+        verbose_name_plural = 'Venue Purposes'
+
+    def __str__(self):
+        return self.purpose
+    
+    

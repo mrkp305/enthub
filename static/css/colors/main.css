@@ -114,12 +114,12 @@ a.button.border.white:hover {
 }
 
 .agent-avatar a:before {
-    background: #274abb;
-    background: linear-gradient(to bottom, transparent 50%, #274abb)
+    background: #f44336;
+    background: linear-gradient(to bottom, transparent 50%, #f44336)
 }
 
 .view-profile-btn {
-    background-color: #274abb
+    background-color: #f44336
 }
 
 .listing-img-container:after {
