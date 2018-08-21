@@ -28,13 +28,18 @@ import base64
 
 
 city_list = []
-for c in City.objects.all():
-    city_list.append([c.id,c])
+try:
+    for c in City.objects.all():
+        city_list.append([c.id,c])
+except Exception as e:
+    pass
 
 tags = []
-for t in Tag.objects.all():
-    tags.append([t.id, t.name])
-
+try:
+    for t in Tag.objects.all():
+        tags.append([t.id, t.name])
+except Exception as e:
+    pass
 
 class Profile(forms.Form):
     name = forms.CharField(widget=forms.TextInput(attrs={'class':'input-text'}), max_length=30, required=True)

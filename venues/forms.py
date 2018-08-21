@@ -4,14 +4,18 @@ from utils.models import *
 from django.core.validators import URLValidator
 
 su_fo = []
-
-for s in EventPurpose.objects.all():
-    su_fo.append([s.id,s])
+try:
+    for s in EventPurpose.objects.all():
+        su_fo.append([s.id,s])
+except Exception as e:
+    pass
 
 city_list = []
-for c in City.objects.all():
-    city_list.append([c.id,c])
-
+try:
+    for c in City.objects.all():
+        city_list.append([c.id,c])
+except Exception as e:
+    pass
 
 class Venue(forms.Form):
     #about

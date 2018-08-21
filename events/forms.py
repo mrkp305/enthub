@@ -5,13 +5,18 @@ from django.core.validators import URLValidator
 import re
 
 type_list = []
-for t in EventType.objects.all():
-    type_list.append([t.id,t])
+try:
+    for t in EventType.objects.all():
+        type_list.append([t.id,t])
+except Exception as e:
+    pass
 
 city_list = []
-for c in City.objects.all():
-    city_list.append([c.id,c])
-
+try:
+    for c in City.objects.all():
+        city_list.append([c.id,c])
+except Exception as e:
+    pass
 class DateInput(forms.DateTimeInput):
     input_type = 'date'
 

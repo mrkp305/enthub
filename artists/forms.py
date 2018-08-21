@@ -28,9 +28,12 @@ import re
 
 
 genres = []
-for genre in Genre.objects.all():
-    genres.append([genre.pk,genre])
-
+try:
+    for genre in Genre.objects.all():
+        genres.append([genre.pk,genre])
+except Exception as e:
+    pass
+    
 class DateInput(forms.DateInput):
     input_type = 'date'
 
