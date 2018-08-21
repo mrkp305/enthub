@@ -11,10 +11,12 @@ import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 from .forms import Venue as VenueForm
+from .forms import EditVenue as EditForm
 
 from .models import *
 from utils.models import *
 from events.models import *
+from authentication.models import *
 
 class Add(LoginRequiredMixin, View):
     login_url='/auth'
@@ -57,6 +59,7 @@ class Add(LoginRequiredMixin, View):
                     city=City.objects.get(id=city),
                     latitude=latitude,
                     longitude=longitude,
+                    added_by=User.objects.get(id=request.user.id)
                 )
                 
                 suitable_fors = form['suitable']
@@ -141,3 +144,41 @@ class Index(View):
         return HttpResponse(render(request, template, context))
 
 
+class EditVenue(LoginRequiredMixin, View):
+    login_url = '/auth'
+    def get(self, request, venue_id, slug=''):
+        venue = get_object_or_404(Venue, id=venue_id)
+        if venue.added_by != User.objects.get(id=request.user.id):
+            return HttpResponseForbidden()
+        else:
+            template = 'main/venues/edit.html'
+            initial = {
+                'name': venue.name,
+                'suitable': [suitable.pk for suitable in venue.suitable.all()],
+                'description':venue.description,
+                'website':venue.website,
+                'contact_person':venue.contact_person,
+                'phone':venue.phone,
+                'email':venue.email,
+                'street_address':venue.street_address,
+                'city':[venue.city.id, venue.city],
+                'latitude':venue.latitude,
+                'longitude':venue.longitude,
+            }
+            context = {
+                'venue':venue,
+                'form': EditForm(initial=initial),
+            }
+            return HttpResponse(render(request, template, context))
+
+    def post(self, request):
+        form = EditForm(request.POST)
+        if form.is_valid():
+            pass
+        else:
+            template = 'main/venues/edit.html'
+            context = {
+                'venue':venue,
+                'form': form,
+            }
+            return HttpResponse(render(request, template, context))

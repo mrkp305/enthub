@@ -22,6 +22,7 @@ class Venue(models.Model):
     city = models.ForeignKey("utils.City", verbose_name=_("City"), blank=True, null=True, on_delete=models.SET_NULL) 
     latitude = models.CharField(max_length=30)
     longitude = models.CharField(max_length=30)
+    added_by = models.ForeignKey("authentication.User", verbose_name=_("Added by"),blank=True, null=True, on_delete=models.SET_NULL)
     created_at= models.DateTimeField(_("Last Updated On"), auto_now_add=True)
     last_modified = models.DateTimeField(_("Last Updated On"), auto_now=True)
 

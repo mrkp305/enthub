@@ -1,6 +1,6 @@
 {% extends "layouts/default.html" %}
 {% load static %}
-{% block PAGE_TITLE %} Add Venue &mdash; Ehub {% endblock PAGE_TITLE %}
+{% block PAGE_TITLE %} Edit Venue &mdash; EntHub {% endblock PAGE_TITLE %}
 {% block PAGE_CSS %}
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/croppie/2.6.2/croppie.css">
   <link rel="stylesheet" href="{% static 'css/customized/bootstrap/bootstrap.css' %}">
@@ -13,13 +13,13 @@
 		<div class="row">
 			<div class="col-md-12">
 
-				<h2>Add Venue</h2>
+				<h2>Edit Venue</h2>
 
 				<!-- Breadcrumbs -->
 				<nav id="breadcrumbs">
 					<ul>
 						<li><a href="#">Venues</a></li>
-						<li>Add</li>
+						<li>Edit</li>
 					</ul>
 				</nav>
 
@@ -60,13 +60,15 @@
 						<ul class="my-account-nav">
 							<li class="sub-nav-title">Venues</li>
 						
-                            <li><a href="{% url 'artists:create-profile' %}"><i class="sl sl-icon-microphone"></i> Add A venue</a></li>
+                            <li><a href="{% url 'venues:post-venue' %}"><i class="sl sl-icon-microphone"></i> Add A venue</a></li>
+                            <li><a href="{% url 'venues:post-venue' %}"><i class="sl sl-icon-microphone"></i> My Venues</a></li>
 							
 						</ul>
 
 						<ul class="my-account-nav">
 							<li class="sub-nav-title">Events</li>
-							<li><a href="{% url 'events:my-events' %}" class="current"><i class="fa fa-clone"></i> My Events</a></li>
+							<li><a href="{% url 'events:post-event' %}" class="current"><i class="fa fa-clone"></i> Add an Event</a></li>
+							<li><a href="{% url 'events:my-events' %}" ><i class="fa fa-clone"></i> My Events</a></li>
 							
 						</ul>
 		
@@ -87,7 +89,7 @@
 
 				<div class="col-md-8 my-profile">
 				
-					<h4 class="margin-top-0 margin-bottom-30">Venue Details</h4>
+					<h4 class="margin-top-0 margin-bottom-30">Edit Venue : {{ venue.name|title }}</h4>
 					{% if messages %}
 
 						{% for message in messages %}
@@ -112,22 +114,7 @@
 						<label>Description</label>
 						{{ form.description }}
                         <small style="color: #f44336;">{{ form.description.errors|first }}</small>
-                        
-                        <div class="submit-section">
-                            <div class="row with-forms">
-                                <!-- Main Picture -->
-                                <div class="col-md-6">
-                                    <h5>Main Poster/Banner</h5>
-                                    {{ form.main_img }}
-                                    <small style="color:#f44336">{{ form.main_img.errors|first }}</small>
-                                </div>
-                                <div class="col-md-6">
-                                    <h5>Other Images</h5>
-                                    {{ form.other_img }}
-                                    <small style="color:#f44336">{{ form.other_img.errors|first }}</small>
-                                </div>
-                            </div>
-                        </div>
+                      
 
                         <h1>Location Details</h1>
 						<label>City</label>
@@ -165,7 +152,7 @@
 						
 
 						<div class="clear-fix"></div>
-						<button type="submit" name="add_venue" class="button margin-top-20 margin-bottom-20">Add Venue</button>
+						<button type="submit" name="update" class="button margin-top-20 margin-bottom-20">Save Changes</button>
 					</form>
 				</div>
 
