@@ -383,3 +383,36 @@ class ViewEvent(View):
 class Calendar(View):
     def get(self, request):
         template = "main/events/calendar.html"
+        context = {
+
+        }
+        return HttpResponse(render(request, template, context))
+
+
+class CalendarJson(View):
+    def get(self, request):
+        '''
+            $start = date('Y-m-d', strtotime($_POST['start']));
+            $end = date('Y-m-d', strtotime($_POST['end']));
+        '''
+        start_date = datetime.strptime(request.GET.get('start'), '%Y-%m-%d')
+        end_date = datetime.strptime(request.GET.get('end'), '%Y-%m-%d')
+        events = Event.objects.filter(start_date__range=(start_date, end_date))
+        blob = {'result':[]}
+        for event in events:
+            dta = {
+                'id': event.id,
+                'title': event.name,
+                'start': event.start_date,
+                'end': event.end_date,
+                'poster': event.get_poster_url(),
+                'about': event.about,
+                'venue': event.location.name,
+                'address' :event.location.street_address,
+                'city': event.location.city.name,
+                'date': event.start_date,
+                'time': '4S',
+                'link':'jnbn'
+            }
+            blob['result'].append(dta)
+        return JsonResponse(blob)

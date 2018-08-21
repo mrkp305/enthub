@@ -9,15 +9,78 @@
 
 
 {% block PAGE_CONTENT %}
-  <div id="calendar">
-      
-  </div>
+<br>
+<div class="container-fluid">
+    <div class="row margin-bottom-50">
+        <div class="col-md-12">
+            <div id="calendar"></div>
+        </div>
+    </div>
+</div>
 {% endblock PAGE_CONTENT %}
 
 
 
 {% block PAGE_JS %}
-    <script src="{% static 'scripts/moment.js'"></script>
-    <script src="{% static 'scripts/popper.min.js'"></script>
-    <script src="{% static 'scripts/fullcalendar.min.js'"></script>
+    <script src="{% static 'scripts/moment.js' %}"></script>
+    <script src="{% static 'scripts/popper.min.js' %}"></script>
+    <script src="{% static 'scripts/fullcalendar.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#calendar').fullCalendar({
+                header:{
+                    left: 'month,agendaWeek,agendaDay',
+                    center: 'title',
+                    right: 'today prev,next'
+                },
+                events: function(start, end, timezone, callback) {
+                    $.ajax({
+                        url: "/events/calendar/json",
+                        type: 'get',
+                        dataType: 'json',
+                        data: {
+                           
+                            start: start.format(),
+                            end: end.format()
+                        },
+                        success: function(doc) {
+                            var events = [];
+                            if(!!doc.result){
+                                $.map( doc.result, function( r ) {
+                                    events.push({
+                                        id: r.id,
+                                        title: r.title,
+                                        start: r.date_start,
+                                        end: r.date_end,
+                                        poster: r.poster,
+                                        about: r.about,
+                                        venue: r.venue,
+                                        address :r.address,
+                                        city: r.city,
+                                        date : r.date,
+                                        time: r.time,
+                                        link:r.link
+                                    });
+                                });
+                            }
+                            callback(events);
+                        }
+                    });
+                },
+                eventClick: function(event) {
+                    $("#modalTitle").html(event.title);
+                    $("#eventDate").html(event.date);
+                    $("#eventTime").html(event.time);
+                    $("#eventDescription").html('').append(
+                                                    "<p>" + event.about + "</p><footer>"
+                                                    + event.venue + "<cite>"
+                                                    + "<i class='material-icons'>location_on</i>"
+                                                    + "&nbsp;" + event.address + ", " + event.city
+                                                    + "</cite></footer>");
+                    $("#link2event").attr('href',event.link);
+                    $("#eventModal").modal().show();
+                },
+            });
+		});
+    </script>
 {% endblock PAGE_JS %}  
