@@ -19,3 +19,30 @@ class Home(View):
             'venues': Venue.objects.all()[:25],
         }
         return HttpResponse(render(request, template, context))
+class Tos(View):
+    
+    def get(self, request):
+        template = 'main/tos.html'
+        context = {
+
+        }
+        return HttpResponse(render(request, template, context))
+
+class CoPolicy(View):
+    
+    def get(self, request):
+        template = 'main/cop.html'
+        context = {
+
+        }
+        return HttpResponse(render(request, template, context))
+
+class PrPolicy(View):
+    
+    def get(self, request):
+        template = 'main/prp.html'
+        context = {
+
+        }
+        return HttpResponse(render(request, template, context))
+

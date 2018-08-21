@@ -29,6 +29,9 @@ urlpatterns = [
     path('artists/', include('artists.urls')),
     path('events/', include('events.urls')),
     path('venues/', include('venues.urls')),
+    path('terms-of-services/', Tos.as_view(), name='tos'),
+    path('copyright-policy/', CoPolicy.as_view(), name='co-policy'),
+    path('privacy-policy/', PrPolicy.as_view(), name='pr-policy'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
