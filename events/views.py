@@ -176,7 +176,7 @@ class Details(LoginRequiredMixin, View):
     def post(self, request):
         try:
             #2018-09-20 00:00:00+00:00
-            event = Event.objects.all()
+            event = Event.objects.get(id = request.POST.get('event'))
             
             data = {
                 'Event name': event.name,
@@ -380,4 +380,6 @@ class ViewEvent(View):
         }
         return HttpResponse(render(request, template, context))
     
-
+class Calendar(View):
+    def get(self, request):
+        template = "main/events/calendar.html"

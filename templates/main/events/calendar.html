@@ -1,0 +1,23 @@
+{% extends "layouts/default.html" %}
+{% load static %}
+{% block PAGE_TITLE %}
+    EntHub Events Calendar 
+{% endblock PAGE_TITLE %}
+{% block PAGE_CSS %}
+  <link rel="stylesheet" href="{% static 'css/fullcalendar.min.css' %}">
+{% endblock PAGE_CSS %}
+
+
+{% block PAGE_CONTENT %}
+  <div id="calendar">
+      
+  </div>
+{% endblock PAGE_CONTENT %}
+
+
+
+{% block PAGE_JS %}
+    <script src="{% static 'scripts/moment.js'"></script>
+    <script src="{% static 'scripts/popper.min.js'"></script>
+    <script src="{% static 'scripts/fullcalendar.min.js'"></script>
+{% endblock PAGE_JS %}  

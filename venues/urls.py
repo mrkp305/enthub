@@ -27,6 +27,8 @@ urlpatterns = [
     path('post', Add.as_view(), name='post-venue'),
     re_path(r'^(\d+)/([a-zA-Z0-9\-\'\w]+)/', ViewVenue.as_view(), name='view-venue'),
     re_path(r'^my/(\d+)/edit/([a-zA-Z0-9\-\'\w]+)/', EditVenue.as_view(), name='edit-venue'),
+    re_path(r'^my/(\d+)/delete/([a-zA-Z0-9\-\'\w]+)/', Delete.as_view(), name='delete-venue'),
+    re_path(r'^my/', My.as_view(), name='my'),
    
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 

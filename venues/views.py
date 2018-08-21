@@ -171,14 +171,87 @@ class EditVenue(LoginRequiredMixin, View):
             }
             return HttpResponse(render(request, template, context))
 
-    def post(self, request):
-        form = EditForm(request.POST)
-        if form.is_valid():
-            pass
+    def post(self, request, venue_id, slug=''):
+        venue = get_object_or_404(Venue, id=venue_id)
+        if venue.added_by != User.objects.get(id=request.user.id):
+            return HttpResponseForbidden()
         else:
-            template = 'main/venues/edit.html'
-            context = {
-                'venue':venue,
-                'form': form,
-            }
-            return HttpResponse(render(request, template, context))
+            form = EditForm(request.POST)
+            if form.is_valid():
+                name = form.cleaned_data.get('name')
+                suitable = form.cleaned_data.get('suitable')
+                description = form.cleaned_data.get('description')
+            
+                #contacts
+                website = form.cleaned_data.get('website')
+                contact_person = form.cleaned_data.get('contact_person')
+                phone = form.cleaned_data.get('phone')
+                email = form.cleaned_data.get('email')
+                
+                #location
+                street_address = form.cleaned_data.get('street_address')
+                city = form.cleaned_data.get('city')
+                latitude = form.cleaned_data.get('latitude')
+                longitude = form.cleaned_data.get('longitude')
+
+                dict_updates = {
+                    'name':name,
+                    'description':description,
+                    'website':website,
+                    'contact_person':contact_person,
+                    'phone':phone,
+                    'email':email,
+                    'street_address':street_address,
+                    'city':City.objects.get(id=city),
+                    'latitude':latitude,
+                    'longitude':longitude,
+                    'added_by':User.objects.get(id=request.user.id)
+                }
+                for key in dict_updates:
+                    venue.key = dict_updates[key]
+                
+                # v = Venue.objects.filter(id=venue.id).update(**dict_updates).save()
+
+                sui = form['suitable']
+                sui_list = []
+                if sui is not None:
+                    for purpose in sui.value():
+                        p = EventPurpose.objects.get(pk=str(purpose))
+                        sui_list.append(p)
+                    venue.suitable.set(sui_list)
+
+                venue.save()
+
+                messages.success(request, "Venue updated Successfully")
+                template = 'main/venues/edit.html'
+                context = {
+                    'venue':venue,
+                    'form': form,
+                }
+                return HttpResponse(render(request, template, context))
+            else:
+                template = 'main/venues/edit.html'
+                context = {
+                    'venue':venue,
+                    'form': form,
+                }
+                return HttpResponse(render(request, template, context))
+
+class My(LoginRequiredMixin, View):
+    login_url = '/auth'
+    def get(self, request):
+        template = 'main/venues/my.html'
+        context = {
+            'venues':Venue.objects.filter(added_by=User.objects.get(id=request.user.id)).order_by('created_at')
+        }
+        return HttpResponse(render(request, template, context))
+
+class Delete(LoginRequiredMixin, View):
+    login_url = '/auth'
+    def get(self, request, venue_id, slug=''):
+        venue = get_object_or_404(Venue, id=venue_id)
+        if venue.added_by != User.objects.get(id=request.user.id):
+            return HttpResponseForbidden()
+        else:
+            if venue.delete():
+                return redirect(reverse('venues:my'))

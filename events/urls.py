@@ -30,6 +30,7 @@ urlpatterns = [
     re_path('edit-event/(\d+)/', Edit.as_view(), name='edit'),
     path('get-details/', Details.as_view(), name='get_details'),
     path('get-GeoSon-event-data/', GeoData.as_view(), name='geo-data'),
+    path('calendar/', Calendar.as_view(), name='calendar'),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
