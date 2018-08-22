@@ -22,22 +22,10 @@
                         <!-- Row With Forms -->
                         <div class="row with-forms">
                              <!-- Main Search Input -->
-                            <div class="col-md-8">
+                            <div class="col-md-12">
                                 <div class="main-search-input">
                                     <input id="sq" type="text" placeholder="Enter name e.g. Pamuzinda Lodge" value=""/>
-                                    
-                                </div>
-                            </div>
-
-                            <!-- Property Type -->
-                            <div  class="col-md-4">
-                                <div class="main-search-input">
-                                        <select id="stype" data-placeholder="Any Type" class="chosen-select-no-single" >
-                                            <option disabled selected="selected">Any type</option>
-                                                {% for type in types %}
-                                                    <option value="{{ type.id }}">{{ type }}</option>
-                                                {% endfor %}
-                                            </select>   
+                                
                                 <button class="button" id='searchbtn'>Search</button>
                                 </div>
                             </div>
