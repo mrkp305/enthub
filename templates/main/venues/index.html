@@ -2,49 +2,71 @@
 {% block PAGE_TITLE %}
     Venue Directory &mdash; Ehub Venues
 {% endblock PAGE_TITLE %}
+{% load static %}
 {% block PAGE_CONTENT %}
-    
 
-<!-- Search
+<!-- Titlebar
 ================================================== -->
-<section class="search margin-bottom-50">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-        
-                    <!-- Title -->
-                    <h3 class="search-title">Search</h3>
-        
-                    <!-- Form -->
-                    <div class="main-search-box no-shadow">
-        
-        
-                        <!-- Row With Forms -->
-                        <div class="row with-forms">
-                             <!-- Main Search Input -->
-                            <div class="col-md-12">
-                                <div class="main-search-input">
-                                    <input id="sq" type="text" placeholder="Enter name e.g. Pamuzinda Lodge" value=""/>
-                                
-                                <button class="button" id='searchbtn'>Search</button>
-                                </div>
-                            </div>
-        
-                        </div>
-                      
+<div class="parallax titlebar"
+	data-background="{% static 'images/venues1.jpg' %}"
+	data-color="#333333"
+	data-color-opacity="0.7"
+	data-img-width="800"
+	data-img-height="505">
 
-                    </div>
-                    <!-- Box / End -->
-                </div>
-            </div>
-        </div>
-</section>  
+	<div id="titlebar">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<h2>EntHub Venues</h2>
+					<span>Venue Listings</span>
+					
+					<!-- Breadcrumbs -->
+					<nav id="breadcrumbs">
+						<ul>
+							<li><a href="#">Home</a></li>
+							<li>Venues</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
         
     <!-- Content
     ================================================== -->
     <div class="container">
         <div class="row fullwidth-layout">
+                <div class="col-md-12">
+        
+                        <!-- Title -->
+                        <h3 class="search-title">Search</h3>
+            
+                        <!-- Form -->
+                        <div class="main-search-box no-shadow">
+            
+            
+                            <!-- Row With Forms -->
+                            <div class="row with-forms">
+                                 <!-- Main Search Input -->
+                                <div class="col-md-12">
+                                    <div class="main-search-input">
+                                        <input id="sq" type="text" placeholder="Enter name e.g. Pamuzinda Lodge" value=""/>
+                                    
+                                    <button class="button" id='searchbtn'>Search</button>
+                                    </div>
+                                </div>
+            
+                            </div>
+                          
     
+                        </div>
+                        <!-- Box / End -->
+                    </div>
             <div class="col-md-12">
     
                 <!-- Sorting / Layout Switcher -->
@@ -118,6 +140,10 @@
                     
                                 <ul class="listing-details">
                                     <li>{{ venue.description|lower|capfirst|truncatechars:25 }}</li>
+                                    <li> {% for p in venue.get_purposes %}
+                                            <li><mark class="color">{{ p }}</mark></li>
+                                        {% endfor %}
+                                    </li>
                                     <li>
                                         {% with event.contact_set.all|first as contact %}
                                             {% if contact.whatsapp %}

@@ -7,6 +7,34 @@
 <title>{% block PAGE_TITLE %}{% endblock %}</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+
+<meta name="application-name" content="EntHub">
+<meta name="theme-color" content="#f44336">
+
+<meta name="description" content="{{ meta.description }}">
+<meta name="robots" content="index,follow">
+<meta name="googlebot" content="index,follow">
+
+<!-- Open Graph-->
+<meta name="og:title" property="og:title" content="{{ meta.og.title }}">
+<meta property="og:url" content="{{ meta.og.url }}" />
+<meta property="og:type" content="{{ meta.og.type }}" />
+<meta property="og:description" content="{{ meta.og.description }}" />
+<meta property="og:image" content="{{ meta.og.image }}" />
+<meta property="og:site_name" content="EntHub">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="{{ meta.twitter.card }}" />
+<meta name="twitter:site" content="@kingraphaII">
+<meta name="twitter:title" content="{{ meta.twitter.title }}" />
+<meta name="twitter:description" content="{{ meta.twitter.description }}" />
+<meta name="twitter:url" content="{{ meta.twitter.url }}" />
+<meta name="twitter:image" content="{{ meta.twitter.image }}" />
+
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+
+
 <!-- CSS
 ================================================== -->
 <link rel="stylesheet" href="{% static 'css/style.css' %}">
@@ -24,7 +52,7 @@
 
 <!-- Header Container
 ================================================== -->
-<header id="header-container">
+<header id="header-container" class="fullwidth">
 
 	<!-- Topbar -->
 	<div id="top-bar">
@@ -107,9 +135,11 @@
 						<li><a href="#">Events</a>
 							<ul>
 								<li><a href="{% url 'events:index' %}">Browse</a></li>
+								<li><a href="{% url 'events:map' %}">Map</a></li>
 								<li><a href="javascript:void(0)">Calendar</a>
 									<ul>
 										<li><a href="{% url 'events:calendar' %}">Browse</a></li>
+										
 										<li><a href="javascript:void(0)">Sync to phone</a></li>
 									</ul>
 								</li>
@@ -127,10 +157,11 @@
 						<li><a href="#">Venues</a>
 							<ul>
 								<li><a href="{% url 'venues:index' %}">Listing</a></li>
+								<li><a href="{% url 'venues:index' %}">Map</a></li>
 							</ul>
 						</li>
 						
-						<li><a href="#">Ehub News</a>
+						<li><a href="#">News</a>
 							<ul>
 								<li><a href="javascript:void(0)">Site Updates</a></li>
 								<li><a href="javascript:void(0)">Top News</a></li>
@@ -199,6 +230,7 @@
 
 
 
+{% block FOOTER %}
 <!-- Footer
 ================================================== -->
 <div id="footer">
@@ -237,8 +269,8 @@
 			<div class="col-md-3  col-sm-12">
 				<h4>Contact Us</h4>
 				<div class="text-widget">
-					<span>12345 Little Lonsdale St, Harare</span> <br>
-					Phone: <span><a href="tel:+263773708109">(263) 773 708-109</a> </span><br>
+					<span></span> <br>
+					Phone: <span><a href="tel:+263773708109">+(263) 773 708-109</a> </span><br>
 					E-Mail:<span> <a href="mailto:info@enthub.co.zw">info@enthub.co.zw</a> </span><br>
 				</div>
 
@@ -266,7 +298,7 @@
 </div>
 <!-- Footer / End -->
 
-
+{% endblock FOOTER %}
 <!-- Back To Top Button -->
 <div id="backtotop"><a href="#"></a></div>
 

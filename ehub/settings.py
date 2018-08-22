@@ -37,12 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.redirects',
     'authentication.apps.AuthenticationConfig',
     'account.apps.AccountConfig',
     'utils.apps.UtilsConfig',
     'artists.apps.ArtistsConfig',
     'events.apps.EventsConfig',
     'venues.apps.VenuesConfig',
+    'django.contrib.sitemaps',
+    'robots',
+    'meta',
+  
 ]
 
 MIDDLEWARE = [
@@ -53,8 +59,9 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
 ]
-
+SITE_ID = 1
 ROOT_URLCONF = 'ehub.urls'
 
 TEMPLATES = [
@@ -71,6 +78,13 @@ TEMPLATES = [
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
             ],
+            # 'loaders': [
+            #     ('django.template.loaders.cached.Loader', [
+            #         'django.template.loaders.filesystem.Loader',
+            #         'django.template.loaders.app_directories.Loader',
+            #         'path.to.custom.Loader',
+            #     ]),
+            # ],
         },
     },
 ]

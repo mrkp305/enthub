@@ -9,7 +9,8 @@ from django.views.defaults import *
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.core.files.base import ContentFile
 from django.contrib import messages
-
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 '''
     End Django Imports
 '''
@@ -44,7 +45,26 @@ class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request):
         template = 'main/artists/create-profile.html'
+        meta = {
+            'description':'Create you profile here as an artist to get increase you fanbase and also reach potential clients for booking!',
+            'og':{
+                'title':'Create Artist Profile',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Create you profile here as an artist to get increase you fanbase and also reach potential clients for booking!',
+                'image': ''
+            },
+            'twitter':{
+                'card':'EntHub artist promotions.',
+                'title':'Create Artist Profile',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Create you profile here as an artist to get increase you fanbase and also reach potential clients for booking!',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'form':ArtistProfileForm(),
         }
         return HttpResponse(render(request, template,context))
@@ -84,17 +104,86 @@ class CreateProfile(LoginRequiredMixin, UserPassesTestMixin, View):
 class Index(View):
     def get(self, request):
         template = 'main/artists/index.html'
+        meta = {
+            'description':'Browse artist profiles, their contact information and get in touch with hundreds of artists in Zimbabwe!',
+            'og':{
+                'title':'Browse the Artist directory',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Browse artist profiles, their contact information and get in touch with hundreds of artists in Zimbabwe!',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Zimbabwe\'s Biggest Artist directory.',
+                'title':'Browse the Artist directory',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Browse artist profiles, their contact information and get in touch with hundreds of artists in Zimbabwe!',
+                'image': ''
+            }
+        }
+      
+       
+     
+        artist_list = None
+
+        if request.GET.get('query') is not None and request.GET.get('genre') is not None and request.GET.get('genre') != 'Any Genre':
+            artist_list = Profile.objects.filter(stage_name__icontains=request.GET.get('query'), genre=Genre.objects.get(name=request.GET.get('genre')))
+
+        elif request.GET.get('query') is None and request.GET.get('genre') is not None:
+            artist_list = Profile.objects.filter(genre=Genre.objects.get(name=request.GET.get('genre')))
+        elif request.GET.get('query') is not None and (request.GET.get('genre') is None or request.GET.get('genre') =='Any Genre'):
+            artist_list = Profile.objects.filter(stage_name__icontains=request.GET.get('query'))
+        else:
+            artist_list = Profile.objects.all().order_by('stage_name')
+
+        paginator = Paginator(artist_list, 9)
+        page=request.GET.get('page', 1)
+
+        artists = paginator.get_page(page)
+        # Get the index of the current page
+        index = artists.number - 1  # edited to something easier without index
+        # This value is maximum index of your pages, so the last page - 1
+        max_index = len(paginator.page_range)
+        # You want a range of 7, so lets calculate where to slice the list
+        start_index = index - 3 if index >= 3 else 0
+        end_index = index + 3 if index <= max_index - 3 else max_index
+        # Get our new page range. In the latest versions of Django page_range returns 
+        # an iterator. Thus pass it to list, to make our slice possible again.
+        page_range = list(paginator.page_range)[start_index:end_index]
         context = {
-            'artists':Profile.objects.all()
+            'meta':meta,
+            'page_range':page_range,
+            'genres':Genre.objects.all(),
+            'artists':artists
         }
         return HttpResponse(render(request, template, context))
-    
 
 class ViewArtist(View):
-    def get(self, request, artist_id, slug=""):
+    def get(self, request, id, slug=""):
+        artist_id = id
         artist = get_object_or_404(Profile, id=artist_id)
         template = 'main/artists/view.html'
+        meta = {
+            'description': artist.bio or None,
+            'og':{
+                'title':artist.stage_name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':artist.bio or None,
+                'image': artist.user_profile.avatar.url or None,
+            },
+            'twitter':{
+                'card':'View {}\'s Profile'.format(artist.stage_name),
+                'title':artist.stage_name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':artist.bio or None,
+                'image': artist.user_profile.avatar.url or None,
+            }
+        }
         context = {
+            'meta':meta,
             'featured_artists': Profile.objects.all().exclude(id=artist.id),
             'featured_events': Event.objects.all()[:5],
             'artist':artist
@@ -115,7 +204,26 @@ class MyProfile(LoginRequiredMixin, UserPassesTestMixin, View):
             'dob':request.user.profile.artist.dob,
             'website':request.user.profile.artist.website
         }
+        meta = {
+            'description': artist.bio or None,
+            'og':{
+                'title':artist.stage_name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':artist.bio or None,
+                'image': artist.user_profile.avatar.url or None,
+            },
+            'twitter':{
+                'card':'Manage your artist Profile'.format(artist.stage_name),
+                'title':artist.stage_name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':artist.bio or None,
+                'image': artist.user_profile.avatar.url or None,
+            }
+        }
         context = {
+            'meta':meta,
             'ProfileForm':ArtistProfileForm(initial=initial)
         }
         return HttpResponse(render(request, template,context))

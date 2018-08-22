@@ -6,6 +6,8 @@ from django.db import models
 from django.utils.translation import ugettext_lazy as _
 from django.core.files.storage import FileSystemStorage
 from django.conf import settings
+from django.shortcuts import reverse
+from django.utils.text import slugify
 
 '''
     End Django Imports
@@ -45,6 +47,12 @@ class Artist(models.Model):
     dob = models.DateField(_("Artist's date of birth"), blank=True, null=True, auto_now=False, auto_now_add=False)
     use_profile_avatar = models.BooleanField(_("Use profile picture as artist profile picture too"), default=True)
     website = models.URLField(_("Website"), blank=True, null=True, max_length=200)
+    created_at =  models.DateTimeField(_("Last Updated On"), auto_now_add=True)
+    last_updated = models.DateTimeField(_("Last Updated On"), auto_now=True)
+
+    def get_absolute_url(self):
+        ##kwargs={'name':self.name}
+        return reverse('artists:view', kwargs={'id':self.id, 'slug':slugify(self.stage_name)})
 
     class Meta:
         verbose_name = 'Artist Profile'

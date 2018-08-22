@@ -14,11 +14,23 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path, include, re_path
 from .views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import *
+from artists.sitemaps import ArtistSiteMap
+from events.sitemaps import EventSiteMap
+from venues.sitemaps import VenueSiteMap
+
+sitemaps = {
+    'static': StaticViewSitemap,
+    'artist':ArtistSiteMap,
+    'events':EventSiteMap,
+    'venues':VenueSiteMap,
+}
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -32,6 +44,8 @@ urlpatterns = [
     path('terms-of-services/', Tos.as_view(), name='tos'),
     path('copyright-policy/', CoPolicy.as_view(), name='co-policy'),
     path('privacy-policy/', PrPolicy.as_view(), name='pr-policy'),
+    re_path(r'^sitemap\.xml/$', sitemap, {'sitemaps' : sitemaps } , name='sitemap')
+    #re_path(r'^robots\.txt', include('robots.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

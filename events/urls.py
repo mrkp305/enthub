@@ -19,11 +19,17 @@ from .views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from django.conf.urls.static import static
 from django.conf import settings
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import EventSiteMap
+
+sitemaps = {
+    'events': EventSiteMap
+}
 
 app_name='events'
 urlpatterns = [
     path('', Events.as_view(), name='index'),
-    re_path(r'^(\d+)/([a-zA-Z\-\']*)', ViewEvent.as_view(), name='view-event'),
+    re_path(r'^(?P<id>\d+)/(?P<slug>[a-zA-Z\-\']*)', ViewEvent.as_view(), name='view-event'),
     path('post', Add.as_view(), name='post-event'),
     path('my', My.as_view(), name='my-events'),
     re_path('delete-event/(\d+)/', Delete.as_view(), name='delete'),
@@ -32,6 +38,8 @@ urlpatterns = [
     path('get-GeoSon-event-data/', GeoData.as_view(), name='geo-data'),
     path('calendar/', Calendar.as_view(), name='calendar'),
     path('calendar/json', CalendarJson.as_view(), name='calendar-json'),
+    path('map/', Map.as_view(), name='map'),
+    re_path(r'^sitemap\.xml/$', sitemap, {'sitemaps' : sitemaps } , name='sitemap')
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

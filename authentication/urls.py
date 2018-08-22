@@ -18,6 +18,12 @@ from django.urls import path, include, re_path
 from django.conf.urls import url
 from .views import *
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.sitemaps.views import sitemap
+from .sitemaps import *
+
+sitemaps = {
+    'static': StaticViewSitemap,
+}
 
 app_name='authentication'
 urlpatterns = [
@@ -26,6 +32,8 @@ urlpatterns = [
     path('logout/', Logout.as_view(), name='logout'),
     path('change-password/', ChangePassword.as_view(), name='change-password'),
     url(r'^activate/([a-zA-Z0-9\-\']+)/([a-zA-Z0-9\-\']+)/', Activate.as_view(), name='activate'),
+     path('sitemap.xml', sitemap, {'sitemaps': sitemaps},
+     name='django.contrib.sitemaps.views.sitemap'),
 ]
 
 urlpatterns += staticfiles_urlpatterns()

@@ -2,30 +2,39 @@
 {% block PAGE_TITLE %}
     Artists &mdash; Ehub
 {% endblock PAGE_TITLE %}
+{% load static %}
 {% block PAGE_CONTENT %}
     
 <!-- Titlebar
 ================================================== -->
-<div id="titlebar">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-12">
-    
-                    <h2>Artists</h2>
-                    <span>The ultimate list</span>
-                    
-                    <!-- Breadcrumbs -->
-                    <nav id="breadcrumbs">
-                        <ul>
-                            <li><a href="#">Home</a></li>
-                            <li>Artists</li>
-                        </ul>
-                    </nav>
-    
-                </div>
-            </div>
-        </div>
-    </div>
+<div class="parallax titlebar"
+	data-background="{% static 'images/artists1.jpg' %}"
+	data-color="#333333"
+	data-color-opacity="0.7"
+	data-img-width="800"
+	data-img-height="505">
+
+	<div id="titlebar">
+		<div class="container">
+			<div class="row">
+				<div class="col-md-12">
+
+					<h2>EntHub Artists</h2>
+					<span>Artists Listings</span>
+					
+					<!-- Breadcrumbs -->
+					<nav id="breadcrumbs">
+						<ul>
+							<li><a href="#">Home</a></li>
+							<li>Artists</li>
+						</ul>
+					</nav>
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
     
      
     
@@ -36,10 +45,36 @@
     
             <div class="col-md-12">
                 <!-- Main Search Input -->
-                <div class="main-search-input margin-bottom-40">
-                    <input type="text" class="ico-01" placeholder="Type an artist name or genre" value=""/>
-                    <button class="button">Search</button>
-                </div>
+                <div class="main-search-box no-shadow">
+        
+        
+                        <!-- Row With Forms -->
+                        <div class="row with-forms">
+                             <!-- Main Search Input -->
+                            <div class="col-md-8">
+                                <div class="main-search-input">
+                                    <input id="sq" type="text" placeholder="Enter artist name e.g. Jah Signal" value=""/>
+                                    
+                                </div>
+                            </div>
+
+                            <!-- Property Type -->
+                            <div  class="col-md-4">
+                                <div class="main-search-input">
+                                        <select id="genres" data-placeholder="Any Genre" class="chosen-select-no-single" >
+                                            <option disabled selected="selected">Any Genre</option>
+                                                {% for genre in genres %}
+                                                    <option value="{{ genre.id }}">{{ genre }}</option>
+                                                {% endfor %}
+                                            </select>   
+                                <button class="button" id='searchbtn'>Search</button>
+                                </div>
+                            </div>
+        
+                        </div>
+                      
+
+                    </div>
             </div>
     
     
@@ -96,21 +131,36 @@
                 <div class="clearfix"></div>
                 <!-- Pagination -->
                 <div class="pagination-container margin-top-20">
-                    <nav class="pagination">
-                        <ul>
-                            <li><a href="#" class="current-page">1</a></li>
-                            <li><a href="#">2</a></li>
-                            <li><a href="#">3</a></li>
-                        </ul>
-                    </nav>
+                        <nav class="pagination">
+                            <ul>
+                                {% for i in page_range %}
+                                    {% if artists.number == i %}
+                                        <li><a href="javascript:void(0)" class="current-page">{{ i }}</a></li>
+                                    {% else %}
+                                        <li><a class="paginator-link" data-page-target="{{ i }}" href="javascript:void(0)">{{ i }}</a></li>
+                                    {% endif %}
+                                {% endfor %}
+                                
+                            </ul>
+                        </nav>
+        
+                        <nav class="pagination-next-prev">
+                            <ul>
+                                {% if artists.has_previous %}
+                                    <li><a data-page-target="{{ artists.previous_page_number }}" href="javascript:void(0)" class="paginator-link prev">Previous</a></li>
+                                {% else %}
+                                    <li><a href="javascript:void(0)" class="disabled prev">Previous</a></li>
+                                {% endif %}
     
-                    <nav class="pagination-next-prev">
-                        <ul>
-                            <li><a href="#" class="prev">Previous</a></li>
-                            <li><a href="#" class="next">Next</a></li>
-                        </ul>
-                    </nav>
-                </div>
+                                {% if artists.has_next %}
+                                <li><a data-page-target="{{ artists.next_page_number }}" href="javascript:void(0)" class="paginator-link next">Next</a></li>
+                             
+                                {% else %}
+                                    <li><a href="javascript:void(0)" class="next disabled">Next</a></li>
+                                {% endif %}
+                            </ul>
+                        </nav>
+                    </div>
                 <!-- Pagination / End -->
             </div>
     
@@ -135,16 +185,16 @@
     }
       $(".paginator-link").on('click', function() {
             page = $(this).attr('data-page-target');
-            var query, event_type, city;
+            var query, genre;
             query = String($('#sq').val());
            
-            event_type = String($('#stype').find(":selected").text());
+            genre = String($('#genres').find(":selected").text());
            
             var params = {
                 page:page,
                 query: query,
                
-                event_type: event_type,
+                genre: genre,
                
             };
             var new_href = window.location.href.split('?')[0] +'?'+$.param(params);
@@ -152,16 +202,16 @@
       });
       $("#searchbtn").on('click',function(){
         page = 1;
-        var query, event_type, city;
+        var query, genre;
         query = String($('#sq').val());
        
-        event_type = String($('#stype').find(":selected").text());
-        
+        genre = String($('#genres').find(":selected").text());
+       
         var params = {
             page:page,
             query: query,
            
-            event_type: event_type,
+            genre: genre,
            
         };
         

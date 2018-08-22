@@ -30,8 +30,35 @@ from .forms import *
 from .models import *
 from utils.models import *
 from authentication.models import User
+from django.contrib.sites.shortcuts import get_current_site
 
+class Map(View):
+    def get(self, request):
+        t = 'main/events/map.html'
+        meta = {
+            'description':'Browse and Explore events near you using a map.',
+            'og':{
+                'title':'Map Browser',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Browse and Explore events near you using a map.',
+                'image': ''
+            },
+            'twitter':{
+                'card':'EntHub event map browser.',
+                'title':'Map Browser',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Browse and Explore events near you using a map.',
+                'image': ''
+            }
+        }
+        context = {
+            'meta':meta,
 
+        }
+        return HttpResponse(render(request, t, context))
+    
 class Add(LoginRequiredMixin, UserPassesTestMixin, View):
     login_url = '/auth'
     def test_func(self):
@@ -39,7 +66,26 @@ class Add(LoginRequiredMixin, UserPassesTestMixin, View):
 
     def get(self, request):
         template = "main/events/add.html"
+        meta = {
+            'description':'Post an event to a larger audience on EntHub.',
+            'og':{
+                'title':'Post Event',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Post your events here to reach a guaranteed larger audience.',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Post your event on EntHub',
+                'title':'Post Event',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Post your events here to reach a guaranteed larger audience.',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'EventForm': EventForm(),
         }
         return HttpResponse(render(request, template, context))
@@ -142,7 +188,26 @@ class Add(LoginRequiredMixin, UserPassesTestMixin, View):
                 return redirect(reverse('events:my-events'))
             else:
                 template = "main/events/add.html"
+                meta = {
+                    'description':'Post an event to a larger audience on EntHub.',
+                    'og':{
+                        'title':'Post Event',
+                        'url':str(get_current_site(request))+request.path,
+                        'type':'website',
+                        'description':'Post your events here to reach a guaranteed larger audience.',
+                        'image': ''
+                    },
+                    'twitter':{
+                        'card':'Post your event on EntHub',
+                        'title':'Post Event',
+                        'url':str(get_current_site(request))+request.path,
+                        'type':'website',
+                        'description':'Post your events here to reach a guaranteed larger audience.',
+                        'image': ''
+                    }
+                }
                 context = {
+                    'meta':meta,
                     'EventForm': form,
                 }
                 return HttpResponse(render(request, template, context))
@@ -153,7 +218,26 @@ class My(LoginRequiredMixin, View):
     login_url = '/auth'
     def get(self, request):
         template = 'main/events/my.html'
+        meta = {
+            'description':'These are the events you\'ve posted. Here you can manage them.',
+            'og':{
+                'title':'Your Events',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'These are the events you\'ve posted. Here you can manage them.',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Manage your events.',
+                'title':'Your Events',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'These are the events you\'ve posted. Here you can manage them.',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'events':Event.objects.filter(added_by=User.objects.get(id=request.user.id)).order_by('created_at')
         }
         return HttpResponse(render(request, template, context))
@@ -199,9 +283,9 @@ class GeoData(View):
         
         events = {'events':[]}
         for event in Event.objects.all():
-            html = "<div style=\"font-family:'Varela Round' !important;color:#fff !important;\">\
+            html = "<div class='mapx-box' style=\"font-family:'Varela Round' !important;color:#fff !important;\">\
                     <img src='{}'>\
-                    <h5 style='color:#fff !important'><a href='/events/{}/'>{}</a></h5>\
+                    <h5 style='color:#fff !important'><a style='color:#fff !important' href='/events/{}/'>{}</a></h5>\
                     <p>{}</p></div>".format(event.get_poster_url(),event.id, event.name, datetime.strftime(event.start_date,'%b %d'))
             data = {
                 'name':event.name,
@@ -239,7 +323,26 @@ class Edit(LoginRequiredMixin, View):
                 'longitude':event.location.longitude,
             }
             template = 'main/events/edit.html'
+            meta = {
+                'description':'Modifying an event you\'ve posted.',
+                'og':{
+                    'title':'Edit event',
+                    'url':str(get_current_site(request))+request.path,
+                    'type':'website',
+                    'description':'Modifying an event you\'ve posted.',
+                    'image': ''
+                },
+                'twitter':{
+                    'card':'Manage your events.',
+                    'title':'Edit event',
+                    'url':str(get_current_site(request))+request.path,
+                    'type':'website',
+                    'description':'Modifying an event you\'ve posted.',
+                    'image': ''
+                }
+            }
             context = {
+                'meta':meta,
                 'event':event,
                 'EventForm': EditEvent(initial=initial)
             }
@@ -329,7 +432,6 @@ class Edit(LoginRequiredMixin, View):
 
 
 class Events(View):
-    login_url = '/auth'
     def get(self, request):
         event_list = None
         #?page=2&query=&date_from=&date_to=&event_type=Party&city=Kwekwe%20-%20Zimbabwe&location=OLikjuhg
@@ -357,7 +459,26 @@ class Events(View):
         # Get our new page range. In the latest versions of Django page_range returns 
         # an iterator. Thus pass it to list, to make our slice possible again.
         page_range = list(paginator.page_range)[start_index:end_index]
+        meta = {
+            'description':'Browse and Explore events from around Zimbabwe',
+            'og':{
+                'title':'EntHub Events Listings',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Browse and Explore events from around Zimbabwe',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Explore events from around Zimbabwe.',
+                'title':'EntHub Events Listings',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Browse and Explore events from around Zimbabwe',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'page_range':page_range,
             'types':EventType.objects.all(),
             'cities':City.objects.all(),
@@ -367,12 +488,32 @@ class Events(View):
         return HttpResponse(render(request, template, context))
 
 class ViewEvent(View):
-    def get(self, request, event_id, slug=""):
+    def get(self, request, id, slug=""):
+        event_id=id
         event = get_object_or_404(Event, id=event_id)
         featured = Event.objects.exclude(id=event.id)[:3]
         similar = Event.objects.filter(type=event.type).exclude(id=event.id)[:5]
         template = 'main/events/view.html'
+        meta = {
+            'description':event.about,
+            'og':{
+                'title':event.name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':event.about,
+                'image': event.get_poster_url
+            },
+            'twitter':{
+                'card':'Explore events from around Zimbabwe.',
+                'title':event.name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':event.about,
+                'image': event.get_poster_url
+            }
+        }
         context = {
+            'meta':meta,
             'event':event,
             'featured':featured,
             'similar':similar,
@@ -383,7 +524,26 @@ class ViewEvent(View):
 class Calendar(View):
     def get(self, request):
         template = "main/events/calendar.html"
+        meta = {
+            'description':'Track your favourite events on EntHub on our EventsCalendar app here.',
+            'og':{
+                'title':'Events Calendar',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Track your favourite events on EntHub on our EventsCalendar app here.',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Track events on the calendar here on EntHub',
+                'title':'Events Calendar',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Track your favourite events on EntHub on our EventsCalendar app here.',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
 
         }
         return HttpResponse(render(request, template, context))

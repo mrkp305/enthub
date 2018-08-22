@@ -3,6 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 import uuid
 from django.conf import settings
 from datetime import datetime
+from django.utils.text import slugify
+from django.shortcuts import reverse
+from meta.models import ModelMeta
+
 
 class Event(models.Model):
     name = models.CharField(verbose_name="Event Title", max_length=255)
@@ -20,6 +24,15 @@ class Event(models.Model):
     created_at= models.DateTimeField(_("Last Updated On"), auto_now_add=True)
     last_modified = models.DateTimeField(_("Last Updated On"), auto_now=True)
     
+    _metadata = {
+        'title': 'name',
+        'description': 'about',
+        'image': 'get_poster_url',
+    }
+
+    def get_absolute_url(self):
+        ##kwargs={'name':self.name}
+        return reverse('events:view-event', kwargs={'id': self.id, 'slug': slugify(self.name)})
 
     class Meta:
         verbose_name = 'Event'

@@ -10,6 +10,7 @@ from datetime import *
 import json
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+from django.contrib.sites.shortcuts import get_current_site
 from .forms import Venue as VenueForm
 from .forms import EditVenue as EditForm
 
@@ -23,7 +24,26 @@ class Add(LoginRequiredMixin, View):
 
     def get(self, request):
         template = 'main/venues/add.html'
+        meta = {
+            'description': 'Add your venue here and reach more customers around Zimbabwe and beyond here on EntHub',
+            'og':{
+                'title':'Advertise your venues',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Add your venue here and reach more customers around Zimbabwe and beyond here on EntHub',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Add your venues on Enthub',
+                'title':'Advertise your venues',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Add your venue here and reach more customers around Zimbabwe and beyond here on EntHub',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'form': VenueForm(),
         }
         return HttpResponse(render(request, template, context))
@@ -97,10 +117,30 @@ class Add(LoginRequiredMixin, View):
             
 
 class ViewVenue(View):
-    def get(self, request, venue_id, slug=""):
+    def get(self, request, id, slug=""):
+        venue_id=id
         venue = get_object_or_404(Venue, id=venue_id)
         template = 'main/venues/view.html'
+        meta = {
+            'description': venue.description or None,
+            'og':{
+                'title':venue.name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':venue.description,
+                'image': venue.get_img_url or None
+            },
+            'twitter':{
+                'card':venue.name,
+                'title':venue.name,
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':venue.description,
+                'image': venue.get_img_url or None
+            }
+        }
         context = {
+            'meta':meta,
             'featured':Event.objects.all().order_by('?')[:3],
             'similar': Venue.objects.all().exclude(id=venue.id).order_by('?')[:4],
             'venue':venue,
@@ -112,12 +152,8 @@ class Index(View):
         template = 'main/venues/index.html'
         venue_list = None
         #?page=2&query=&date_from=&date_to=&event_type=Party&city=Kwekwe%20-%20Zimbabwe&location=OLikjuhg
-        if request.GET.get('query') is not None and request.GET.get('event_type') is not None and request.GET.get('event_type') != 'Any type':
-            venue_list = Venue.objects.filter(name__icontains=request.GET.get('query'), type=Sub.objects.get(name=request.GET.get('event_type')))
-        elif request.GET.get('query') is None and request.GET.get('event_type') is not None:
-            venue_list = Event.objects.filter(type=EventType.objects.get(name=request.GET.get('event_type')))
-        elif request.GET.get('query') is not None and (request.GET.get('event_type') is None or request.GET.get('event_type') =='Any type'):
-            venue_list = Event.objects.filter(name__icontains=request.GET.get('query'))
+        if request.GET.get('query') is not None:
+            venue_list = Venue.objects.filter(name__icontains=request.GET.get('query'))
         else:
             venue_list = Venue.objects.all().order_by('?')
 
@@ -135,9 +171,28 @@ class Index(View):
         # Get our new page range. In the latest versions of Django page_range returns 
         # an iterator. Thus pass it to list, to make our slice possible again.
         page_range = list(paginator.page_range)[start_index:end_index]
+        meta = {
+            'description': 'Explore venues around Zimbabwe for your next event, big or small we got you covered',
+            'og':{
+                'title':'EntHub Venue Listings',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Explore venues around Zimbabwe for your next event, big or small we got you covered',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Venue finder',
+                'title':'EntHub Venue Listings',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Explore venues around Zimbabwe for your next event, big or small we got you covered',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'page_range':page_range,
-            'types':EventType.objects.all(),
+           
             'cities':City.objects.all(),
             'venues':venues
         }

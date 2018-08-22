@@ -3,11 +3,14 @@ from django.utils.translation import ugettext_lazy as _
 import uuid
 import os
 from django.conf import settings
+from django.utils.text import slugify
+from django.shortcuts import reverse
+
 
 class Venue(models.Model):
      
     name = models.CharField( max_length=150)
-    suitable = models.ManyToManyField("utils.EventPurpose", blank=True, null=True, verbose_name=_("Suitable for"))
+    suitable = models.ManyToManyField("utils.EventPurpose", verbose_name=_("Suitable for"))
     description = models.TextField(_("Description"))
   
     #contacts
@@ -26,7 +29,9 @@ class Venue(models.Model):
     created_at= models.DateTimeField(_("Last Updated On"), auto_now_add=True)
     last_modified = models.DateTimeField(_("Last Updated On"), auto_now=True)
 
-    
+    def get_absolute_url(self):
+        return reverse('venues:view-venue', kwargs={'id':self.id, 'slug':slugify(self.name)})
+
     def get_img_url(self):
         return self.images_set.filter(is_main=True)[0].image.url
 
