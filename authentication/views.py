@@ -57,7 +57,26 @@ class Auth(View):
             if request.session.get('changed_password') == True:
                 shift_focus = 1
 
+        meta = {
+            'description': 'Login or Register here to access all EntHub services in full!',
+            'og':{
+                'title':'Login/Register',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Login or Register here to access all EntHub services in full!',
+                'image': ''
+            },
+            'twitter':{
+                'card':'Create an account or sign in',
+                'title':'Login/Register',
+                'url':str(get_current_site(request))+request.path,
+                'type':'website',
+                'description':'Login or Register here to access all EntHub services in full!',
+                'image': ''
+            }
+        }
         context = {
+            'meta':meta,
             'LoginForm': SignIn(),
             'RegisterForm': SignUp(),
             'InActiveTab': 'tabRegister',

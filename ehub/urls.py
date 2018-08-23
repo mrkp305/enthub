@@ -24,12 +24,14 @@ from .sitemaps import *
 from artists.sitemaps import ArtistSiteMap
 from events.sitemaps import EventSiteMap
 from venues.sitemaps import VenueSiteMap
-
+from authentication.sitemaps import AuthSiteMap
 sitemaps = {
     'static': StaticViewSitemap,
+    'authentication':AuthSiteMap,
     'artist':ArtistSiteMap,
     'events':EventSiteMap,
     'venues':VenueSiteMap,
+    
 }
 
 urlpatterns = [
@@ -44,8 +46,8 @@ urlpatterns = [
     path('terms-of-services/', Tos.as_view(), name='tos'),
     path('copyright-policy/', CoPolicy.as_view(), name='co-policy'),
     path('privacy-policy/', PrPolicy.as_view(), name='pr-policy'),
-    re_path(r'^sitemap\.xml/$', sitemap, {'sitemaps' : sitemaps } , name='sitemap')
-    #re_path(r'^robots\.txt', include('robots.urls')),
+    re_path(r'^sitemap\.xml/$', sitemap, {'sitemaps' : sitemaps } , name='sitemap'),
+    re_path(r'^robots\.txt', include('robots.urls')),
 ]+ static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()

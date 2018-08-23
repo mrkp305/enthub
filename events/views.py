@@ -496,6 +496,7 @@ class ViewEvent(View):
         template = 'main/events/view.html'
         meta = {
             'description':event.about,
+            'keywords':str(event.name) + ', '+str(event.type) +', event, zimbabwe entertainment, ' + str(event.location.city.name) +','+str(event.added_by),
             'og':{
                 'title':event.name,
                 'url':str(get_current_site(request))+request.path,

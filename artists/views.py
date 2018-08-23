@@ -166,6 +166,7 @@ class ViewArtist(View):
         template = 'main/artists/view.html'
         meta = {
             'description': artist.bio or None,
+            'keywords':str(artist.stage_name)+','+str(artist.genre) +', artist, zimbabwe artists, '+str(artist.alias) or None +', Book an Artist',
             'og':{
                 'title':artist.stage_name,
                 'url':str(get_current_site(request))+request.path,

@@ -121,8 +121,12 @@ class ViewVenue(View):
         venue_id=id
         venue = get_object_or_404(Venue, id=venue_id)
         template = 'main/venues/view.html'
+        _k = ''
+        for p in venue.get_purposes():
+            _k += str(p) +','
         meta = {
             'description': venue.description or None,
+            'keywords':_k +' venue, zimbabwe venues, '+ str(venue.name) + ', Find a venue, ' + str(venue.city.name),
             'og':{
                 'title':venue.name,
                 'url':str(get_current_site(request))+request.path,
